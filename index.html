@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Comunidad de Malis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@700;800&display=swap" rel="stylesheet">
 <script>
 (function () {
   var ua = navigator.userAgent || '';
@@ -19,24 +21,35 @@
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
-:root { --bg:#09090b; --verde:#00e676; --morado:#a855f7; }
-body { background:var(--bg); color:#e4e4e7; font-family:system-ui,-apple-system,sans-serif; }
-.neon { color:var(--verde); text-shadow:0 0 8px var(--verde),0 0 24px #00e67688; }
-.card { background:#111114; border:1px solid #27272a; border-radius:14px; }
-.btn { background:var(--verde); color:#04120a; font-weight:700; border-radius:10px; padding:.55rem 1rem; }
-.btn.alt { background:transparent; color:var(--morado); border:1px solid var(--morado); }
-.btn:disabled { opacity:.4 }
-.input { background:#18181b; border:1px solid #3f3f46; border-radius:10px; padding:.6rem .8rem; width:100%; }
-.blur-media { filter:blur(18px); transform:scale(1.05); }
-.lock { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:1rem; }
-.lock div { background:#09090bd9; border:1px solid var(--morado); box-shadow:0 0 22px #a855f788; border-radius:14px; padding:1rem; text-align:center; animation:pulso 2.2s infinite; }
-@keyframes pulso { 50% { box-shadow:0 0 36px #00e67699; border-color:var(--verde); } }
-#live { animation:parpadeo 1s infinite; }
-@keyframes parpadeo { 50% { opacity:.55 } }
-.chispa { position:fixed; width:6px; height:6px; border-radius:50%; background:var(--verde); pointer-events:none; z-index:60; animation:salta .7s ease-out forwards; }
-@keyframes salta { to { transform:translate(var(--dx),var(--dy)) scale(0); opacity:0; } }
-.tab { padding:.5rem .9rem; border-radius:9px; color:#a1a1aa; }
-.tab.on { background:#18181b; color:var(--verde); }
+:root{--bg:#09090b;--line:#2b2340;--tx:#f4f4f5;--mut:#a1a1aa;--verde:#00e676;--mor:#a855f7;--mor2:#7c3aed}
+*{-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-system,sans-serif;padding-bottom:92px;background-image:radial-gradient(900px 500px at 85% -10%,#7c3aed33,transparent 60%),radial-gradient(700px 400px at -10% 35%,#00e67614,transparent 60%);background-attachment:fixed}
+.brand{font-family:'Orbitron',system-ui,sans-serif;font-weight:800;letter-spacing:.05em;line-height:1.1}
+.brand span{color:var(--mor)}
+.neon{color:#ede9fe;text-shadow:0 0 14px #a855f799}
+.card{background:linear-gradient(180deg,#171321,#110e19);border:1px solid var(--line);border-radius:18px}
+.btn{position:relative;overflow:hidden;min-height:46px;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;font-weight:700;border-radius:13px;padding:.65rem 1.1rem;box-shadow:0 6px 20px #7c3aed55;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn:not(.alt)::after{content:"";position:absolute;top:0;left:-120%;width:55%;height:100%;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:skewX(-20deg);animation:brillo 3.6s infinite}
+@keyframes brillo{60%,100%{left:140%}}
+.btn.alt{background:transparent;color:#d8b4fe;border:1px solid #a855f788;box-shadow:none}
+.btn:disabled{opacity:.4}
+.btn:disabled::after{display:none}
+.input{background:#0f0c16;border:1px solid var(--line);border-radius:13px;padding:.8rem 1rem;width:100%;min-height:48px;color:var(--tx)}
+.input:focus{outline:2px solid var(--mor);border-color:transparent}
+.lbl{display:block;font-size:.8rem;color:var(--mut);margin:14px 0 6px}
+#nav{position:fixed;left:0;right:0;bottom:0;z-index:45;display:flex;gap:4px;overflow-x:auto;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:#0b0912ee;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+.tab{flex:0 0 auto;min-width:70px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 10px;border-radius:13px;color:var(--mut);font-size:.72rem;font-weight:600}
+.tab i{font-style:normal;font-size:1.3rem}
+.tab.on{color:#fff;background:linear-gradient(180deg,#a855f740,#a855f712);box-shadow:inset 0 0 0 1px #a855f77a}
+#live{background:linear-gradient(90deg,#e11d48,#be123c);color:#fff;animation:parpadeo 1s infinite}
+@keyframes parpadeo{50%{opacity:.6}}
+.blur-media{filter:blur(18px);transform:scale(1.05)}
+.lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:1rem}
+.lock div{background:#09090bdd;border:1px solid var(--mor);box-shadow:0 0 22px #a855f788;border-radius:16px;padding:1rem;text-align:center;animation:pulso 2.2s infinite}
+@keyframes pulso{50%{box-shadow:0 0 36px #a855f7cc}}
+.chispa{position:fixed;width:6px;height:6px;border-radius:50%;pointer-events:none;z-index:60;animation:salta .7s ease-out forwards}
+@keyframes salta{to{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
 .rgb{background:linear-gradient(90deg,#f43f5e,#f59e0b,#22c55e,#06b6d4,#a855f7,#f43f5e);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 3s linear infinite}
 @keyframes rgb{to{background-position:200% center}}
 .fuego{box-shadow:0 0 0 2px #f97316,0 0 14px #ef4444,0 -6px 16px #f59e0b;border-radius:10px;padding:0 6px;animation:llama .6s infinite alternate}
@@ -44,24 +57,42 @@ body { background:var(--bg); color:#e4e4e7; font-family:system-ui,-apple-system,
 .espacial{background:radial-gradient(circle at 20% 30%,#4c1d95,#09090b 70%);border-radius:10px;padding:0 6px}
 .confeti{position:fixed;top:-10px;width:9px;height:14px;z-index:70;pointer-events:none;animation:cae 2.4s linear forwards}
 @keyframes cae{to{transform:translateY(105vh) rotate(720deg)}}
+#auth{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:20px;background:#07060b;overflow:hidden}
+#auth.hidden{display:none}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;animation:deriva 14s ease-in-out infinite alternate}
+.o1{width:380px;height:380px;background:#7c3aed;top:-90px;left:-70px}
+.o2{width:320px;height:320px;background:#00e676;bottom:-100px;right:-80px;opacity:.26;animation-duration:18s}
+.o3{width:250px;height:250px;background:#a855f7;top:45%;left:55%;animation-duration:22s}
+@keyframes deriva{to{transform:translate(60px,-40px) scale(1.15)}}
+.suelo{position:absolute;left:-50%;right:-50%;bottom:-8%;height:55%;background-image:linear-gradient(#a855f766 1px,transparent 1px),linear-gradient(90deg,#a855f766 1px,transparent 1px);background-size:48px 48px;transform:perspective(420px) rotateX(62deg);animation:avanza 2.4s linear infinite;-webkit-mask-image:linear-gradient(transparent,#000 65%);mask-image:linear-gradient(transparent,#000 65%)}
+@keyframes avanza{to{background-position:0 48px}}
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+.gate-card{position:relative;width:100%;max-width:380px;padding:28px 22px 22px;border-radius:24px;background:#100c1ad9;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);animation:entra .9s cubic-bezier(.2,.8,.2,1) both}
+.gate-card::before{content:"";position:absolute;inset:-2px;border-radius:26px;padding:2px;background:conic-gradient(from var(--a),#a855f7,#00e676,#a855f7);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:gira 5s linear infinite;pointer-events:none}
+@keyframes gira{to{--a:360deg}}
+@keyframes entra{from{opacity:0;transform:translateY(26px) scale(.96)}}
+.flicker{animation:neonfalla 4.5s infinite}
+@keyframes neonfalla{0%,91%,100%{opacity:1}92%{opacity:.35}93%{opacity:1}95%{opacity:.5}96%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.orb,.suelo,.gate-card::before,.flicker,.btn::after{animation:none}}
 </style>
 </head>
 <body class="min-h-screen pb-20">
 <a id="live" href="https://www.tiktok.com/@malis_tk0/live" target="_blank" class="hidden sticky top-0 z-40 text-center font-bold py-2" style="background:#e11d48">🔴 ¡Malis está en vivo! Toca para entrar al canal</a>
 
-<header class="max-w-3xl mx-auto p-4 flex items-center justify-between">
-  <h1 class="text-2xl font-extrabold neon">Comunidad de Malis</h1>
-  <div id="barra" class="text-sm text-right"></div>
+<header class="max-w-3xl mx-auto p-4 flex items-center justify-between gap-3">
+  <h1 class="brand text-lg">COMUNIDAD <span>DE MALIS</span></h1>
+  <div id="barra" class="text-xs text-right"></div>
 </header>
 
-<nav class="max-w-3xl mx-auto px-4 flex gap-1 overflow-x-auto">
-  <button class="tab on" data-v="muro">Muro</button>
-  <button class="tab" data-v="dinamica">Dinámica</button>
-  <button class="tab" data-v="ruleta">Ruleta</button>
-  <button class="tab" data-v="top">Top</button>
-  <button class="tab" data-v="show">Show</button>
-  <button class="tab" data-v="tienda">Tienda</button>
-  <button class="tab" data-v="premium">Premium</button>
+<nav id="nav">
+  <button class="tab on" data-v="muro"><i>🏠</i>Muro</button>
+  <button class="tab" data-v="dinamica"><i>🎯</i>Dinámica</button>
+  <button class="tab" data-v="ruleta"><i>🎡</i>Ruleta</button>
+  <button class="tab" data-v="top"><i>🏆</i>Top</button>
+  <button class="tab" data-v="show"><i>🎙️</i>Show</button>
+  <button class="tab" data-v="tienda"><i>🛍️</i>Tienda</button>
+  <button class="tab" data-v="premium"><i>⭐</i>Premium</button>
+  <button class="tab" data-v="apoyar"><i>💜</i>Apoyar</button>
 </nav>
 
 <main class="max-w-3xl mx-auto p-4 space-y-4">
@@ -117,6 +148,15 @@ body { background:var(--bg); color:#e4e4e7; font-family:system-ui,-apple-system,
     <p id="tiendaMsg" class="text-sm"></p>
   </section>
 
+  <section id="v-apoyar" class="hidden space-y-3">
+    <div class="card p-4 space-y-3">
+      <h3 class="font-bold neon">Apoya a la comunidad</h3>
+      <p class="text-sm text-zinc-400">Si quieres apoyar a Malis, la forma más directa es mandar regalos en sus lives de TikTok. Es voluntario y no hace falta para jugar ni para ganar premios.</p>
+      <a href="https://www.tiktok.com/@malis_tk0/live" target="_blank" rel="noopener" class="btn block text-center">Ir al live de TikTok</a>
+      <a id="donarLink" class="hidden btn alt block text-center" target="_blank" rel="noopener">Donar</a>
+    </div>
+  </section>
+
   <section id="v-premium" class="hidden space-y-4">
     <div class="card p-4 space-y-3">
       <h3 class="font-bold neon">Premium · $100 MXN al mes</h3>
@@ -139,20 +179,31 @@ body { background:var(--bg); color:#e4e4e7; font-family:system-ui,-apple-system,
   </section>
 </main>
 
-<div id="auth" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-  <div class="card p-5 w-full max-w-sm space-y-3">
-    <h2 class="text-xl font-bold neon">Entra a la comunidad</h2>
-    <input id="aUser" class="input" placeholder="Usuario" autocomplete="username">
-    <input id="aPass" type="password" class="input" placeholder="Contraseña (mínimo 6)" autocomplete="current-password">
-    <div class="flex gap-2"><button id="aEntrar" class="btn flex-1">Entrar</button><button id="aReg" class="btn alt flex-1">Crear cuenta</button></div>
-    <p id="aMsg" class="text-sm text-rose-400"></p>
-    <button id="aCerrar" class="text-sm text-zinc-500 w-full">Cerrar</button>
+<div id="auth">
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="suelo"></div>
+  <div class="gate-card">
+    <p class="text-center text-sm" style="color:var(--mut)">Bienvenido a la</p>
+    <h1 class="brand flicker text-center text-3xl mt-1">COMUNIDAD<br><span>DE MALIS</span></h1>
+    <p class="text-center text-sm mt-2" style="color:var(--mut)">@malis_tk0 · Juega, gana puntos y sube en el Top</p>
+    <label class="lbl" for="aUser">Usuario</label>
+    <input id="aUser" class="input" placeholder="Tu usuario" autocomplete="username" autocapitalize="none">
+    <label class="lbl" for="aPass">Contraseña</label>
+    <input id="aPass" type="password" class="input" placeholder="Mínimo 6 caracteres" autocomplete="current-password">
+    <button id="aEntrar" class="btn w-full mt-5">Iniciar sesión</button>
+    <button id="aReg" class="btn alt w-full mt-2">Crear cuenta nueva</button>
+    <p id="aMsg" class="text-sm text-rose-400 mt-3 text-center"></p>
+    <p class="text-xs text-center mt-2" style="color:var(--mut)">Tu sesión se queda guardada en este dispositivo.</p>
+    <button id="aCerrar" class="text-sm w-full mt-3" style="color:var(--mut)">Solo mirar por ahora</button>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="supabase.js"></script>
-<script src="https://www.paypal.com/sdk/js?client-id=PAYPAL_CLIENT_ID&currency=MXN&intent=capture"></script>
+<script>
+const PAGOS_ACTIVOS = false;
+const DONACION_URL = '';
+if (PAGOS_ACTIVOS) document.write('<script src="https://www.paypal.com/sdk/js?client-id=BAAyKqUQCbvwKR4K9QOAhhOuH3cbg8j4An07ooNGvwNVDMZiowYPY2DCPSie6L1-zCr_lfd3eXulwTjrZk&currency=MXN&intent=capture"><\/script>');
+</script>
 <script>
 const $ = (s) => document.querySelector(s);
 let yo = null;
@@ -172,6 +223,7 @@ document.querySelectorAll('.tab').forEach((t) => t.onclick = () => {
 
 async function iniciar() {
   yo = await miPerfil();
+  if (yo) $('#auth').classList.add('hidden');
   pintarBarra();
   pintarMuro();
   pintarWinners();
@@ -223,7 +275,7 @@ async function pintarMuro() {
         ${p.media_type === 'video'
           ? `<video src="${p.media_url}" class="w-full ${bloqueado(p) ? 'blur-media' : ''}" ${bloqueado(p) ? '' : 'controls'} playsinline muted></video>`
           : `<img src="${p.media_url}" class="w-full ${bloqueado(p) ? 'blur-media' : ''}" loading="lazy">`}
-        ${bloqueado(p) ? `<div class="lock"><div><p class="font-bold neon">Contenido Exclusivo Premium 🔒</p><p class="text-sm mb-2">Desbloquéalo por $100 MXN al mes</p><button class="btn" onclick="irPremium()">Desbloquear</button></div></div>` : ''}
+        ${bloqueado(p) ? `<div class="lock"><div><p class="font-bold neon">Contenido Exclusivo Premium 🔒</p><p class="text-sm mb-2">${PAGOS_ACTIVOS ? 'Desbloquéalo por $100 MXN al mes' : 'Premium disponible muy pronto'}</p><button class="btn" onclick="irPremium()">Desbloquear</button></div></div>` : ''}
       </div>
       <div class="p-3 flex items-center justify-between">
         <p class="text-sm">${(p.caption || '').replace(/</g, '&lt;')}</p>
@@ -323,6 +375,11 @@ $('#modBtn').onclick = async () => {
   const { error } = await pedirSerMod(yo.id);
   toast($('#modMsg'), error ? 'Ya enviaste tu solicitud.' : 'Solicitud enviada.', !error);
 };
+
+if (!PAGOS_ACTIVOS) {
+  ['#pp-premium', '#pp-50', '#pp-120', '#pp-300'].forEach((id) => { $(id).innerHTML = '<p class="text-sm text-zinc-400">Próximamente</p>'; });
+}
+if (DONACION_URL) { $('#donarLink').href = DONACION_URL; $('#donarLink').classList.remove('hidden'); }
 
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
