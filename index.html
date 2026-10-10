@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comunidad de Malis</title>
+<script>
+(function () {
+  var ua = navigator.userAgent || '';
+  if (!/musical_ly|BytedanceWebview|TikTok|Bytedance/i.test(ua)) return;
+  var url = location.href;
+  if (/Android/i.test(ua)) {
+    location.href = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+  } else if (/iPhone|iPad/i.test(ua)) {
+    location.href = 'x-safari-' + url;
+  }
+})();
+</script>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root { --bg:#09090b; --verde:#00e676; --morado:#a855f7; }
+body { background:var(--bg); color:#e4e4e7; font-family:system-ui,-apple-system,sans-serif; }
+.neon { color:var(--verde); text-shadow:0 0 8px var(--verde),0 0 24px #00e67688; }
+.card { background:#111114; border:1px solid #27272a; border-radius:14px; }
+.btn { background:var(--verde); color:#04120a; font-weight:700; border-radius:10px; padding:.55rem 1rem; }
+.btn.alt { background:transparent; color:var(--morado); border:1px solid var(--morado); }
+.btn:disabled { opacity:.4 }
+.input { background:#18181b; border:1px solid #3f3f46; border-radius:10px; padding:.6rem .8rem; width:100%; }
+.blur-media { filter:blur(18px); transform:scale(1.05); }
+.lock { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:1rem; }
+.lock div { background:#09090bd9; border:1px solid var(--morado); box-shadow:0 0 22px #a855f788; border-radius:14px; padding:1rem; text-align:center; animation:pulso 2.2s infinite; }
+@keyframes pulso { 50% { box-shadow:0 0 36px #00e67699; border-color:var(--verde); } }
+#live { animation:parpadeo 1s infinite; }
+@keyframes parpadeo { 50% { opacity:.55 } }
+.chispa { position:fixed; width:6px; height:6px; border-radius:50%; background:var(--verde); pointer-events:none; z-index:60; animation:salta .7s ease-out forwards; }
+@keyframes salta { to { transform:translate(var(--dx),var(--dy)) scale(0); opacity:0; } }
+.tab { padding:.5rem .9rem; border-radius:9px; color:#a1a1aa; }
+.tab.on { background:#18181b; color:var(--verde); }
+.rgb{background:linear-gradient(90deg,#f43f5e,#f59e0b,#22c55e,#06b6d4,#a855f7,#f43f5e);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 3s linear infinite}
+@keyframes rgb{to{background-position:200% center}}
+.fuego{box-shadow:0 0 0 2px #f97316,0 0 14px #ef4444,0 -6px 16px #f59e0b;border-radius:10px;padding:0 6px;animation:llama .6s infinite alternate}
+@keyframes llama{to{box-shadow:0 0 0 2px #fbbf24,0 0 22px #f97316,0 -10px 22px #ef4444}}
+.espacial{background:radial-gradient(circle at 20% 30%,#4c1d95,#09090b 70%);border-radius:10px;padding:0 6px}
+.confeti{position:fixed;top:-10px;width:9px;height:14px;z-index:70;pointer-events:none;animation:cae 2.4s linear forwards}
+@keyframes cae{to{transform:translateY(105vh) rotate(720deg)}}
+</style>
+</head>
+<body class="min-h-screen pb-20">
+<a id="live" href="https://www.tiktok.com/@malis_tk0/live" target="_blank" class="hidden sticky top-0 z-40 text-center font-bold py-2" style="background:#e11d48">🔴 ¡Malis está en vivo! Toca para entrar al canal</a>
+
+<header class="max-w-3xl mx-auto p-4 flex items-center justify-between">
+  <h1 class="text-2xl font-extrabold neon">Comunidad de Malis</h1>
+  <div id="barra" class="text-sm text-right"></div>
+</header>
+
+<nav class="max-w-3xl mx-auto px-4 flex gap-1 overflow-x-auto">
+  <button class="tab on" data-v="muro">Muro</button>
+  <button class="tab" data-v="dinamica">Dinámica</button>
+  <button class="tab" data-v="ruleta">Ruleta</button>
+  <button class="tab" data-v="top">Top</button>
+  <button class="tab" data-v="show">Show</button>
+  <button class="tab" data-v="tienda">Tienda</button>
+  <button class="tab" data-v="premium">Premium</button>
+</nav>
+
+<main class="max-w-3xl mx-auto p-4 space-y-4">
+  <section id="v-muro" class="space-y-4"></section>
+
+  <section id="v-dinamica" class="hidden space-y-3">
+    <div class="card p-4 space-y-3">
+      <p id="kwEstado" class="text-zinc-400"></p>
+      <input id="kwInput" class="input" placeholder="Escribe la palabra clave">
+      <button id="kwBtn" class="btn">Enviar palabra</button>
+      <p id="kwMsg" class="text-sm"></p>
+    </div>
+    <div class="card p-4"><h3 class="font-bold mb-2 neon">Ganadores</h3><ol id="kwLista" class="space-y-1"></ol></div>
+  </section>
+
+  <section id="v-ruleta" class="hidden">
+    <div class="card p-4 text-center space-y-3">
+      <div class="relative mx-auto" style="width:280px;height:280px">
+        <div class="absolute left-1/2 -top-2 -translate-x-1/2 z-10" style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:20px solid #fff"></div>
+        <canvas id="rueda" width="560" height="560" style="width:280px;height:280px;border-radius:50%;box-shadow:0 0 28px #a855f7aa;transition:transform 4.5s cubic-bezier(.12,.7,.1,1)"></canvas>
+      </div>
+      <button id="giroGratis" class="btn">Giro gratis (cada 24 h)</button>
+      <button id="giroExtra" class="btn alt">Giro extra · 10 M-Coins</button>
+      <p id="ruletaMsg" class="text-sm"></p>
+      <!-- FASE 2: aquí se conecta la red de anuncios en video; al terminar el anuncio, llamar girar(false) tras validar la recompensa en el servidor -->
+    </div>
+  </section>
+
+  <section id="v-top" class="hidden space-y-3">
+    <div class="flex gap-2"><button class="btn" id="topG">Global</button><button class="btn alt" id="topR">Mi región</button></div>
+    <div id="topLista" class="card divide-y divide-zinc-800"></div>
+  </section>
+
+  <section id="v-show" class="hidden space-y-3">
+    <div class="card p-4 space-y-3">
+      <h3 class="font-bold neon">Show de preguntas en vivo</h3>
+      <p id="turnoActual" class="text-zinc-400"></p>
+      <button id="filaBase" class="btn w-full">Entrar a la fila · 200 puntos</button>
+      <button id="filaVip" class="btn alt w-full">Fila VIP (Fast Pass) · 30 M-Coins</button>
+      <p id="filaMsg" class="text-sm"></p>
+    </div>
+    <div id="turnoCard" class="hidden card p-4 space-y-3" style="border-color:#00e676">
+      <h3 class="font-bold neon">¡Es tu turno!</h3>
+      <p class="text-sm text-zinc-400">Tu micrófono y cámara están apagados. Enciende el micrófono para jugar; la cámara es opcional.</p>
+      <button id="micBtn" class="btn w-full">🎙️ Encender micrófono</button>
+      <button id="camBtn" class="btn alt w-full">📷 Encender cámara</button>
+      <p id="turnoMsg" class="text-sm"></p>
+    </div>
+  </section>
+
+  <section id="v-tienda" class="hidden space-y-3">
+    <div id="tiendaLista" class="space-y-3"></div>
+    <p id="tiendaMsg" class="text-sm"></p>
+  </section>
+
+  <section id="v-premium" class="hidden space-y-4">
+    <div class="card p-4 space-y-3">
+      <h3 class="font-bold neon">Premium · $100 MXN al mes</h3>
+      <p class="text-zinc-400 text-sm">Desbloquea todo el contenido exclusivo.</p>
+      <div id="pp-premium"></div>
+    </div>
+    <div class="card p-4 space-y-3">
+      <h3 class="font-bold neon">M-Coins</h3>
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div><p class="font-bold">50</p><p class="text-sm text-zinc-400 mb-2">$20 MXN</p><div id="pp-50"></div></div>
+        <div><p class="font-bold">120</p><p class="text-sm text-zinc-400 mb-2">$40 MXN</p><div id="pp-120"></div></div>
+        <div><p class="font-bold">300</p><p class="text-sm text-zinc-400 mb-2">$90 MXN</p><div id="pp-300"></div></div>
+      </div>
+    </div>
+    <div class="card p-4 space-y-2">
+      <h3 class="font-bold neon">Quiero ser moderador</h3>
+      <button id="modBtn" class="btn alt">Enviar solicitud</button>
+      <p id="modMsg" class="text-sm"></p>
+    </div>
+  </section>
+</main>
+
+<div id="auth" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+  <div class="card p-5 w-full max-w-sm space-y-3">
+    <h2 class="text-xl font-bold neon">Entra a la comunidad</h2>
+    <input id="aUser" class="input" placeholder="Usuario" autocomplete="username">
+    <input id="aPass" type="password" class="input" placeholder="Contraseña (mínimo 6)" autocomplete="current-password">
+    <div class="flex gap-2"><button id="aEntrar" class="btn flex-1">Entrar</button><button id="aReg" class="btn alt flex-1">Crear cuenta</button></div>
+    <p id="aMsg" class="text-sm text-rose-400"></p>
+    <button id="aCerrar" class="text-sm text-zinc-500 w-full">Cerrar</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="supabase.js"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=PAYPAL_CLIENT_ID&currency=MXN&intent=capture"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+let yo = null;
+let ronda = 0;
+let regional = false;
+
+function toast(el, msg, ok) { el.textContent = msg; el.className = 'text-sm ' + (ok ? 'text-emerald-400' : 'text-rose-400'); }
+
+document.querySelectorAll('.tab').forEach((t) => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach((x) => x.classList.remove('on'));
+  t.classList.add('on');
+  document.querySelectorAll('main > section').forEach((s) => s.classList.add('hidden'));
+  $('#v-' + t.dataset.v).classList.remove('hidden');
+  if (t.dataset.v === 'top') pintarTop();
+  if (t.dataset.v === 'tienda') pintarTienda();
+});
+
+async function iniciar() {
+  yo = await miPerfil();
+  pintarBarra();
+  pintarMuro();
+  pintarWinners();
+  dibujarRueda();
+  escucharSettings((s) => {
+    $('#live').classList.toggle('hidden', !s.live);
+    ronda = s.kw_round;
+    turno(s);
+    $('#kwEstado').textContent = s.kw_open ? `Dinámica abierta · ${s.kw_max} ganadores · ${s.kw_prize} puntos` : 'No hay dinámica abierta ahora.';
+    $('#kwBtn').disabled = !s.kw_open;
+    pintarWinners();
+  });
+}
+
+function pintarBarra() {
+  $('#barra').innerHTML = yo
+    ? `<p>${yo.flag} ${nombreHtml(yo)} · ${rangoDe(yo.points)}</p><p class="text-zinc-400">${yo.points} pts · ${yo.mcoins} M-Coins · ${yo.role} <button id="out" class="underline ml-1">salir</button></p>`
+    : '<button id="in" class="btn">Entrar</button>';
+  if (yo) $('#out').onclick = async () => { await salir(); location.reload(); };
+  else $('#in').onclick = () => $('#auth').classList.remove('hidden');
+}
+
+function exigirSesion() {
+  if (yo) return true;
+  $('#auth').classList.remove('hidden');
+  return false;
+}
+
+$('#aCerrar').onclick = () => $('#auth').classList.add('hidden');
+$('#aEntrar').onclick = async () => {
+  try { await entrar($('#aUser').value, $('#aPass').value); location.reload(); }
+  catch { $('#aMsg').textContent = 'Usuario o contraseña incorrectos.'; }
+};
+$('#aReg').onclick = async () => {
+  const u = $('#aUser').value.trim();
+  if (!/^[\w.-]{3,20}$/.test(u)) return $('#aMsg').textContent = 'Usuario de 3 a 20 letras, números, punto o guion.';
+  try { await registrar(u, $('#aPass').value); location.reload(); }
+  catch (e) { $('#aMsg').textContent = /already|duplicate/i.test(e.message) ? 'Ese usuario ya existe.' : 'No se pudo crear la cuenta. Revisa la contraseña.'; }
+};
+
+async function pintarMuro() {
+  const { data } = await cargarPosts();
+  const box = $('#v-muro');
+  if (!data || !data.length) { box.innerHTML = '<p class="text-zinc-500 text-center py-10">Todavía no hay publicaciones.</p>'; return; }
+  const bloqueado = (p) => p.exclusive && (!yo || yo.role === 'Base');
+  box.innerHTML = data.map((p) => `
+    <article class="card overflow-hidden">
+      <div class="relative">
+        ${p.media_type === 'video'
+          ? `<video src="${p.media_url}" class="w-full ${bloqueado(p) ? 'blur-media' : ''}" ${bloqueado(p) ? '' : 'controls'} playsinline muted></video>`
+          : `<img src="${p.media_url}" class="w-full ${bloqueado(p) ? 'blur-media' : ''}" loading="lazy">`}
+        ${bloqueado(p) ? `<div class="lock"><div><p class="font-bold neon">Contenido Exclusivo Premium 🔒</p><p class="text-sm mb-2">Desbloquéalo por $100 MXN al mes</p><button class="btn" onclick="irPremium()">Desbloquear</button></div></div>` : ''}
+      </div>
+      <div class="p-3 flex items-center justify-between">
+        <p class="text-sm">${(p.caption || '').replace(/</g, '&lt;')}</p>
+        <button class="text-2xl" onclick="like(${p.id}, this)">❤️</button>
+      </div>
+      <div class="px-3 pb-3"><button class="text-sm text-zinc-400" onclick="verComentarios(${p.id})">💬 Comentarios</button><div id="c-${p.id}" class="mt-2 space-y-1"></div></div>
+    </article>`).join('');
+}
+function irPremium() { document.querySelector('[data-v=premium]').click(); }
+
+async function like(id, el) {
+  if (!exigirSesion()) return;
+  const r = el.getBoundingClientRect();
+  for (let i = 0; i < 14; i++) {
+    const c = document.createElement('i');
+    c.className = 'chispa';
+    c.style.left = r.left + r.width / 2 + 'px';
+    c.style.top = r.top + r.height / 2 + 'px';
+    const a = Math.random() * Math.PI * 2, d = 30 + Math.random() * 40;
+    c.style.setProperty('--dx', Math.cos(a) * d + 'px');
+    c.style.setProperty('--dy', Math.sin(a) * d + 'px');
+    c.style.background = i % 2 ? '#00e676' : '#a855f7';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 750);
+  }
+  await darLike(id);
+  yo = await miPerfil();
+  pintarBarra();
+}
+
+$('#kwBtn').onclick = async () => {
+  if (!exigirSesion()) return;
+  const { data, error } = await reclamarPalabra($('#kwInput').value);
+  const m = { ganaste: '¡Ganaste! Puntos acreditados.', incorrecta: 'Palabra incorrecta.', cerrada: 'La dinámica ya cerró.', repetida: 'Ya participaste en esta ronda.' };
+  toast($('#kwMsg'), error ? 'Error al enviar.' : m[data], data === 'ganaste');
+  if (data === 'ganaste') { yo = await miPerfil(); pintarBarra(); }
+  pintarWinners();
+};
+
+async function pintarWinners() {
+  const { data } = await ganadoresRonda(ronda);
+  $('#kwLista').innerHTML = (data || []).map((w, i) => `<li>${i + 1}. ${w.profiles.flag} ${w.profiles.username}</li>`).join('') || '<li class="text-zinc-500">Aún no hay ganadores.</li>';
+}
+
+const SECTORES = [['50', '#1f2937'], ['100', '#4c1d95'], ['200', '#1f2937'], ['500', '#4c1d95'], ['1000', '#1f2937'], ['10,000', '#00a152']];
+function dibujarRueda() {
+  const c = $('#rueda').getContext('2d'), n = SECTORES.length, a = Math.PI * 2 / n;
+  SECTORES.forEach((s, i) => {
+    c.beginPath(); c.moveTo(280, 280); c.arc(280, 280, 275, i * a, (i + 1) * a); c.fillStyle = s[1]; c.fill();
+    c.save(); c.translate(280, 280); c.rotate(i * a + a / 2); c.fillStyle = '#fff'; c.font = 'bold 34px system-ui'; c.textAlign = 'right'; c.fillText(s[0], 245, 12); c.restore();
+  });
+}
+
+let grados = 0;
+async function jugarRuleta(pagado) {
+  if (!exigirSesion()) return;
+  const { data, error } = await girar(pagado);
+  if (error) return toast($('#ruletaMsg'), error.message, false);
+  const idx = { 50: 0, 100: 1, 200: 2, 500: 3, 1000: 4, 10000: 5 }[data];
+  const a = 360 / SECTORES.length;
+  grados += 360 * 6 + (270 - (idx * a + a / 2)) - (grados % 360);
+  $('#rueda').style.transform = `rotate(${grados}deg)`;
+  setTimeout(async () => {
+    toast($('#ruletaMsg'), `¡Ganaste ${data.toLocaleString()} puntos!`, true);
+    yo = await miPerfil(); pintarBarra();
+  }, 4600);
+}
+$('#giroGratis').onclick = () => jugarRuleta(false);
+$('#giroExtra').onclick = () => jugarRuleta(true);
+
+async function pintarTop() {
+  const { data } = await cargarTop(regional && yo ? yo.country : null);
+  $('#topLista').innerHTML = (data || []).map((u, i) => `
+    <div class="flex items-center justify-between p-3"><span>${i + 1}. ${u.flag} ${nombreHtml(u)}</span><span class="text-sm text-zinc-400">${rangoDe(u.points)} · ${u.points} pts</span></div>`).join('');
+}
+$('#topG').onclick = () => { regional = false; pintarTop(); };
+$('#topR').onclick = () => { regional = true; pintarTop(); };
+
+function botonPago(id, monto, descripcion, alAprobar) {
+  if (!window.paypal) return;
+  paypal.Buttons({
+    style: { layout: 'horizontal', tagline: false, height: 36 },
+    createOrder: (d, a) => {
+      if (!yo) { $('#auth').classList.remove('hidden'); throw new Error('sin sesión'); }
+      return a.order.create({ purchase_units: [{ description: descripcion, amount: { currency_code: 'MXN', value: monto }, payee: { email_address: 'malishuapo@gmail.com' } }] });
+    },
+    onApprove: async (d, a) => { const o = await a.order.capture(); const r = await alAprobar(o.id); if (r && r.error) { alert('No pudimos verificar tu pago. Escríbele a Malis con tu comprobante.'); return; } yo = await miPerfil(); pintarBarra(); pintarMuro(); }
+  }).render(id);
+}
+botonPago('#pp-premium', '100.00', 'Premium Comunidad de Malis (30 días)', (id) => confirmarPago(id, 'premium'));
+botonPago('#pp-50', '20.00', '50 M-Coins', (id) => confirmarPago(id, 'mc50'));
+botonPago('#pp-120', '40.00', '120 M-Coins', (id) => confirmarPago(id, 'mc120'));
+botonPago('#pp-300', '90.00', '300 M-Coins', (id) => confirmarPago(id, 'mc300'));
+
+$('#modBtn').onclick = async () => {
+  if (!exigirSesion()) return;
+  const { error } = await pedirSerMod(yo.id);
+  toast($('#modMsg'), error ? 'Ya enviaste tu solicitud.' : 'Solicitud enviada.', !error);
+};
+
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function nombreHtml(u) {
+  const o = u.owned || [];
+  const cls = [o.includes('texto_rgb') ? 'rgb' : '', o.includes('marco_fuego') ? 'fuego' : '', o.includes('fondo_espacial') ? 'espacial' : ''].join(' ');
+  return `<b class="${cls}">${esc(u.username)}</b>`;
+}
+
+async function verComentarios(id) {
+  const box = $('#c-' + id);
+  if (box.dataset.open) { box.innerHTML = ''; delete box.dataset.open; return; }
+  box.dataset.open = 1;
+  const { data } = await db.from('comments').select('id,body,profiles(username)').eq('post_id', id).order('created_at');
+  box.innerHTML = (data || []).map((c) => `<p class="text-sm flex justify-between gap-2"><span><b>${esc(c.profiles.username)}</b> ${esc(c.body)}</span>${yo && yo.is_mod ? `<button onclick="quitar(${c.id},${id})">🗑️</button>` : ''}</p>`).join('')
+    + `<div class="flex gap-2 pt-2"><input id="ci-${id}" class="input" placeholder="Escribe un comentario"><button class="btn" onclick="comentar(${id})">Enviar</button></div>`;
+}
+async function recargarComentarios(id) { const b = $('#c-' + id); b.innerHTML = ''; delete b.dataset.open; await verComentarios(id); }
+async function comentar(id) {
+  if (!exigirSesion()) return;
+  const v = $('#ci-' + id).value.trim();
+  if (!v) return;
+  await db.from('comments').insert({ post_id: id, user_id: yo.id, body: v });
+  recargarComentarios(id);
+}
+async function quitar(cid, id) { await borrarComentario(cid); recargarComentarios(id); }
+
+const CATALOGO = [
+  { id: 'marco_fuego', nombre: 'Marco de fuego animado', precio: 150 },
+  { id: 'fondo_espacial', nombre: 'Fondo espacial', precio: 100 },
+  { id: 'texto_rgb', nombre: 'Texto RGB arcoíris', precio: 80 }
+];
+function pintarTienda() {
+  $('#tiendaLista').innerHTML = CATALOGO.map((i) => {
+    const tengo = yo && (yo.owned || []).includes(i.id);
+    return `<div class="card p-3 flex items-center justify-between"><div><p class="font-bold">${i.nombre}</p><p class="text-sm text-zinc-400">${i.precio} M-Coins</p></div>${tengo ? '<span class="text-emerald-400">Tuyo</span>' : `<button class="btn" onclick="comprarItem('${i.id}')">Comprar</button>`}</div>`;
+  }).join('');
+}
+async function comprarItem(id) {
+  if (!exigirSesion()) return;
+  const { error } = await comprarCosmetico(id);
+  toast($('#tiendaMsg'), error ? error.message : 'Compra lista.', !error);
+  yo = await miPerfil(); pintarBarra(); pintarTienda();
+}
+
+async function entrarFila(vip) {
+  if (!exigirSesion()) return;
+  const { error } = await unirseFila(vip);
+  toast($('#filaMsg'), error ? error.message : 'Ya estás en la fila.', !error);
+  yo = await miPerfil(); pintarBarra();
+}
+$('#filaBase').onclick = () => entrarFila(false);
+$('#filaVip').onclick = () => entrarFila(true);
+
+let peer = null, llamada = null, flujo = null, micOn = false, camOn = false;
+function turno(s) {
+  const mio = !!yo && s.turno_user === yo.id;
+  $('#turnoActual').textContent = s.turno_name ? `Concursante en turno: ${s.turno_name}` : 'Nadie está en turno ahora.';
+  $('#turnoCard').classList.toggle('hidden', !mio);
+  if (!mio) cortar();
+}
+function pintarBotones() {
+  $('#micBtn').textContent = micOn ? '🎙️ Micrófono encendido' : '🎙️ Encender micrófono';
+  $('#camBtn').textContent = camOn ? '📷 Cámara encendida' : '📷 Encender cámara';
+}
+function cortar() {
+  if (flujo) flujo.getTracks().forEach((t) => t.stop());
+  if (llamada) llamada.close();
+  flujo = null; llamada = null; micOn = false; camOn = false;
+  if ($('#micBtn')) pintarBotones();
+}
+async function conectar() {
+  if (flujo) flujo.getTracks().forEach((t) => t.stop());
+  if (llamada) llamada.close();
+  try {
+    flujo = await navigator.mediaDevices.getUserMedia({ audio: true, video: camOn });
+  } catch {
+    micOn = false; camOn = false; pintarBotones();
+    return toast($('#turnoMsg'), 'Permite el acceso al micrófono en tu navegador.', false);
+  }
+  if (!peer) peer = new Peer('malis-' + yo.id);
+  const llamar = () => { llamada = peer.call('malis-admin-panel', flujo); };
+  if (peer.open) llamar(); else peer.once('open', llamar);
+}
+$('#micBtn').onclick = async () => { micOn = !micOn; pintarBotones(); if (micOn) await conectar(); else cortar(); };
+$('#camBtn').onclick = async () => { camOn = !camOn; pintarBotones(); if (micOn) await conectar(); };
+
+function confeti() {
+  for (let i = 0; i < 70; i++) {
+    const c = document.createElement('i');
+    c.className = 'confeti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.animationDelay = Math.random() * .8 + 's';
+    c.style.background = ['#fbbf24', '#f59e0b', '#fde68a'][i % 3];
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3500);
+  }
+}
+db.channel('regalos').on('broadcast', { event: 'regalo' }, async ({ payload }) => {
+  if (yo && payload.username === yo.username) { confeti(); yo = await miPerfil(); pintarBarra(); }
+}).subscribe();
+
+iniciar();
+</script>
+</body>
+</html>

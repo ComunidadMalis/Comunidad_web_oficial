@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Comunidad de Malis · Panel</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root { --verde:#00e676; --morado:#a855f7; }
+body { background:#09090b; color:#e4e4e7; font-family:system-ui,-apple-system,sans-serif; }
+.neon { color:var(--verde); text-shadow:0 0 8px var(--verde),0 0 24px #00e67688; }
+.card { background:#111114; border:1px solid #27272a; border-radius:14px; padding:1rem; }
+.btn { background:var(--verde); color:#04120a; font-weight:700; border-radius:12px; padding:.8rem 1.2rem; font-size:1.05rem; }
+.btn.alt { background:transparent; color:var(--morado); border:1px solid var(--morado); }
+.btn.rojo { background:#e11d48; color:#fff; }
+.input { background:#18181b; border:1px solid #3f3f46; border-radius:12px; padding:.8rem; width:100%; font-size:1.1rem; }
+#gran { width:100%; padding:1.6rem; border-radius:18px; font-size:1.6rem; font-weight:800; border:2px solid #3f3f46; background:#18181b; color:#a1a1aa; }
+#gran.on { background:#e11d48; color:#fff; border-color:#fb7185; box-shadow:0 0 30px #e11d4899; }
+.confeti { position:fixed; top:-10px; width:9px; height:14px; background:#fbbf24; z-index:70; pointer-events:none; animation:cae 2.4s linear forwards; }
+@keyframes cae { to { transform:translateY(105vh) rotate(720deg); opacity:.8; } }
+</style>
+</head>
+<body class="min-h-screen p-4 pb-16">
+<div id="acceso" class="max-w-sm mx-auto mt-24 card text-center space-y-3">
+  <h1 class="text-2xl font-extrabold neon">Panel de Malis</h1>
+  <p id="aviso" class="text-zinc-400 text-sm">Acceso solo para el administrador.</p>
+  <button id="google" class="btn w-full">Entrar con Google</button>
+</div>
+
+<div id="panel" class="hidden max-w-3xl mx-auto space-y-4">
+  <h1 class="text-2xl font-extrabold neon">Comunidad de Malis · Panel</h1>
+
+  <button id="gran">Modo Live: OFF</button>
+
+  <div class="card space-y-3">
+    <h2 class="font-bold text-lg">Palabra clave</h2>
+    <input id="kw" class="input" placeholder="Palabra (ej. Tacos)">
+    <div class="grid grid-cols-2 gap-3">
+      <input id="kwMax" type="number" inputmode="numeric" class="input" placeholder="Ganadores">
+      <input id="kwPrem" type="number" inputmode="numeric" class="input" placeholder="Puntos de premio">
+    </div>
+    <button id="kwAbrir" class="btn w-full">Abrir dinámica</button>
+    <p id="kwInfo" class="text-sm text-zinc-400"></p>
+    <ol id="kwLista" class="text-sm space-y-1"></ol>
+  </div>
+
+  <div class="card space-y-3">
+    <h2 class="font-bold text-lg">Regalar M-Coins</h2>
+    <input id="gUser" class="input" placeholder="Usuario del concursante">
+    <input id="gCant" type="number" inputmode="numeric" class="input" placeholder="Cantidad exacta de M-Coins">
+    <button id="gEnviar" class="btn w-full">Enviar regalo</button>
+    <p id="gMsg" class="text-sm"></p>
+  </div>
+
+  <div class="card space-y-3">
+    <h2 class="font-bold text-lg">Nueva publicación</h2>
+    <input id="pUrl" class="input" placeholder="URL de la foto o video">
+    <input id="pTxt" class="input" placeholder="Texto">
+    <div class="flex items-center gap-4">
+      <label class="flex items-center gap-2"><input id="pVideo" type="checkbox"> Es video</label>
+      <label class="flex items-center gap-2"><input id="pExcl" type="checkbox"> Exclusivo Premium</label>
+    </div>
+    <button id="pPub" class="btn w-full">Publicar</button>
+  </div>
+
+  <div class="card space-y-3">
+    <h2 class="font-bold text-lg">Show en vivo</h2>
+    <p id="turno" class="text-zinc-400">Nadie en turno.</p>
+    <video id="rv" autoplay playsinline class="w-full rounded-xl bg-black"></video>
+    <div class="grid grid-cols-2 gap-3">
+      <button id="siguiente" class="btn">Llamar al siguiente</button>
+      <button id="terminar" class="btn rojo">Terminar turno</button>
+    </div>
+    <p class="text-sm text-zinc-400">En la fila:</p>
+    <ol id="fila" class="text-sm space-y-1"></ol>
+  </div>
+
+  <div class="card space-y-3">
+    <h2 class="font-bold text-lg">Tómbola de puntos</h2>
+    <button id="tomb" class="btn w-full">Girar tómbola</button>
+    <p id="tombRes" class="text-2xl font-extrabold neon text-center"></p>
+  </div>
+
+  <div class="card space-y-3">
+    <h2 class="font-bold text-lg">Solicitudes de moderador</h2>
+    <div id="mods" class="space-y-2"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="supabase.js"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+let live = false;
+const canal = db.channel('regalos');
+canal.subscribe();
+
+$('#google').onclick = entrarConGoogle;
+
+async function arrancar() {
+  const { data: { user } } = await db.auth.getUser();
+  if (!user) return;
+  if (user.email !== ADMIN_EMAIL) {
+    await db.auth.signOut();
+    $('#aviso').textContent = 'Esa cuenta no tiene acceso.';
+    return;
+  }
+  $('#acceso').classList.add('hidden');
+  $('#panel').classList.remove('hidden');
+  escucharSettings(pintar);
+  cargarMods();
+  iniciarShow();
+}
+
+function pintar(s) {
+  live = s.live;
+  $('#gran').textContent = 'Modo Live: ' + (live ? 'ON' : 'OFF');
+  $('#gran').classList.toggle('on', live);
+  $('#turno').textContent = s.turno_name ? 'En turno: ' + s.turno_name : 'Nadie en turno.';
+  $('#kwInfo').textContent = s.kw_word
+    ? `Ronda ${s.kw_round} · "${s.kw_word}" · ${s.kw_open ? 'abierta' : 'cerrada'}`
+    : 'Sin dinámicas todavía.';
+  ganadoresRonda(s.kw_round).then(({ data }) => {
+    $('#kwLista').innerHTML = (data || []).map((w, i) => `<li>${i + 1}. ${w.profiles.flag} ${w.profiles.username}</li>`).join('');
+  });
+}
+
+$('#gran').onclick = async () => {
+  await db.from('settings').update({ live: !live }).eq('id', 1);
+};
+
+$('#kwAbrir').onclick = async () => {
+  const w = $('#kw').value.trim(), m = +$('#kwMax').value, p = +$('#kwPrem').value;
+  if (!w || m < 1 || p < 1) return;
+  await db.rpc('abrir_palabra', { p_word: w, p_max: m, p_prize: p });
+};
+
+$('#gEnviar').onclick = async () => {
+  const u = $('#gUser').value.trim(), c = parseInt($('#gCant').value, 10);
+  if (!u || !c) return;
+  const { error } = await db.rpc('regalar_mcoins', { p_username: u, p_cantidad: c });
+  $('#gMsg').textContent = error ? 'No se pudo enviar.' : `Enviaste ${c} M-Coins a ${u}.`;
+  $('#gMsg').className = 'text-sm ' + (error ? 'text-rose-400' : 'text-emerald-400');
+  if (!error) { lluviaDeConfeti(); canal.send({ type: 'broadcast', event: 'regalo', payload: { username: u, cantidad: c } }); }
+};
+
+function lluviaDeConfeti() {
+  for (let i = 0; i < 60; i++) {
+    const c = document.createElement('i');
+    c.className = 'confeti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.animationDelay = Math.random() * .8 + 's';
+    c.style.background = ['#fbbf24', '#f59e0b', '#fde68a'][i % 3];
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3500);
+  }
+}
+
+$('#pPub').onclick = async () => {
+  if (!$('#pUrl').value.trim()) return;
+  await db.from('posts').insert({
+    media_url: $('#pUrl').value.trim(), caption: $('#pTxt').value,
+    media_type: $('#pVideo').checked ? 'video' : 'image', exclusive: $('#pExcl').checked
+  });
+  $('#pUrl').value = ''; $('#pTxt').value = '';
+};
+
+async function cargarMods() {
+  const { data } = await db.from('mod_requests').select('user_id, profiles(username,flag)');
+  $('#mods').innerHTML = (data || []).map((r) => `
+    <div class="flex items-center justify-between">
+      <span>${r.profiles.flag} ${r.profiles.username}</span>
+      <button class="btn" onclick="aprobar('${r.user_id}')">Aprobar</button>
+    </div>`).join('') || '<p class="text-zinc-500 text-sm">No hay solicitudes pendientes.</p>';
+}
+async function aprobar(id) { await db.rpc('aprobar_mod', { p_user: id }); cargarMods(); }
+
+async function pintarFila() {
+  const { data } = await db.from('cola').select('vip, created_at, profiles(username,flag)').order('vip', { ascending: false }).order('created_at');
+  $('#fila').innerHTML = (data || []).map((c, i) => `<li>${i + 1}. ${c.profiles.flag} ${c.profiles.username}${c.vip ? ' ⭐ VIP' : ''}</li>`).join('') || '<li class="text-zinc-500">Fila vacía.</li>';
+}
+
+function iniciarShow() {
+  const peer = new Peer('malis-admin-panel');
+  peer.on('call', (llamada) => {
+    llamada.answer();
+    llamada.on('stream', (flujo) => { const v = $('#rv'); v.srcObject = flujo; v.play().catch(() => {}); });
+  });
+  pintarFila();
+  db.channel('cola-live').on('postgres_changes', { event: '*', schema: 'public', table: 'cola' }, pintarFila).subscribe();
+  setInterval(pintarFila, 8000);
+}
+
+$('#siguiente').onclick = async () => { await db.rpc('llamar_siguiente'); pintarFila(); };
+$('#terminar').onclick = async () => { await db.rpc('terminar_turno'); $('#rv').srcObject = null; };
+$('#tomb').onclick = async () => {
+  const { data } = await db.rpc('sorteo_tombola');
+  $('#tombRes').textContent = data ? '🎉 ' + data : 'Nadie tiene puntos aún.';
+};
+
+arrancar();
+</script>
+</body>
+</html>
