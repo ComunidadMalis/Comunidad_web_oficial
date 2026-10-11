@@ -143,11 +143,9 @@ body.hw .bub .m{background:#2a1645}body.hw .bub.yo .m{background:#7a3a00}
 .hw-pill{display:inline-flex;align-items:center;gap:3px;font-size:.68rem;font-weight:700;line-height:1;padding:3px 8px;border-radius:99px;margin-left:5px;vertical-align:middle;color:#fff;background:linear-gradient(135deg,#ff7a00,#8b2fc9);box-shadow:0 0 10px #ff7a00aa,inset 0 0 0 1px #ffffff44;animation:hwPill 2.2s ease-in-out infinite alternate}
 @keyframes hwPill{to{box-shadow:0 0 18px #ff7a00,0 0 30px #8b2fc988,inset 0 0 0 1px #ffffff66}}
 .hw-row{background:linear-gradient(90deg,#2a1240,#4a1d05 70%,#ff7a0033)!important;box-shadow:inset 3px 0 0 #ff7a00}
-.hw-cover{background:linear-gradient(135deg,#1a0b2e,#3d1d6b 55%,#a34a00)!important;position:relative;overflow:hidden}
-.hw-cover::before{content:"🌕";position:absolute;right:16px;top:8px;font-size:44px;filter:drop-shadow(0 0 14px #ffb15c)}
-.hw-cover::after{content:"🦇  🎃  🕸️  🎃  🦇";position:absolute;left:12px;bottom:6px;font-size:22px;white-space:nowrap;letter-spacing:6px;filter:drop-shadow(0 0 6px #000)}
-.hw-cover.mini::before{font-size:16px;right:8px;top:3px}
-.hw-cover.mini::after{font-size:11px;bottom:3px;left:8px;letter-spacing:3px}
+.cv{position:relative;overflow:hidden}
+.cv-art{position:absolute;inset:0;pointer-events:none}
+.cv-art svg{width:100%;height:100%;display:block}
 .pf-cam{position:absolute;display:flex;align-items:center;justify-content:center;gap:5px;background:#000a;color:#fff;border:1px solid #ffffff44;border-radius:99px;padding:6px 11px;font-size:.78rem;font-weight:600;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);z-index:2}
 .pf-cam.round{width:32px;height:32px;padding:0;right:-2px;bottom:-2px;font-size:15px;background:var(--mor);border-color:var(--bg)}
 .pf-tabs{display:flex;gap:4px;padding:4px}
@@ -311,7 +309,7 @@ body.hw .bub .m{background:#2a1645}body.hw .bub.yo .m{background:#7a3a00}
 </main>
 
 <div id="flash" class="card px-4 py-2 text-sm" style="position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:90;display:none"></div>
-<div id="perfilModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="background:#000c;z-index:85" onclick="if(event.target===this)this.classList.add('hidden')"><div class="card w-full max-w-sm overflow-hidden"><div id="pmBanner" style="height:110px"></div><div class="p-4" style="margin-top:-40px"><div id="pmAv" style="width:72px;height:72px;border:3px solid var(--bg);border-radius:50%;overflow:hidden"></div><p id="pmNom" class="text-lg mt-2"></p><p id="pmInfo" class="text-sm text-zinc-400"></p><p id="pmBio" class="text-sm mt-2"></p><button class="btn alt w-full mt-3" onclick="document.querySelector('#perfilModal').classList.add('hidden')">Cerrar</button></div></div></div>
+<div id="perfilModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="background:#000c;z-index:85" onclick="if(event.target===this)this.classList.add('hidden')"><div class="card w-full max-w-sm overflow-hidden"><div id="pmBanner" style="height:110px"></div><div class="p-4" style="margin-top:-40px;position:relative;z-index:2"><div id="pmAv" style="width:72px;height:72px;border:3px solid var(--bg);border-radius:50%;overflow:hidden"></div><p id="pmNom" class="text-lg mt-2"></p><p id="pmInfo" class="text-sm text-zinc-400"></p><p id="pmBio" class="text-sm mt-2"></p><button class="btn alt w-full mt-3" onclick="document.querySelector('#perfilModal').classList.add('hidden')">Cerrar</button></div></div></div>
 <div id="tuto" class="hidden" style="position:fixed;inset:0;z-index:44;background:#000a"></div>
 <div id="tutoCard" class="hidden fixed flex" style="left:12px;right:12px;bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:46;max-width:30rem;margin:0 auto;gap:10px;align-items:flex-end"><img src="malis-avatar.png" alt="" style="width:76px;height:76px;border-radius:50%;object-fit:cover;border:2px solid var(--mor);flex:none"><div class="card p-3 flex-1"><p id="tutoTxt" class="text-sm"></p><div class="flex items-center justify-between mt-3 gap-2"><span id="tutoPaso" class="text-xs text-zinc-400"></span><div class="flex gap-2"><button id="tutoSkip" class="btn alt" style="min-height:38px;padding:.3rem .8rem">Saltar</button><button id="tutoSig" class="btn" style="min-height:38px;padding:.3rem .8rem">Siguiente</button></div></div></div></div>
 <div id="advModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="background:#000d;z-index:95"><div class="card p-5 w-full max-w-sm text-center space-y-3"><p class="text-4xl">⚠️</p><h3 class="font-bold text-lg">Advertencia de la comunidad</h3><p id="advTxt" class="text-sm" style="white-space:pre-line"></p><button id="advOk" class="btn w-full">Entendido</button></div></div>
@@ -573,7 +571,7 @@ async function pintarTop() {
   const med = ['🥇', '🥈', '🥉'];
   await conEquipado(data || []);
   $('#topLista').innerHTML = (data || []).map((u, i) => `
-    <div class="flex items-center justify-between gap-2 p-3 ${yo && u.username === yo.username ? 'bg-white/5' : ''} ${equipEfectivo(u).banner === 'banner_halloween' ? 'hw-row' : ''}"><span class="min-w-0">${med[i] || (i + 1) + '.'} ${avatarHtml(u, 28)} ${u.flag} ${nombreHtml(u, true)}</span><span class="text-sm text-zinc-400 text-right shrink-0">${rangoDe(u.points)} · ${u.points} pts</span></div>`).join('') || '<p class="p-4 text-zinc-400">Todavía no hay nadie en el ranking.</p>';
+    <div class="flex items-center justify-between gap-2 p-3 ${yo && u.username === yo.username ? 'bg-white/5' : ''} ${(BANNERS[equipEfectivo(u).banner] || {}).row || ''}"><span class="min-w-0">${med[i] || (i + 1) + '.'} ${avatarHtml(u, 28)} ${u.flag} ${nombreHtml(u, true)}</span><span class="text-sm text-zinc-400 text-right shrink-0">${rangoDe(u.points)} · ${u.points} pts</span></div>`).join('') || '<p class="p-4 text-zinc-400">Todavía no hay nadie en el ranking.</p>';
   $('#topMas').classList.toggle('hidden', (data || []).length < topN || topN >= 100);
   if (yo) {
     let q = db.from('profiles').select('id', { count: 'exact', head: true }).gt('points', yo.points);
@@ -646,8 +644,57 @@ const esPrem = (u) => !!u && u.role === 'Premium' && (!u.premium_until || new Da
 const avatarHtml = (u, s) => u && u.avatar_url
   ? `<img src="${esc(u.avatar_url)}" onclick="verPerfil('${esc(u.username)}')" class="rounded-full object-cover inline-block align-middle" style="cursor:pointer;width:${s}px;height:${s}px">`
   : `<span onclick="verPerfil('${esc((u && u.username) || '')}')" class="inline-flex items-center justify-center rounded-full font-bold align-middle" style="cursor:pointer;width:${s}px;height:${s}px;background:var(--line);font-size:${s / 2}px">${esc(((u && u.username) || '?')[0].toUpperCase())}</span>`;
+// ===== BANNERS ILUSTRADOS (para una nueva festividad: agrega aquí una entrada) =====
+let _svgN = 0;
+const BANNERS = {
+  banner_halloween: {
+    n: 'Banner Halloween', tag: 'ev', row: 'hw-row',
+    svg: (u) => `<svg viewBox="0 0 400 120" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="${u}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d0420"/><stop offset=".55" stop-color="#3b1470"/><stop offset="1" stop-color="#ff7a00"/></linearGradient>
+<radialGradient id="${u}m" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="#fffbe8"/><stop offset=".6" stop-color="#ffd98a"/><stop offset="1" stop-color="#f0a93e"/></radialGradient>
+<radialGradient id="${u}h"><stop offset="0" stop-color="#ffb15c" stop-opacity=".6"/><stop offset="1" stop-color="#ffb15c" stop-opacity="0"/></radialGradient>
+<radialGradient id="${u}p" cx=".5" cy=".4" r=".75"><stop offset="0" stop-color="#ffb347"/><stop offset=".6" stop-color="#ff7a00"/><stop offset="1" stop-color="#b83d00"/></radialGradient>
+<radialGradient id="${u}g"><stop offset="0" stop-color="#ffcf6b" stop-opacity=".75"/><stop offset="1" stop-color="#ff7a00" stop-opacity="0"/></radialGradient>
+<path id="${u}b" d="M32 6C30 6 29 9 28 11 24 7 14 4 2 8 8 11 9 16 8 22 13 19 17 19 20 24 22 20 26 19 29 22L32 28 35 22C38 19 42 20 44 24 47 19 51 19 56 22 55 16 56 11 62 8 50 4 40 7 36 11 35 9 34 6 32 6Z"/>
+</defs>
+<rect width="400" height="120" fill="url(#${u}s)"/>
+<g fill="#fff"><circle cx="30" cy="14" r="1"/><circle cx="72" cy="30" r=".8"/><circle cx="110" cy="12" r="1.1"/><circle cx="150" cy="26" r=".8"/><circle cx="196" cy="10" r="1"/><circle cx="238" cy="24" r=".9"/><circle cx="250" cy="8" r=".8"/><circle cx="360" cy="14" r="1.1"/><circle cx="385" cy="34" r=".8"/><circle cx="345" cy="40" r=".7"/></g>
+<g transform="translate(0 9)"><circle cx="305" cy="48" r="54" fill="url(#${u}h)"/>
+<circle cx="305" cy="48" r="26" fill="url(#${u}m)"/>
+<g fill="#c9922f" opacity=".35"><circle cx="296" cy="40" r="5"/><circle cx="314" cy="56" r="4"/><circle cx="300" cy="58" r="2.5"/></g>
+<g transform="translate(278,22) rotate(-10)" fill="#0c0418" stroke="#0c0418" stroke-linejoin="round" stroke-linecap="round">
+<path d="M-6 24 L58 16" stroke-width="2.6" fill="none"/>
+<path d="M54 12 L74 8 L72 24 L54 20Z" stroke-width="1"/>
+<path d="M12 5 L27 -16 L34 5Z"/><path d="M8 5 Q22 9 38 5 Q22 1 8 5Z"/>
+<circle cx="23" cy="10" r="4.5"/>
+<path d="M16 13 Q24 12 31 14 L35 22 Q22 26 12 22Z"/>
+<path d="M14 18 Q2 18 -8 27 Q6 24 14 24Z"/>
+<path d="M26 22 L24 32 M32 21 L33 31" stroke-width="2.4" fill="none"/>
+</g>
+</g>
+<path d="M0 84 Q50 68 110 82 T230 80 T330 76 T400 82 V120 H0Z" fill="#2a0f4d"/>
+<g fill="#190a30"><path d="M240 92 v-14 q0-7 8-7 q8 0 8 7 v14z"/><path d="M266 94 v-10 q0-6 6-6 q6 0 6 6 v10z"/><path d="M42 94 v-12 q0-6 7-6 q7 0 7 6 v12z"/></g>
+<circle cx="168" cy="80" r="44" fill="url(#${u}g)"/>
+<g transform="translate(168 80) scale(.9) translate(-168 -80)">
+<ellipse cx="150" cy="82" rx="15" ry="19" fill="url(#${u}p)"/><ellipse cx="186" cy="82" rx="15" ry="19" fill="url(#${u}p)"/><ellipse cx="168" cy="82" rx="18" ry="21" fill="url(#${u}p)"/>
+<path d="M159 63 Q154 82 159 101 M177 63 Q182 82 177 101" stroke="#b83d00" stroke-width="1.2" fill="none" opacity=".55"/>
+<path d="M165 62 Q166 54 172 51 L176 55 Q172 57 171 63Z" fill="#4a3a12"/><path d="M175 55 q10 -5 13 3" stroke="#3f8f3a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<g fill="#fff1a8"><path d="M155 76 L164 74 L160 83Z"/><path d="M172 74 L181 76 L176 83Z"/><path d="M167 84 L171 90 L163 90Z"/><path d="M153 92 L158 89 L162 94 L166 90 L170 95 L174 90 L178 94 L182 89 L187 92 Q170 106 153 92Z"/></g>
+</g>
+<g><ellipse cx="116" cy="92" rx="11" ry="9" fill="url(#${u}p)"/><path d="M112 90 l4 -1 l-1 4z M118 89 l4 1 l-3 3z" fill="#fff1a8"/><path d="M110 95 q6 4 12 0" stroke="#fff1a8" stroke-width="1.4" fill="none"/>
+<ellipse cx="216" cy="94" rx="13" ry="10" fill="url(#${u}p)"/><path d="M211 92 l5 -1 l-1 5z M219 91 l5 1 l-3 4z" fill="#fff1a8"/><path d="M209 97 q7 5 14 0" stroke="#fff1a8" stroke-width="1.4" fill="none"/></g>
+<path d="M0 100 Q70 90 150 100 T300 98 T400 96 V120 H0Z" fill="#0d0518"/>
+<path d="M372 100 L372 78 M372 90 L362 82 M372 86 L382 77 M362 82 L358 73" stroke="#0d0518" stroke-width="3" stroke-linecap="round" fill="none"/>
+<g fill="#0c0418"><use href="#${u}b" transform="translate(58 22) scale(.36)"/><use href="#${u}b" transform="translate(112 38) scale(.28)"/><use href="#${u}b" transform="translate(236 14) scale(.3)"/><use href="#${u}b" transform="translate(340 20) scale(.26)"/></g>
+<ellipse cx="200" cy="106" rx="230" ry="10" fill="#c77dff" opacity=".13"/>
+</svg>`
+  }
+};
+function bannerSvg(id) { return BANNERS[id].svg('b' + (++_svgN)); }
+
 // ===== COSMÉTICOS: qué tiene, qué trae puesto =====
-const SLOT_ITEMS = { banner: ['banner_halloween'], texto: ['dorado', 'texto_rgb', 'nombre_halloween'], marco: ['marco_fuego'], fondo: ['fondo_espacial'], insignia: ['calabaza_halloween'] };
+const SLOT_ITEMS = { banner: Object.keys(BANNERS), texto: ['dorado', 'texto_rgb', 'nombre_halloween'], marco: ['marco_fuego'], fondo: ['fondo_espacial'], insignia: ['calabaza_halloween'] };
 const CLASE_TEXTO = { dorado: 'dorado', texto_rgb: 'rgb', nombre_halloween: 'hw-nom' };
 const tieneCos = (u, id) => id === 'dorado' ? esPrem(u) : (u.owned || []).includes(id);
 // u.equipado = { slot: 'id' | 'off' }. Si un slot no está guardado, se pone automático lo que tenga (así lo que Malis activa se ve de inmediato).
@@ -669,10 +716,18 @@ function nombreHtml(u, full) {
   const pill = e.insignia === 'calabaza_halloween' ? `<span class="hw-pill">🎃${full ? ' Halloween' : ''}</span>` : '';
   return `<b class="${cls}" style="cursor:pointer" onclick="verPerfil('${esc(u.username)}')">${esPrem(u) ? '⭐ ' : ''}${esc(u.username)}</b>${pill}`;
 }
-function pintarCover(el, u, mini) {
-  const e = equipEfectivo(u), hw = e.banner === 'banner_halloween';
-  el.className = (el.dataset.base || '') + (hw ? ' hw-cover' + (mini ? ' mini' : '') : '');
-  el.style.background = hw ? '' : (u.banner_url ? `url(${esc(u.banner_url)}) center/cover` : 'linear-gradient(135deg,var(--mor),#0e1621)');
+function pintarCover(el, u) {
+  const e = equipEfectivo(u), id = e.banner;
+  el.className = ((el.dataset.base || '') + ' cv').trim();
+  let art = el.querySelector(':scope > .cv-art');
+  if (id && BANNERS[id]) {
+    if (!art) { art = document.createElement('div'); art.className = 'cv-art'; el.insertBefore(art, el.firstChild); }
+    if (art.dataset.id !== id) { art.innerHTML = bannerSvg(id); art.dataset.id = id; }
+    el.style.background = '#12062a';
+  } else {
+    if (art) art.remove();
+    el.style.background = u.banner_url ? `url(${esc(u.banner_url)}) center/cover` : 'linear-gradient(135deg,var(--mor),#0e1621)';
+  }
 }
 async function miPerfilX() {
   const p = await miPerfil();
@@ -818,9 +873,13 @@ async function guardarPerfil(o) {
     const av = o.avatar ? await subirPerfil(o.avatar, 'avatar', 512) : null, bn = o.banner ? await subirPerfil(o.banner, 'banner', 1400) : null;
     const { error } = await db.rpc('guardar_perfil', { p_avatar: av, p_banner: bn, p_bio: o.bio !== undefined ? o.bio : (yo.bio || '') });
     if (error) throw error;
+    if (o.banner && equipEfectivo(yo).banner) {
+      const eq = Object.assign({}, (yo.equipado && typeof yo.equipado === 'object') ? yo.equipado : {}); eq.banner = 'off';
+      await db.rpc('guardar_equipado', { p_equipado: eq });
+    }
     yo = await miPerfilX(); pintarBarra(); pintarPerfil();
-    const hw = equipEfectivo(yo).banner === 'banner_halloween';
-    toast($('#pfMsg'), o.banner && hw ? 'Portada guardada. Tienes el Banner Halloween puesto: quítalo en Cosméticos para ver tu foto.' : 'Perfil actualizado.', true);
+    const hw = !!equipEfectivo(yo).banner;
+    toast($('#pfMsg'), o.banner && hw ? 'Portada guardada. Tienes un banner de evento puesto: quítalo en Cosméticos para ver tu foto.' : 'Perfil actualizado.', true);
   } catch (e) { toast($('#pfMsg'), e.message || 'No se pudo guardar. ¿Corriste SQL_PERFILES.sql?', false); pintarPerfil(); }
 }
 $('#pfAv').onchange = () => { const f = $('#pfAv').files[0]; if (!f) return; $('#pfAvBox').innerHTML = `<img src="${URL.createObjectURL(f)}" class="w-full h-full object-cover">`; guardarPerfil({ avatar: f }); };
@@ -834,14 +893,15 @@ document.querySelectorAll('.pf-tab').forEach((b) => b.onclick = () => {
 });
 
 const COSM_UI = [
-  { slot: 'banner', t: '🖼️ Banner', d: 'La portada de tu perfil y el fondo de tu fila en el Top.', items: [{ id: 'banner_halloween', n: 'Banner Halloween', tag: 'ev' }] },
+  { slot: 'banner', t: '🖼️ Banner', d: 'Elige tu foto de portada o el banner de una festividad. Se ve en tu perfil y en tu fila del Top.', items: [{ id: 'foto', n: 'Mi portada (mi foto)' }].concat(Object.keys(BANNERS).map((id) => ({ id, n: BANNERS[id].n, tag: BANNERS[id].tag }))) },
   { slot: 'texto', t: '✨ Texto del nombre', d: 'Elige cómo se ve tu nombre en el Top, comentarios y perfil.', items: [{ id: 'dorado', n: 'Texto Premium dorado', tag: 'prem' }, { id: 'texto_rgb', n: 'Texto RGB arcoíris', tienda: 1 }, { id: 'nombre_halloween', n: 'Nombre Halloween', tag: 'ev' }] },
   { slot: 'marco', t: '🔥 Marco', d: '', items: [{ id: 'marco_fuego', n: 'Marco de fuego animado', tienda: 1 }] },
   { slot: 'fondo', t: '🌌 Fondo del nombre', d: '', items: [{ id: 'fondo_espacial', n: 'Fondo espacial', tienda: 1 }] },
   { slot: 'insignia', t: '🎃 Insignia', d: 'La burbuja que aparece junto a tu nombre en el Top.', items: [{ id: 'calabaza_halloween', n: 'Calabaza Halloween', tag: 'ultra' }] }
 ];
 function muestraCos(slot, id) {
-  if (slot === 'banner') return '<div class="hw-cover mini" style="width:84px;height:38px;border-radius:10px"></div>';
+  if (id === 'foto') return `<div class="cv" style="width:150px;height:52px;border-radius:10px;border:1px solid #ffffff22;background:${yo && yo.banner_url ? `url(${esc(yo.banner_url)}) center/cover` : 'linear-gradient(135deg,var(--mor),#0e1621)'}"></div>${yo && yo.banner_url ? '' : '<p class="text-xs text-zinc-400 mt-1">Aún no subes portada.</p>'}`;
+  if (slot === 'banner') return `<div class="cv" style="width:150px;height:52px;border-radius:10px;border:1px solid #ffffff22"><div class="cv-art">${bannerSvg(id)}</div></div>`;
   if (slot === 'texto') return `<b class="${CLASE_TEXTO[id]}">Tu nombre</b>`;
   if (slot === 'marco') return '<b class="fuego">Tu nombre</b>';
   if (slot === 'fondo') return '<b class="espacial">Tu nombre</b>';
@@ -853,9 +913,11 @@ function pintarCosmeticos() {
     <div class="card p-4 space-y-2">
       <div><h3 class="font-bold neon">${g.t}</h3>${g.d ? `<p class="text-xs text-zinc-400">${g.d}</p>` : ''}</div>
       ${g.items.map((i) => {
-        const tiene = tieneCos(yo, i.id), puesto = ef[g.slot] === i.id;
+        const tiene = i.id === 'foto' ? true : tieneCos(yo, i.id), puesto = i.id === 'foto' ? !ef.banner : ef[g.slot] === i.id;
         const tag = i.tag === 'ev' ? '<span class="cos-tag ev">EVENTO</span>' : i.tag === 'ultra' ? '<span class="cos-tag ultra">ULTRA EXCLUSIVO</span>' : i.tag === 'prem' ? '<span class="cos-tag">PREMIUM</span>' : '';
-        const accion = tiene
+        const accion = i.id === 'foto'
+          ? (puesto ? `<button class="btn alt sm" onclick="$('#pfBn').click()">Cambiar foto</button>` : `<button class="btn sm" onclick="equipar('banner','off')">Equipar</button>`)
+          : tiene
           ? `<button class="btn ${puesto ? 'alt' : ''} sm" onclick="equipar('${g.slot}','${i.id}')">${puesto ? 'Quitar' : 'Equipar'}</button>`
           : i.tag === 'prem' ? '<button class="btn alt sm" onclick="irPremium()">Hazte Premium</button>'
           : i.tienda ? '<button class="btn alt sm" onclick="document.querySelector(\'[data-v=tienda]\').click()">Tienda</button>'
