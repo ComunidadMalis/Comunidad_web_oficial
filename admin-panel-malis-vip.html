@@ -10,20 +10,20 @@
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
-:root{--line:#33301f;--mut:#a1a1aa;--mor:#d4a93c}
-body{background:#09090b;color:#f4f4f5;font-family:'Inter',system-ui,sans-serif;padding-bottom:40px;background-image:radial-gradient(900px 500px at 85% -10%,#6b7a3a33,transparent 60%),radial-gradient(700px 400px at -10% 40%,#06b6d414,transparent 60%);background-attachment:fixed}
+:root{--line:#233142;--mut:#a1a1aa;--mor:#fe2c55}
+body{background:#0e1621;color:#f4f4f5;font-family:'Inter',system-ui,sans-serif;padding-bottom:40px;background-image:radial-gradient(900px 500px at 85% -10%,#c4163c33,transparent 60%),radial-gradient(700px 400px at -10% 40%,#06b6d414,transparent 60%);background-attachment:fixed}
 .brand{font-family:'Orbitron',system-ui,sans-serif;font-weight:800;letter-spacing:.05em}
 .brand span{color:var(--mor)}
-.card{background:linear-gradient(180deg,#17160f,#11100b);border:1px solid var(--line);border-radius:20px;padding:1rem}
-.btn{min-height:50px;background:linear-gradient(135deg,#d4a93c,#6b7a3a);color:#fff;font-weight:700;border-radius:14px;padding:.65rem 1.1rem;box-shadow:0 6px 20px #6b7a3a55}
+.card{background:linear-gradient(180deg,#17212b,#121b25);border:1px solid var(--line);border-radius:20px;padding:1rem}
+.btn{min-height:50px;background:linear-gradient(135deg,#fe2c55,#c4163c);color:#fff;font-weight:700;border-radius:14px;padding:.65rem 1.1rem;box-shadow:0 6px 20px #c4163c55}
 .btn:active{transform:scale(.97)}
-.btn.alt{background:transparent;color:#f1d98a;border:1px solid #d4a93c88;box-shadow:none}
+.btn.alt{background:transparent;color:#ff9db0;border:1px solid #fe2c5588;box-shadow:none}
 .btn.rojo{background:linear-gradient(135deg,#fb7185,#e11d48);box-shadow:0 6px 20px #e11d4855}
 .btn.verde{background:linear-gradient(135deg,#34d399,#059669);box-shadow:0 6px 20px #05966955}
 .btn.sm{min-height:40px;padding:.3rem .8rem;font-size:.85rem;border-radius:11px}
-.input{background:#0d0c08;border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;width:100%;min-height:50px;color:#f4f4f5;font-size:1rem}
+.input{background:#0b121a;border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;width:100%;min-height:50px;color:#f4f4f5;font-size:1rem}
 .input:focus{outline:2px solid var(--mor);border-color:transparent}
-h2{font-weight:700;font-size:1.1rem;color:#fff4d0}
+h2{font-weight:700;font-size:1.1rem;color:#ffe3e8}
 .mut{color:var(--mut)}
 #gran{width:100%;padding:1.7rem;border-radius:22px;font-size:1.7rem;font-weight:800;border:2px solid #3f3f46;background:#18181b;color:#a1a1aa;transition:.2s}
 #gran.on{background:linear-gradient(135deg,#fb7185,#e11d48);color:#fff;border-color:#fda4af;box-shadow:0 0 36px #e11d4899}
@@ -34,7 +34,7 @@ h2{font-weight:700;font-size:1.1rem;color:#fff4d0}
 .tile i{font-style:normal;font-size:2.4rem}
 .tile b{font-size:1.1rem;display:block}
 .tile small{opacity:.85;font-size:.78rem}
-.t1{background:linear-gradient(135deg,#d4a93c,#556b2f)}
+.t1{background:linear-gradient(135deg,#fe2c55,#1d4e6b)}
 .t2{background:linear-gradient(135deg,#f472b6,#be185d)}
 .t3{background:linear-gradient(135deg,#38bdf8,#0369a1)}
 .t4{background:linear-gradient(135deg,#fbbf24,#b45309)}
@@ -47,15 +47,15 @@ h2{font-weight:700;font-size:1.1rem;color:#fff4d0}
 .sw input{position:absolute;opacity:0;pointer-events:none}
 .sw i{position:relative;width:38px;height:22px;border-radius:99px;background:#3a3350;transition:background .2s}
 .sw i::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
-.sw input:checked+i{background:#d4a93c}
+.sw input:checked+i{background:#fe2c55}
 .sw input:checked+i::after{transform:translateX(16px)}
 .fila{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.7rem 0;border-bottom:1px solid #221b33}
 .fila:last-child{border-bottom:0}
-.chip{font-size:.7rem;padding:.1rem .55rem;border-radius:99px;background:#d4a93c22;color:#f1d98a;white-space:nowrap}
+.chip{font-size:.7rem;padding:.1rem .55rem;border-radius:99px;background:#fe2c5522;color:#ff9db0;white-space:nowrap}
 .chip.rojo{background:#e11d4833;color:#fda4af}
 .filtro{padding:.45rem .9rem;border-radius:99px;border:1px solid var(--line);color:var(--mut);font-size:.85rem;font-weight:600;white-space:nowrap}
-.filtro.on{background:#d4a93c33;color:#fff;border-color:#d4a93c}
-.drop{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 12px;border:2px dashed #d4a93c88;border-radius:20px;background:#d4a93c10;text-align:center;cursor:pointer}
+.filtro.on{background:#fe2c5533;color:#fff;border-color:#fe2c55}
+.drop{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 12px;border:2px dashed #fe2c5588;border-radius:20px;background:#fe2c5510;text-align:center;cursor:pointer}
 .confeti{position:fixed;top:-10px;width:9px;height:14px;z-index:70;pointer-events:none;animation:cae 2.4s linear forwards}
 @keyframes cae{to{transform:translateY(105vh) rotate(720deg)}}
 #aviso2{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;background:#18132a;border:1px solid var(--mor);border-radius:14px;padding:.8rem 1.2rem;display:none;max-width:92vw;text-align:center}
@@ -102,6 +102,9 @@ h2{font-weight:700;font-size:1.1rem;color:#fff4d0}
       <div class="grid grid-cols-2 gap-3">
         <button id="dinCerrar" class="btn rojo">Cerrar ahora</button>
         <button id="dinSortear" class="btn verde hidden">Sortear ahora</button>
+        <button id="luzV" class="btn verde hidden">🟢 LUZ VERDE</button>
+        <button id="luzR" class="btn rojo hidden">🔴 LUZ ROJA</button>
+        <button id="luzA" class="btn alt hidden">🎲 Automático</button>
       </div>
       <p id="dinSorteo" class="text-xl font-bold text-center"></p>
       <ol id="dinGan" class="text-sm"></ol>
@@ -123,6 +126,7 @@ h2{font-weight:700;font-size:1.1rem;color:#fff4d0}
       <h2>Crear la mía</h2>
       <select id="cTipo" class="input">
         <option value="palabra">Palabra clave</option>
+        <option value="luz">🚦 Luz verde, luz roja (en respuesta pon la meta de pasos, ej. 30)</option>
         <option value="trivia">Trivia (pregunta y respuesta)</option>
         <option value="opciones">Opción múltiple</option>
         <option value="numero">Adivina el número</option>
@@ -205,7 +209,7 @@ h2{font-weight:700;font-size:1.1rem;color:#fff4d0}
     <div class="card space-y-3"><h2>Fondo y color de la web</h2>
       <select id="wFondo" class="input"><option value="preset:camo">Camuflaje oscuro</option><option value="preset:negro">Negro</option><option value="preset:noche">Azul noche</option><option value="preset:verde">Verde militar</option><option value="preset:dorado">Dorado oscuro</option></select>
       <label class="text-xs mut">O sube tu propia imagen de fondo</label><input id="wImg" type="file" accept="image/*" class="input">
-      <label class="text-xs mut">Color principal</label><input id="wAc" type="color" class="input" value="#d4a93c">
+      <label class="text-xs mut">Color principal</label><input id="wAc" type="color" class="input" value="#fe2c55">
     </div>
     <div class="card space-y-3"><h2>Funciones</h2>
       <label class="flex gap-3"><input id="wRul" type="checkbox" class="w-5 h-5"> Ruleta activa</label>
@@ -275,7 +279,9 @@ const add = (tipo, titulo, pregunta, resp, ops) => CAT.push({ tipo, titulo, preg
  'Sorteo relámpago', 'Sorteo de la suerte', 'Sorteo del día', 'Sorteo de los fieles', 'Sorteo final del show']
   .forEach((q) => add('sorteo', '🎟️ Sorteo', q, ''));
 
-const TIPOS = { todas: 'Todas', palabra: '🔑 Palabra', trivia: '🧠 Trivia', opciones: '❓ Opciones', numero: '🔢 Número', rapido: '⚡ Reflejos', sorteo: '🎟️ Sorteo' };
+['Cruza antes de que se acabe el tiempo: toca AVANZAR en luz verde y quédate quieto en luz roja','Juego del calamar: llega a la meta sin que te pille la luz roja','Luz verde, luz roja: el que se mueva en roja queda eliminado','¡Corre en verde, congélate en rojo! Gana el primero en llegar a la meta']
+  .forEach((q, i) => add('luz', '🚦 Luz verde, luz roja', q, String([20, 30, 40, 60][i])));
+const TIPOS = { todas: 'Todas', palabra: '🔑 Palabra', trivia: '🧠 Trivia', opciones: '❓ Opciones', numero: '🔢 Número', rapido: '⚡ Reflejos', sorteo: '🎟️ Sorteo', luz: '🚦 Luz verde' };
 let filtro = 'todas';
 
 function aviso(txt) {
@@ -340,6 +346,9 @@ function pintar(s) {
     : 'Todavía no has lanzado ninguna dinámica.';
   $('#dinEstado').style.whiteSpace = 'pre-line';
   $('#dinSortear').classList.toggle('hidden', !(s.din_abierta && s.din_tipo === 'sorteo'));
+  const esLuz = s.din_abierta && s.din_tipo === 'luz';
+  ['luzV', 'luzR', 'luzA'].forEach((k) => $('#' + k).classList.toggle('hidden', !esLuz));
+  if (!esLuz && luzT) { clearTimeout(luzT); luzT = null; $('#luzA').textContent = '🎲 Automático'; }
   ganadoresDin(s.din_ronda).then(({ data }) => {
     $('#dinGan').innerHTML = (data || []).map((w, i) => `<li class="fila"><span>${i + 1}. ${w.profiles.flag} ${esc(w.profiles.username)}</span></li>`).join('') || '<li class="mut">Aún no hay ganadores.</li>';
   });
@@ -383,13 +392,14 @@ $('#cTipo').onchange = () => {
 $('#cLanzar').onclick = () => {
   const t = $('#cTipo').value, q = $('#cPreg').value.trim();
   if (!q) return aviso('Escribe lo que verán los usuarios.');
-  const titulos = { palabra: '🔑 Palabra clave', trivia: '🧠 Trivia', opciones: '❓ Opción múltiple', numero: '🔢 Adivina el número', rapido: '⚡ Reflejos', sorteo: '🎟️ Sorteo' };
+  const titulos = { luz: '🚦 Luz verde, luz roja', palabra: '🔑 Palabra clave', trivia: '🧠 Trivia', opciones: '❓ Opción múltiple', numero: '🔢 Adivina el número', rapido: '⚡ Reflejos', sorteo: '🎟️ Sorteo' };
   if (t === 'opciones') {
     const ops = $('#cOps').value.split('|').map((x) => x.trim()).filter(Boolean), k = parseInt($('#cOk').value, 10);
     if (ops.length !== 4 || !(k >= 1 && k <= 4)) return aviso('Pon 4 opciones separadas por | y cuál es la correcta (1 a 4).');
     return abrir(t, titulos[t], q, String(k - 1), ops);
   }
-  const resp = ['rapido', 'sorteo'].includes(t) ? '' : $('#cResp').value.trim();
+  let resp = ['rapido', 'sorteo'].includes(t) ? '' : $('#cResp').value.trim();
+  if (t === 'luz') resp = String(parseInt(resp, 10) || 30);
   if (!resp && !['rapido', 'sorteo'].includes(t)) return aviso('Escribe la respuesta correcta.');
   abrir(t, titulos[t], q, resp, null);
 };
@@ -542,6 +552,8 @@ async function cargarUsuarios() {
         <button class="btn alt sm" onclick="accion('prem','${esc(u.username)}')">Premium</button>
         <button class="btn alt sm" onclick="accion('qprem','${esc(u.username)}')">Quitar Premium</button>
         <button class="btn ${u.banned ? 'alt' : 'rojo'} sm" onclick="accion('ban','${esc(u.username)}',${!u.banned})">${u.banned ? 'Desbloquear' : 'Bloquear'}</button>
+        <button class="btn alt sm" onclick="accion('adv','${esc(u.username)}')">⚠️ Advertir</button>
+        <button class="btn rojo sm" title="Eliminar cuenta" onclick="accion('del','${esc(u.username)}')">🗑️</button>
       </div>
       <div class="cosm">
         ${COSM.map((c) => `<label class="sw"><input type="checkbox" ${(u.owned || []).includes(c.id) ? 'checked' : ''} onchange="toggleCos('${esc(u.username)}','${c.id}',this)"><i></i><span>${c.nombre}</span></label>`).join('')}
@@ -568,6 +580,8 @@ async function accion(tipo, u, extra) {
   if (tipo === 'qpts') { const n = Math.abs(parseInt(prompt('¿Cuántos puntos QUITARLE a ' + u + '?'), 10)); if (n) { r = await db.rpc('dar_puntos', { p_username: u, p_cantidad: -n }); r.error ? falla(r.error) : aviso('Le quitaste ' + n + ' puntos a ' + u + '.'); } }
   if (tipo === 'qprem') { if (confirm('¿Quitar Premium a ' + u + '?')) { r = await db.rpc('quitar_premium', { p_username: u }); r.error ? falla(r.error) : aviso('Premium quitado.'); } }
   if (tipo === 'cos') { const it = prompt('Escribe: marco_fuego, fondo_espacial o texto_rgb\n(con - delante lo quitas, ej: -texto_rgb)'); if (it) { const q = it.startsWith('-'); r = await db.rpc('dar_cosmetico', { p_username: u, p_item: it.replace('-', '').trim(), p_dar: !q }); r.error ? falla(r.error) : aviso(q ? 'Quitado.' : 'Entregado a ' + u + '.'); } }
+  if (tipo === 'adv') { const m = prompt('Mensaje de advertencia para ' + u + ':'); if (m && m.trim()) { r = await db.rpc('enviar_advertencia', { p_username: u, p_mensaje: m.trim() }); r.error ? falla(r.error) : aviso('⚠️ Advertencia enviada a ' + u + '.'); } }
+  if (tipo === 'del') { if (prompt('Esto BORRA la cuenta de ' + u + ' para siempre.\nEscribe BORRAR para confirmar:') === 'BORRAR') { r = await db.rpc('eliminar_cuenta', { p_username: u }); r.error ? falla(r.error) : aviso('🗑️ Cuenta de ' + u + ' eliminada.'); } }
   if (tipo === 'ban') { if (!extra || confirm('¿Bloquear a ' + u + '?')) { r = await db.rpc('bloquear_usuario', { p_username: u, p_bloquear: extra }); r.error ? falla(r.error) : aviso(extra ? 'Usuario bloqueado.' : 'Usuario desbloqueado.'); } }
   cargarUsuarios();
 }
@@ -624,7 +638,7 @@ const hm = (si) => async () => { const { error } = await db.rpc('hacer_mod', { p
 $('#mHacer').onclick = hm(true); $('#mQuitar').onclick = hm(false);
 function cargarWeb() {
   $('#wFondo').value = (estado.bg_valor || '').startsWith('preset:') ? estado.bg_valor : 'preset:camo';
-  $('#wAc').value = estado.acento || '#d4a93c';
+  $('#wAc').value = estado.acento || '#fe2c55';
   $('#wBono').value = estado.bono_nuevos ?? 200;
   $('#wRul').checked = estado.f_ruleta !== false; $('#wTie').checked = estado.f_tienda !== false; $('#wSho').checked = estado.f_show !== false;
 }
@@ -639,6 +653,16 @@ $('#wGuardar').onclick = async () => {
   const { error } = await db.rpc('ajustar_web', { p_bg: bg, p_acento: $('#wAc').value, p_libre: false, p_ruleta: $('#wRul').checked, p_tienda: $('#wTie').checked, p_show: $('#wSho').checked });
   const r2 = await db.rpc('ajustar_bono', { p_bono: Math.max(0, parseInt($('#wBono').value, 10) || 0) });
   (error || r2.error) ? falla(error || r2.error) : aviso('✅ Guardado. La web ya cambió.');
+};
+let luzT = null;
+const luz = async (c) => { const { error } = await db.rpc('cambiar_luz', { p_color: c }); error ? falla(error) : aviso(c === 'verde' ? '🟢 Luz verde' : '🔴 Luz roja'); };
+$('#luzV').onclick = () => luz('verde'); $('#luzR').onclick = () => luz('roja');
+$('#luzA').onclick = () => {
+  if (luzT) { clearTimeout(luzT); luzT = null; $('#luzA').textContent = '🎲 Automático'; return; }
+  $('#luzA').textContent = '⏹ Parar automático';
+  let c = 'roja';
+  const ciclo = async () => { c = c === 'verde' ? 'roja' : 'verde'; await db.rpc('cambiar_luz', { p_color: c }); luzT = setTimeout(ciclo, c === 'verde' ? 3000 + Math.random() * 4000 : 1500 + Math.random() * 2500); };
+  ciclo();
 };
 function llamarConcursante(n) {
   if (!miMic || !estado.turno_user || !peerA || n > 5) return;
