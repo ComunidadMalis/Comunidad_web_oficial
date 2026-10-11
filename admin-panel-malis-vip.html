@@ -205,6 +205,10 @@ h2{font-weight:700;font-size:1.1rem;color:#ffe3e8}
       <div class="grid grid-cols-2 gap-3"><button id="mHacer" class="btn">Hacer admin</button><button id="mQuitar" class="btn rojo">Quitar</button></div></div>
     <div class="card"><h2 class="mb-2">Solicitudes de moderador</h2><div id="mods"></div></div>
     <div class="card"><h2 class="mb-2">Moderadores activos</h2><div id="modsAct"></div></div>
+    <div class="card space-y-3"><h2>🏆 Ranking de moderadores</h2>
+      <p class="text-sm mut">Puntos que ganan al cerrar chats de soporte (10 pts por chat resuelto + 2 por cada estrella que les dé el usuario). Al final del mes elige al Moderador del mes.</p>
+      <input id="rkMes" type="month" class="input">
+      <div id="rkLista"></div><p id="rkMsg" class="text-sm mut"></p></div>
   </div>
 </div>
 <div id="aviso2"></div>
@@ -285,7 +289,7 @@ function ir(n) {
   if (n === 'din') pintarCat();
   if (n === 'pub') cargarPosts2();
   if (n === 'usr') cargarUsuarios();
-  if (n === 'mod') cargarMods();
+  if (n === 'mod') { cargarMods(); cargarRank(); }
   if (n === 'reg') sugeridos();
   if (n === 'web') cargarWeb();
 }
@@ -584,6 +588,23 @@ async function cargarMods() {
     <div class="fila"><span>${m.flag} ${esc(m.username)}</span>
     <button class="btn rojo sm" onclick="quitarMod('${m.id}')">Quitar</button></div>`).join('') || '<p class="text-sm mut">Todavía no hay moderadores.</p>';
 }
+
+async function cargarRank() {
+  const inp = $('#rkMes');
+  if (!inp.value) inp.value = new Date().toISOString().slice(0, 7);
+  const { data, error } = await db.rpc('mod_ranking_mes', { p_mes: inp.value + '-01' });
+  if (error) { $('#rkLista').innerHTML = '<p class="text-sm mut">Falta correr SQL_SOPORTE_MODS.sql en Supabase (' + esc(error.message) + ').</p>'; return; }
+  const { data: gan } = await db.from('mod_mes').select('user_id').eq('mes', inp.value + '-01').maybeSingle();
+  const med = ['🥇', '🥈', '🥉'];
+  $('#rkLista').innerHTML = (data || []).map((r, i) => `
+    <div class="fila"><span>${med[i] || (i + 1) + '.'} ${r.flag || ''} ${esc(r.username)} ${gan && gan.user_id === r.user_id ? '<span class="chip">👑 Mod del mes</span>' : ''}<br><small class="mut">${r.atendidos} chats · ⭐ ${r.promedio || '—'} · <b>${r.puntos} pts</b></small></span>
+    <button class="btn sm" onclick="modDelMes('${r.user_id}')">Nombrar Mod del mes</button></div>`).join('') || '<p class="text-sm mut">Nadie sumó puntos en este mes.</p>';
+}
+async function modDelMes(id) {
+  const { error } = await db.rpc('elegir_mod_mes', { p_user: id, p_mes: $('#rkMes').value + '-01' });
+  error ? falla(error) : (aviso('¡Moderador del mes nombrado! 👑'), cargarRank());
+}
+$('#rkMes').onchange = cargarRank;
 async function aprobar(id) { const { error } = await db.rpc('aprobar_mod', { p_user: id }); if (error) falla(error); cargarMods(); }
 async function quitarMod(id) { if (confirm('¿Quitar moderador?')) { const { error } = await db.rpc('quitar_mod', { p_user: id }); if (error) falla(error); cargarMods(); } }
 

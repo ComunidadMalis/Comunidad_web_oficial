@@ -159,9 +159,25 @@ body.hw .bub .m{background:#2a1645}body.hw .bub.yo .m{background:#7a3a00}
 .cos-tag.ev{background:linear-gradient(135deg,#ff7a00,#8b2fc9);color:#fff}
 .cos-tag.ultra{background:linear-gradient(135deg,#fde68a,#f59e0b);color:#2a1700}
 .btn.sm{min-height:38px;padding:.3rem .9rem;font-size:.85rem}
+
+/* ===== CORONA DE MODERADOR + SOPORTE ===== */
+.coro{display:inline-block;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 4px #ffc83dcc);animation:coroBrillo 2.6s ease-in-out infinite}
+@keyframes coroBrillo{50%{filter:drop-shadow(0 0 8px #ffe28a) brightness(1.25)}}
+.mod-pill{display:inline-flex;align-items:center;font-size:.62rem;font-weight:800;letter-spacing:.04em;line-height:1;padding:3px 7px;border-radius:99px;margin-left:5px;vertical-align:middle;color:#3b2500;background:linear-gradient(135deg,#fff3b0,#ffc83d 55%,#d98e0b)}
+#spBadge{position:absolute;top:2px;right:8px;min-width:17px;height:17px;border-radius:99px;background:#e11d48;color:#fff;font:700 .65rem/17px Inter,sans-serif;text-align:center;padding:0 4px}
+.tab{position:relative}
+.sp-msgs{max-height:48vh;min-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:6px 2px}
+.sp-est{font-size:.7rem;padding:2px 8px;border-radius:99px;background:#fe2c5522;color:#ff9db0}
+.sp-est.on{background:#00e67622;color:#6ee7a8}
+.sp-star{font-size:2rem;line-height:1;opacity:.35;transition:.15s}.sp-star.on{opacity:1;filter:drop-shadow(0 0 6px #ffc83d)}
 </style>
 </head>
 <body class="min-h-screen pb-20">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="crG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6c2"/><stop offset=".45" stop-color="#ffc83d"/><stop offset="1" stop-color="#b8770b"/></linearGradient>
+<radialGradient id="crRub" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ffb3c1"/><stop offset=".5" stop-color="#e11d48"/><stop offset="1" stop-color="#7f0a26"/></radialGradient>
+<radialGradient id="crZaf" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#cfe8ff"/><stop offset=".5" stop-color="#3b82f6"/><stop offset="1" stop-color="#14337a"/></radialGradient>
+</defs></svg>
 <a id="live" href="https://www.tiktok.com/@malis_tk0/live" target="_blank" class="hidden sticky top-0 z-40 text-center font-bold py-2" style="background:#e11d48">🔴 ¡Malis está en vivo! Toca para entrar al canal</a>
 
 <header class="max-w-3xl mx-auto p-4 flex items-center justify-between gap-3">
@@ -178,6 +194,7 @@ body.hw .bub .m{background:#2a1645}body.hw .bub.yo .m{background:#7a3a00}
   <button class="tab" data-v="premium"><i>⭐</i>Premium</button>
   <button class="tab" data-v="perfil"><i>👤</i>Perfil</button>
   <button class="tab" data-v="apoyar"><i><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" style="display:inline-block;vertical-align:middle"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></i>Apoyar</button>
+  <button class="tab" data-v="soporte" id="tabSoporte"><i>💬</i>Soporte<span id="spBadge" class="hidden"></span></button>
   <button class="tab hidden" data-v="mod" id="tabMod"><i>🛡️</i>Mod</button>
 </nav>
 
@@ -269,6 +286,8 @@ body.hw .bub .m{background:#2a1645}body.hw .bub.yo .m{background:#7a3a00}
     </div>
   </section>
 
+  <section id="v-soporte" class="hidden space-y-3"><div id="spMes"></div><div id="spBody"></div></section>
+
   <section id="v-mod" class="hidden space-y-3">
     <div class="card p-4 space-y-3"><h3 class="font-bold neon">Panel de admin 🛡️</h3>
       <p class="text-sm text-zinc-400">Borra publicaciones con 🗑️ en el Muro y comentarios con 🗑️. Aquí puedes bloquear usuarios.</p>
@@ -355,6 +374,7 @@ document.querySelectorAll('.tab').forEach((t) => t.onclick = () => {
   if (t.dataset.v === 'top') pintarTop();
   if (t.dataset.v === 'tienda') pintarTienda();
   if (t.dataset.v === 'perfil') pintarPerfil();
+  if (t.dataset.v === 'soporte') { spSel = null; pintarSoporte(); }
 });
 
 async function iniciar() {
@@ -363,6 +383,7 @@ async function iniciar() {
   if (yo && yo.is_mod) $('#tabMod').classList.remove('hidden');
   pintarBarra();
   pintarMuro();
+  soporteInit();
   dibujarRueda();
   setTimeout(tutoSiToca, 1200);
   setTimeout(revisarAdv, 900);
@@ -408,6 +429,7 @@ async function tras() {
   if (yo.is_mod) $('#tabMod').classList.remove('hidden');
   pintarBarra();
   pintarMuro();
+  soporteInit();
 }
 $('#aEntrar').onclick = async () => {
   if ($('#aUser').value.includes('@')) return $('#aMsg').textContent = 'Aquí no va correo. Escribe solo un nombre de usuario, por ejemplo: malis_fan';
@@ -715,11 +737,22 @@ function equipEfectivo(u) {
   });
   return out;
 }
+const coronaMod = (h = 16) => `<svg class="coro" viewBox="0 0 32 24" width="${Math.round(h * 1.33)}" height="${h}" role="img" aria-label="Moderador"><title>Moderador</title>
+<path d="M3 19 1.4 6.2l7.6 6L16 2.6l7 9.6 7.6-6L29 19Z" fill="url(#crG)" stroke="#7a4a05" stroke-width="1" stroke-linejoin="round"/>
+<path d="M4.2 17.5 3 9.4l5.4 4.3L16 5l7.6 8.7L29 9.4l-1.2 8.1Z" fill="#fff" opacity=".18"/>
+<rect x="2.6" y="18.4" width="26.8" height="4.4" rx="1.4" fill="url(#crG)" stroke="#7a4a05" stroke-width="1"/>
+<circle cx="1.6" cy="6" r="1.9" fill="url(#crRub)" stroke="#7a4a05" stroke-width=".6"/>
+<circle cx="16" cy="2.7" r="2.1" fill="url(#crZaf)" stroke="#7a4a05" stroke-width=".6"/>
+<circle cx="30.4" cy="6" r="1.9" fill="url(#crRub)" stroke="#7a4a05" stroke-width=".6"/>
+<circle cx="9" cy="20.6" r="1.3" fill="url(#crZaf)"/><circle cx="16" cy="20.6" r="1.6" fill="url(#crRub)"/><circle cx="23" cy="20.6" r="1.3" fill="url(#crZaf)"/>
+<path d="M11 12.5 12.3 9.8 13.6 12.5 12.3 14Z M18.4 12.5 19.7 9.8 21 12.5 19.7 14Z" fill="#fff" opacity=".55"/></svg>`;
 function nombreHtml(u, full) {
   const e = equipEfectivo(u);
   const cls = [CLASE_TEXTO[e.texto] || '', e.marco === 'marco_fuego' ? 'fuego' : '', e.fondo === 'fondo_espacial' ? 'espacial' : ''].join(' ');
   const pill = e.insignia === 'calabaza_halloween' ? `<span class="hw-pill">🎃${full ? ' Halloween' : ''}</span>` : '';
-  return `<b class="${cls}" style="cursor:pointer" onclick="verPerfil('${esc(u.username)}')">${esPrem(u) ? '⭐ ' : ''}${esc(u.username)}</b>${pill}`;
+  const corona = u.is_mod ? coronaMod(15) : '';
+  const modPill = u.is_mod && full ? '<span class="mod-pill">MOD</span>' : '';
+  return `${corona}<b class="${cls}" style="cursor:pointer" onclick="verPerfil('${esc(u.username)}')">${esPrem(u) ? '⭐ ' : ''}${esc(u.username)}</b>${modPill}${pill}`;
 }
 function pintarCover(el, u) {
   const e = equipEfectivo(u), id = e.banner;
@@ -744,10 +777,10 @@ async function conEquipado(lista) {
   try {
     const n = [...new Set(lista.filter(Boolean).map((u) => u.username))];
     if (!n.length) return lista;
-    const { data, error } = await db.from('profiles').select('username,equipado').in('username', n);
+    const { data, error } = await db.from('profiles').select('username,equipado,is_mod').in('username', n);
     if (error || !data) return lista;
-    const m = {}; data.forEach((r) => { m[r.username] = r.equipado; });
-    lista.forEach((u) => { if (u) u.equipado = m[u.username]; });
+    const m = {}; data.forEach((r) => { m[r.username] = { eq: r.equipado, mod: !!r.is_mod }; });
+    lista.forEach((u) => { if (u) { u.equipado = (m[u.username] || {}).eq; u.is_mod = !!(m[u.username] || {}).mod; } });
   } catch (e) {}
   return lista;
 }
@@ -961,7 +994,7 @@ async function verPerfil(nombre) {
   pintarCover($('#pmBanner'), u, false);
   $('#pmAv').innerHTML = avatarHtml(u, 72);
   $('#pmNom').innerHTML = nombreHtml(u, true);
-  $('#pmInfo').textContent = `${u.flag} ${rangoDe(u.points)} · ${u.points} pts${esPrem(u) ? ' · ⭐ Premium' : ''}`;
+  $('#pmInfo').textContent = `${u.flag} ${rangoDe(u.points)} · ${u.points} pts${esPrem(u) ? ' · ⭐ Premium' : ''}${u.is_mod ? ' · 👑 Moderador' : ''}`;
   $('#pmBio').textContent = u.bio || '';
   $('#perfilModal').classList.remove('hidden');
 }
@@ -1030,6 +1063,192 @@ async function modBan(si) {
   const { error } = await db.rpc('bloquear_usuario', { p_username: $('#mbUser').value, p_bloquear: si });
   toast($('#mbMsg'), error ? error.message : (si ? 'Usuario bloqueado.' : 'Usuario desbloqueado.'), !error);
 }
+// ===== SOPORTE EN VIVO: usuarios <-> moderadores =====
+let spSel = null, spStarted = false, spTimer = null;
+const spVisible = () => !$('#v-soporte').classList.contains('hidden');
+const spErr = (e) => ({
+  ya_tienes_solicitud: 'Ya tienes una solicitud en curso.',
+  ya_tomado: 'Otro moderador ya aceptó esta solicitud.',
+  bloqueado: 'Tu cuenta no puede enviar solicitudes.',
+  chat_no_activo: 'Este chat ya se cerró.',
+  sin_sesion: 'Inicia sesión primero.',
+  solo_mods: 'Solo los moderadores pueden hacer esto.'
+}[(e && e.message) || ''] || ((e && e.message) || 'Error'));
+const spHora = (t) => new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+function soporteInit() {
+  if (!yo || spStarted) return;
+  spStarted = true;
+  db.channel('soporte-live')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'soporte_tickets' }, (p) => spTicketEvt(p))
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'soporte_msgs' }, (p) => spMsgEvt(p.new))
+    .subscribe();
+  spContar();
+  // los moderadores no reciben el aviso "ya la tomó otro" por tiempo real, así que se refresca cada 15 s
+  spTimer = setInterval(() => {
+    if (!yo || !yo.is_mod) return;
+    spContar();
+    if (spVisible() && !spSel && !(document.activeElement && document.activeElement.id === 'spAsunto')) pintarSoporte();
+  }, 15000);
+}
+
+async function spContar() {
+  const b = $('#spBadge');
+  if (!yo || !yo.is_mod) { b.classList.add('hidden'); return; }
+  const { count } = await db.from('soporte_tickets').select('id', { count: 'exact', head: true }).eq('estado', 'abierto').neq('user_id', yo.id);
+  b.textContent = count || ''; b.classList.toggle('hidden', !count);
+}
+
+let spLuego;
+function spTicketEvt(p) {
+  const n = p.new || {}, o = p.old || {};
+  if (p.eventType === 'INSERT' && yo.is_mod && n.estado === 'abierto' && n.user_id !== yo.id) flash('🛎️ Nueva solicitud de ayuda: ' + n.asunto);
+  if (p.eventType === 'UPDATE' && n.user_id === yo.id && o.estado !== undefined && n.estado === 'activo') flash('✅ Un moderador aceptó tu solicitud. ¡Ya puedes chatear!');
+  if (p.eventType === 'UPDATE' && n.estado === 'cerrado' && (n.user_id === yo.id || n.mod_id === yo.id)) flash('Chat de soporte cerrado.');
+  clearTimeout(spLuego);
+  spLuego = setTimeout(() => { spContar(); if (spVisible() && !(document.activeElement && document.activeElement.id === 'spAsunto')) pintarSoporte(); }, 300);
+}
+function spMsgEvt(m) {
+  if (m.user_id === yo.id) { if (spSel === m.ticket_id && spVisible()) spPintarMsgs(); return; }
+  if (spSel === m.ticket_id && spVisible()) spPintarMsgs();
+  else flash('💬 Nuevo mensaje en tu chat de soporte');
+}
+
+async function pintarSoporte() {
+  const box = $('#spBody');
+  if (!yo) { $('#spMes').innerHTML = ''; box.innerHTML = '<div class="card p-4 text-center space-y-3"><p class="text-zinc-300">Inicia sesión para hablar con un moderador.</p><button class="btn" onclick="exigirSesion()">Entrar</button></div>'; return; }
+  soporteInit();
+  spPintarMes();
+  if (spSel) return spPintarChat(spSel);
+
+  const { data: vivos } = await db.from('soporte_tickets').select('*').in('estado', ['abierto', 'activo']).order('created_at');
+  const mio = (vivos || []).find((t) => t.user_id === yo.id);
+  let h = '';
+
+  // ---- parte de usuario (todos, incluidos mods)
+  if (mio && mio.estado === 'activo') { spSel = mio.id; return spPintarChat(mio.id); }
+  if (mio) {
+    h += `<div class="card p-4 space-y-2"><div class="flex items-center justify-between"><h3 class="font-bold neon">Tu solicitud</h3><span class="sp-est">⏳ En espera</span></div>
+      <p class="text-sm text-zinc-300">“${esc(mio.asunto)}”</p>
+      <p class="text-sm text-zinc-400">Estamos avisando a los moderadores. En cuanto uno la acepte, aquí mismo se abre el chat en tiempo real.</p>
+      <button class="btn alt w-full" onclick="spCancelar(${mio.id})">Cancelar solicitud</button></div>`;
+  } else {
+    h += `<div class="card p-4 space-y-3"><h3 class="font-bold neon">💬 Hablar con un moderador</h3>
+      <p class="text-sm text-zinc-400">¿Tienes un problema, duda o queja? Cuéntanos y un moderador te atiende en un chat en vivo.</p>
+      <input id="spAsunto" class="input" maxlength="140" placeholder="¿En qué te ayudamos? (ej. No me llegaron mis puntos)">
+      <button class="btn w-full" onclick="spCrear()">Enviar solicitud</button><p id="spMsg" class="text-sm"></p></div>`;
+    // ¿atención reciente sin calificar?
+    const { data: pend } = await db.from('soporte_tickets').select('id,mod_id,closed_at').eq('user_id', yo.id).eq('estado', 'cerrado').is('calificacion', null).gt('puntos', 0).order('closed_at', { ascending: false }).limit(1);
+    if (pend && pend[0] && (Date.now() - new Date(pend[0].closed_at)) < 7 * 864e5) h += spEstrellasHtml(pend[0].id);
+  }
+
+  // ---- parte de moderador
+  if (yo.is_mod) {
+    const espera = (vivos || []).filter((t) => t.estado === 'abierto' && t.user_id !== yo.id);
+    const mios2 = (vivos || []).filter((t) => t.estado === 'activo' && t.mod_id === yo.id);
+    const ids = [...new Set([...espera, ...mios2].map((t) => t.user_id))];
+    let nombres = {};
+    if (ids.length) { const { data: ps } = await db.from('profiles').select('id,username,flag').in('id', ids); (ps || []).forEach((x) => nombres[x.id] = x); }
+    const nom = (id) => nombres[id] ? `${nombres[id].flag || ''} ${esc(nombres[id].username)}` : 'Usuario';
+    h += `<div class="card p-4 space-y-2"><h3 class="font-bold neon">🛎️ Solicitudes en espera (${espera.length})</h3>`
+      + (espera.map((t) => `<div class="flex items-center justify-between gap-2 p-2 rounded-xl" style="background:#0b121a"><div class="min-w-0"><p class="text-sm font-semibold truncate">${nom(t.user_id)}</p><p class="text-xs text-zinc-400 truncate">${esc(t.asunto)} · ${spHora(t.created_at)}</p></div><button class="btn" style="min-height:38px;padding:.3rem .9rem" onclick="spTomar(${t.id})">Aceptar</button></div>`).join('') || '<p class="text-sm text-zinc-500">Nadie está esperando ahora mismo 🎉</p>') + '</div>';
+    if (mios2.length) h += `<div class="card p-4 space-y-2"><h3 class="font-bold neon">Mis chats activos</h3>${mios2.map((t) => `<button class="btn alt w-full text-left" onclick="spSel=${t.id};pintarSoporte()">${nom(t.user_id)} — ${esc(t.asunto)}</button>`).join('')}</div>`;
+    h += '<div id="spRank" class="card p-4 space-y-2"></div>';
+    box.innerHTML = h;
+    spPintarRank();
+    return;
+  }
+  box.innerHTML = h;
+}
+
+async function spPintarMes() {
+  const mes = new Date(); mes.setDate(1);
+  const f = mes.toISOString().slice(0, 10);
+  const { data } = await db.from('mod_mes').select('mes,profiles(username,flag)').order('mes', { ascending: false }).limit(1);
+  const r = data && data[0];
+  $('#spMes').innerHTML = r && r.profiles ? `<div class="card p-3 text-center" style="border-color:#ffc83d88;box-shadow:0 0 18px #ffc83d33"><p class="text-xs text-zinc-400">Moderador del mes · ${new Date(r.mes + 'T12:00').toLocaleDateString('es', { month: 'long', year: 'numeric' })}</p><p class="font-bold" style="color:#ffd76a">${coronaMod(20)} ${r.profiles.flag || ''} ${esc(r.profiles.username)}</p></div>` : '';
+}
+
+async function spPintarRank() {
+  const el = $('#spRank'); if (!el) return;
+  const { data, error } = await db.rpc('mod_ranking_mes');
+  if (error) { el.innerHTML = ''; return; }
+  const med = ['🥇', '🥈', '🥉'];
+  const yoFila = (data || []).find((r) => r.user_id === yo.id);
+  el.innerHTML = `<h3 class="font-bold neon">🏆 Moderadores del mes</h3><p class="text-sm text-zinc-400">Tus puntos de este mes: <b class="text-white">${yoFila ? yoFila.puntos : 0}</b> · Chats atendidos: <b class="text-white">${yoFila ? yoFila.atendidos : 0}</b></p>`
+    + ((data || []).slice(0, 5).map((r, i) => `<div class="flex justify-between text-sm"><span>${med[i] || (i + 1) + '.'} ${r.flag || ''} ${esc(r.username)}</span><span class="text-zinc-400">${r.puntos} pts${r.promedio ? ' · ⭐' + r.promedio : ''}</span></div>`).join('') || '<p class="text-sm text-zinc-500">Todavía nadie suma puntos este mes.</p>')
+    + '<p class="text-xs text-zinc-500 pt-1">Cerrar un chat resuelto = 10 pts. Si el usuario te califica, +2 pts por estrella (hasta +10).</p>';
+}
+
+async function spCrear() {
+  if (!exigirSesion()) return;
+  const a = $('#spAsunto').value.trim();
+  if (a.length < 3) return toast($('#spMsg'), 'Cuéntanos un poco más (mínimo 3 letras).', false);
+  const { error } = await db.rpc('soporte_crear', { p_asunto: a });
+  if (error) return toast($('#spMsg'), spErr(error), false);
+  flash('Solicitud enviada. Un moderador te atenderá pronto.');
+  pintarSoporte();
+}
+async function spCancelar(id) { await db.rpc('soporte_cerrar', { p_id: id }); pintarSoporte(); spContar(); }
+async function spTomar(id) {
+  const { error } = await db.rpc('soporte_tomar', { p_id: id });
+  if (error) { flash(spErr(error)); return pintarSoporte(); }
+  spSel = id; pintarSoporte(); spContar();
+}
+
+async function spPintarChat(id) {
+  const { data: t } = await db.from('soporte_tickets').select('*, u:profiles!soporte_tickets_user_id_fkey(username,flag,avatar_url,is_mod), m:profiles!soporte_tickets_mod_id_fkey(username,flag,avatar_url,is_mod)').eq('id', id).maybeSingle();
+  if (!t) { spSel = null; return pintarSoporte(); }
+  const soyUser = t.user_id === yo.id;
+  const otro = soyUser ? t.m : t.u;
+  const est = t.estado === 'activo' ? '<span class="sp-est on">● En vivo</span>' : '<span class="sp-est">Cerrado</span>';
+  let h = `<div class="card p-4 space-y-3">
+    <div class="flex items-center justify-between gap-2"><button class="text-sm text-zinc-400" onclick="spSel=null;pintarSoporte()">← Volver</button>${est}</div>
+    <div><p class="text-xs text-zinc-400">${soyUser ? 'Moderador que te atiende' : 'Usuario que pidió ayuda'}</p><p class="font-bold">${otro ? nombreHtml(Object.assign({}, otro, { is_mod: !!otro.is_mod }), true) : '—'}</p><p class="text-xs text-zinc-400 mt-1">Asunto: ${esc(t.asunto)}</p></div>
+    <div id="spMsgs" class="sp-msgs"></div>`;
+  if (t.estado === 'activo') {
+    h += `<div class="flex gap-2"><input id="spIn" class="input" maxlength="1000" placeholder="Escribe un mensaje" onkeydown="if(event.key==='Enter')spEnviar(${t.id})"><button class="btn" onclick="spEnviar(${t.id})">Enviar</button></div>
+      <button class="btn alt w-full" onclick="spCerrar(${t.id}, ${soyUser})">${soyUser ? '✅ Mi problema ya se resolvió (cerrar chat)' : '✅ Problema resuelto — cerrar chat'}</button>`;
+  } else {
+    h += '<p class="text-sm text-zinc-400 text-center">Este chat se cerró.</p>';
+    if (soyUser && t.puntos > 0 && t.calificacion == null) h += spEstrellasHtml(t.id, true);
+    else if (soyUser && t.calificacion) h += `<p class="text-center text-sm text-emerald-400">Tu calificación: ${'⭐'.repeat(t.calificacion)} ¡Gracias!</p>`;
+  }
+  $('#spBody').innerHTML = h + '</div>';
+  spPintarMsgs();
+}
+async function spPintarMsgs() {
+  const box = $('#spMsgs'); if (!box || !spSel) return;
+  const { data } = await db.from('soporte_msgs').select('id,user_id,body,created_at').eq('ticket_id', spSel).order('created_at');
+  const cerca = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
+  box.innerHTML = (data || []).map((m) => `<div class="bub ${m.user_id === yo.id ? 'yo' : ''}"><div class="m">${esc(m.body)}<div class="text-[10px] opacity-60 text-right">${spHora(m.created_at)}</div></div></div>`).join('') || '<p class="text-sm text-zinc-500 text-center">Escribe el primer mensaje 👋</p>';
+  if (cerca || box.dataset.f !== '1') { box.scrollTop = box.scrollHeight; box.dataset.f = '1'; }
+}
+async function spEnviar(id) {
+  const i = $('#spIn'); const v = i.value.trim(); if (!v) return;
+  i.value = '';
+  const { error } = await db.rpc('soporte_enviar', { p_id: id, p_body: v });
+  if (error) { flash(spErr(error)); return pintarSoporte(); }
+  spPintarMsgs();
+}
+async function spCerrar(id, soyUser) {
+  if (!confirm(soyUser ? '¿Tu problema ya se resolvió? Se cerrará el chat.' : '¿Marcar como resuelto y cerrar el chat?')) return;
+  const { error } = await db.rpc('soporte_cerrar', { p_id: id });
+  if (error) return flash(spErr(error));
+  if (!soyUser) flash('Chat cerrado. ¡Gracias por ayudar! 👑');
+  pintarSoporte();
+}
+function spEstrellasHtml(id, enChat) {
+  return `<div class="card p-4 text-center space-y-2" id="spEst"><p class="font-bold">¿Qué tal te atendió el moderador?</p><p class="text-xs text-zinc-400">Tu calificación le da puntos para ser Moderador del mes.</p>
+    <div class="flex justify-center gap-2">${[1, 2, 3, 4, 5].map((n) => `<button class="sp-star" onmouseover="spPrev(${n})" onclick="spCalificar(${id},${n})">⭐</button>`).join('')}</div></div>`;
+}
+function spPrev(n) { document.querySelectorAll('#spEst .sp-star').forEach((e, i) => e.classList.toggle('on', i < n)); }
+async function spCalificar(id, n) {
+  const { error } = await db.rpc('soporte_calificar', { p_id: id, p_estrellas: n });
+  flash(error ? spErr(error) : '¡Gracias por tu calificación!');
+  pintarSoporte();
+}
+
 iniciar();
 </script>
 </body>
