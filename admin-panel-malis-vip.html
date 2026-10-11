@@ -82,11 +82,9 @@ h2{font-weight:700;font-size:1.1rem;color:#ffe3e8}
     <div class="grid grid-cols-3 gap-3 text-center">
       <div class="card"><p id="stU" class="text-2xl font-bold">–</p><p class="text-xs mut">Usuarios</p></div>
       <div class="card"><p id="stP" class="text-2xl font-bold">–</p><p class="text-xs mut">Publicaciones</p></div>
-      <div class="card"><p id="stF" class="text-2xl font-bold">–</p><p class="text-xs mut">En fila</p></div>
     </div>
     <div class="mosaico">
       <button class="tile t1" onclick="ir('din')"><i>🎯</i><span><b>Dinámicas</b><small>110 listas para lanzar</small></span></button>
-      <button class="tile t2" onclick="ir('show')"><i>🎙️</i><span><b>Show en vivo</b><small>Fila y concursante</small></span></button>
       <button class="tile t4" onclick="ir('reg')"><i>🎁</i><span><b>Regalar</b><small>Puntos y M-Coins</small></span></button>
       <button class="tile t3" onclick="ir('pub')"><i>🖼️</i><span><b>Publicar</b><small>Fotos y videos</small></span></button>
       <button class="tile t5" onclick="ir('usr')"><i>👥</i><span><b>Usuarios</b><small>Buscar y administrar</small></span></button>
@@ -139,25 +137,6 @@ h2{font-weight:700;font-size:1.1rem;color:#ffe3e8}
       <input id="cOk" type="number" inputmode="numeric" class="input hidden" placeholder="Número de la opción correcta (1 a 4)">
       <button id="cLanzar" class="btn w-full">Lanzar dinámica</button>
     </div>
-  </div>
-
-  <div id="p-show" class="pantalla hidden space-y-4">
-    <div class="card space-y-2">
-      <h2>Cómo funciona</h2>
-      <p class="text-sm mut">1. Los seguidores se forman en la fila desde la pestaña Show de la web. 2. Toca <b>Llamar al siguiente</b>: a esa persona le sale “Es tu turno”. 3. Ella enciende su micrófono y tú la escuchas aquí. 4. Cuando acabe, toca <b>Terminar turno</b>. Deja esta pantalla abierta durante el show.</p>
-    </div>
-    <div class="card space-y-3">
-      <p id="turno" class="font-semibold">Nadie en turno.</p>
-      <button id="micAdmin" class="btn alt w-full">🎙️ Encender mi micrófono</button>
-      <p class="text-xs mut">Usa audífonos para que no haya eco. Cuando llames a alguien, te escuchará automáticamente.</p>
-      <audio id="rv" autoplay controls class="w-full"></audio>
-      <div class="grid grid-cols-2 gap-3">
-        <button id="siguiente" class="btn">Llamar al siguiente</button>
-        <button id="terminar" class="btn rojo">Terminar turno</button>
-      </div>
-      <button id="regTurno" class="btn verde w-full hidden">🎁 Regalar puntos / M-Coins al concursante</button>
-    </div>
-    <div class="card"><h2 class="mb-2">Fila de espera</h2><div id="fila"></div></div>
   </div>
 
   <div id="p-reg" class="pantalla hidden space-y-4">
@@ -214,7 +193,6 @@ h2{font-weight:700;font-size:1.1rem;color:#ffe3e8}
     <div class="card space-y-3"><h2>Funciones</h2>
       <label class="flex gap-3"><input id="wRul" type="checkbox" class="w-5 h-5"> Ruleta activa</label>
       <label class="flex gap-3"><input id="wTie" type="checkbox" class="w-5 h-5"> Tienda activa</label>
-      <label class="flex gap-3"><input id="wSho" type="checkbox" class="w-5 h-5"> Show activo</label>
       <label class="text-xs mut">Puntos de bienvenida para usuarios nuevos (0 = apagado)</label><input id="wBono" type="number" inputmode="numeric" class="input" value="200">
       <button id="wGuardar" class="btn w-full">Guardar cambios</button>
     </div>
@@ -229,14 +207,13 @@ h2{font-weight:700;font-size:1.1rem;color:#ffe3e8}
 </div>
 <div id="aviso2"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="supabase.js"></script>
 <script>
 const $ = (s) => document.querySelector(s);
 const esc = (t) => String(t ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const canal = db.channel('regalos');
 canal.subscribe();
-let live = false, estado = {}, peerA = null, miMic = null, ultTurno = null;
+let live = false, estado = {};
 
 const CAT = [];
 const add = (tipo, titulo, pregunta, resp, ops) => CAT.push({ tipo, titulo, pregunta, resp, ops: ops || null });
@@ -323,23 +300,18 @@ async function arrancar() {
   $('#panel').classList.remove('hidden');
   escucharSettings(pintar);
   cargarStats();
-  iniciarShow();
 }
 
 async function cargarStats() {
   const cuenta = async (t) => (await db.from(t).select('*', { count: 'exact', head: true })).count ?? 0;
   $('#stU').textContent = await cuenta('profiles');
   $('#stP').textContent = await cuenta('posts');
-  $('#stF').textContent = await cuenta('cola');
 }
 
 function pintar(s) {
   estado = s; live = s.live;
-  if (s.turno_user !== ultTurno) { ultTurno = s.turno_user; setTimeout(() => llamarConcursante(0), 1500); }
   $('#gran').textContent = 'Modo Live: ' + (live ? 'ON' : 'OFF');
   $('#gran').classList.toggle('on', live);
-  $('#turno').textContent = s.turno_name ? 'En turno: ' + s.turno_name : 'Nadie en turno.';
-  $('#regTurno').classList.toggle('hidden', !s.turno_name);
   const nombre = s.din_titulo ? `${s.din_titulo} · ${s.din_pregunta}` : '';
   $('#dinEstado').textContent = s.din_ronda
     ? `Ronda ${s.din_ronda} · ${s.din_abierta ? 'ABIERTA' : 'cerrada'} · ${s.din_max} ganadores · ${s.din_premio} pts\n${nombre}`
@@ -436,11 +408,6 @@ $('#gEnviar').onclick = () => {
   const u = $('#gUser').value.trim(), c = parseInt($('#gCant').value, 10);
   if (!u || !c) return aviso('Escribe el usuario y la cantidad.');
   let t = $('#gTipo').value; if (t[0] === 'q') { t = t.slice(1); regalar(u, -Math.abs(c), t); } else regalar(u, c, t);
-};
-$('#regTurno').onclick = () => {
-  const t = confirm('Aceptar = regalar PUNTOS\nCancelar = regalar M-Coins') ? 'pts' : 'mc';
-  const n = parseInt(prompt('¿Cuántos ' + (t === 'pts' ? 'puntos' : 'M-Coins') + '?'), 10);
-  if (n) regalar(estado.turno_name, n, t);
 };
 async function sugeridos() {
   const { data } = await db.from('profiles').select('username').order('created_at', { ascending: false }).limit(60);
@@ -599,28 +566,6 @@ async function cargarMods() {
 async function aprobar(id) { const { error } = await db.rpc('aprobar_mod', { p_user: id }); if (error) falla(error); cargarMods(); }
 async function quitarMod(id) { if (confirm('¿Quitar moderador?')) { const { error } = await db.rpc('quitar_mod', { p_user: id }); if (error) falla(error); cargarMods(); } }
 
-async function pintarFila() {
-  const { data } = await db.from('cola').select('vip, created_at, profiles(username,flag)').order('vip', { ascending: false }).order('created_at');
-  $('#fila').innerHTML = (data || []).map((c, i) => `<div class="fila"><span>${i + 1}. ${c.profiles.flag} ${esc(c.profiles.username)}</span>${c.vip ? '<span class="chip">VIP</span>' : ''}</div>`).join('') || '<p class="text-sm mut">Fila vacía.</p>';
-  $('#stF').textContent = (data || []).length;
-}
-function iniciarShow() {
-  peerA = new Peer('malis-admin-panel');
-  peerA.on('call', (llamada) => {
-    llamada.answer(miMic || undefined);
-    llamada.on('stream', (flujo) => { const v = $('#rv'); v.srcObject = flujo; v.play().catch(() => {}); });
-  });
-  pintarFila();
-  db.channel('cola-live').on('postgres_changes', { event: '*', schema: 'public', table: 'cola' }, pintarFila).subscribe();
-  setInterval(pintarFila, 8000);
-}
-$('#siguiente').onclick = async () => {
-  const { data, error } = await db.rpc('llamar_siguiente');
-  if (error) return falla(error);
-  aviso(data ? 'Llamaste a ' + data : 'La fila está vacía.');
-  pintarFila();
-};
-$('#terminar').onclick = async () => { const { error } = await db.rpc('terminar_turno'); if (error) falla(error); $('#rv').srcObject = null; };
 
 $('#borrarSel').onclick = async () => {
   const c = [...document.querySelectorAll('.sel:checked')];
@@ -640,7 +585,7 @@ function cargarWeb() {
   $('#wFondo').value = (estado.bg_valor || '').startsWith('preset:') ? estado.bg_valor : 'preset:camo';
   $('#wAc').value = estado.acento || '#fe2c55';
   $('#wBono').value = estado.bono_nuevos ?? 200;
-  $('#wRul').checked = estado.f_ruleta !== false; $('#wTie').checked = estado.f_tienda !== false; $('#wSho').checked = estado.f_show !== false;
+  $('#wRul').checked = estado.f_ruleta !== false; $('#wTie').checked = estado.f_tienda !== false;
 }
 $('#wGuardar').onclick = async () => {
   let bg = $('#wFondo').value; const f = $('#wImg').files[0];
@@ -650,7 +595,7 @@ $('#wGuardar').onclick = async () => {
     if (e) return falla(e);
     bg = 'img:' + db.storage.from('media').getPublicUrl(path).data.publicUrl;
   }
-  const { error } = await db.rpc('ajustar_web', { p_bg: bg, p_acento: $('#wAc').value, p_libre: false, p_ruleta: $('#wRul').checked, p_tienda: $('#wTie').checked, p_show: $('#wSho').checked });
+  const { error } = await db.rpc('ajustar_web', { p_bg: bg, p_acento: $('#wAc').value, p_libre: false, p_ruleta: $('#wRul').checked, p_tienda: $('#wTie').checked, p_show: true });
   const r2 = await db.rpc('ajustar_bono', { p_bono: Math.max(0, parseInt($('#wBono').value, 10) || 0) });
   (error || r2.error) ? falla(error || r2.error) : aviso('✅ Guardado. La web ya cambió.');
 };
@@ -663,19 +608,6 @@ $('#luzA').onclick = () => {
   let c = 'roja';
   const ciclo = async () => { c = c === 'verde' ? 'roja' : 'verde'; await db.rpc('cambiar_luz', { p_color: c }); luzT = setTimeout(ciclo, c === 'verde' ? 3000 + Math.random() * 4000 : 1500 + Math.random() * 2500); };
   ciclo();
-};
-function llamarConcursante(n) {
-  if (!miMic || !estado.turno_user || !peerA || n > 5) return;
-  const c = peerA.call('malis-' + estado.turno_user, miMic); let ok = false;
-  c.on('stream', () => { ok = true; });
-  setTimeout(() => { if (!ok) llamarConcursante(n + 1); }, 2500);
-}
-$('#micAdmin').onclick = async () => {
-  if (miMic) { miMic.getTracks().forEach((t) => t.stop()); miMic = null; $('#micAdmin').textContent = '🎙️ Encender mi micrófono'; return; }
-  try { miMic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
-  catch { return aviso('Permite el micrófono en el navegador.'); }
-  $('#micAdmin').textContent = '🎙️ Mi micrófono: ENCENDIDO';
-  llamarConcursante(0);
 };
 db.channel('panel-live')
   .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => { cargarStats(); if (!$('#p-usr').classList.contains('hidden')) cargarUsuarios(); })

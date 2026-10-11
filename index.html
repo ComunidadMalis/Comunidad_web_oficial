@@ -110,7 +110,6 @@ article.card{border-radius:14px}
   <button class="tab" data-v="dinamica"><i>🎯</i>Dinámica</button>
   <button class="tab" data-v="ruleta"><i>🎡</i>Ruleta</button>
   <button class="tab" data-v="top"><i>🏆</i>Top</button>
-  <button class="tab" data-v="show"><i>🎙️</i>Show</button>
   <button class="tab" data-v="tienda"><i>🛍️</i>Tienda</button>
   <button class="tab" data-v="premium"><i>⭐</i>Premium</button>
   <button class="tab" data-v="perfil"><i>👤</i>Perfil</button>
@@ -148,24 +147,9 @@ article.card{border-radius:14px}
 
   <section id="v-top" class="hidden space-y-3">
     <div class="flex gap-2"><button class="btn" id="topG">Global</button><button class="btn alt" id="topR">Mi región</button></div>
+    <p id="topYo" class="text-sm text-center text-zinc-400"></p>
     <div id="topLista" class="card divide-y divide-zinc-800"></div>
-  </section>
-
-  <section id="v-show" class="hidden space-y-3">
-    <div class="card p-4 space-y-3">
-      <h3 class="font-bold neon">Show de preguntas en vivo</h3>
-      <p id="turnoActual" class="text-zinc-400"></p>
-      <button id="filaBase" class="btn w-full">Entrar a la fila · 200 puntos</button>
-      <button id="filaVip" class="btn alt w-full">Fila VIP (Fast Pass) · 30 M-Coins</button>
-      <p id="filaMsg" class="text-sm"></p>
-    </div>
-    <div id="turnoCard" class="hidden card p-4 space-y-3" style="border-color:#00e676">
-      <h3 class="font-bold neon">¡Es tu turno!</h3>
-      <p class="text-sm text-zinc-400">Tu micrófono está apagado. Enciéndelo para hablar; en el show solo se usa audio.</p>
-      <audio id="remoto" autoplay playsinline></audio><p id="escucha" class="text-sm text-emerald-400">🔊 Cuando Malis hable, lo escucharás aquí.</p><button id="sonBtn" class="btn alt w-full">🔊 Activar sonido</button>
-      <button id="micBtn" class="btn w-full">🎙️ Encender micrófono</button>
-      <p id="turnoMsg" class="text-sm"></p>
-    </div>
+    <button id="topMas" class="btn alt w-full hidden">Ver más</button>
   </section>
 
   <section id="v-tienda" class="hidden space-y-3">
@@ -244,7 +228,6 @@ article.card{border-radius:14px}
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="supabase.js?v=2"></script>
 <script>
 const PAGOS_ACTIVOS = false;
@@ -282,7 +265,6 @@ async function iniciar() {
     aplicarTema(s);
     $('#live').classList.toggle('hidden', !s.live);
     pintarDinamica(s);
-    turno(s);
   });
 }
 
@@ -473,8 +455,29 @@ async function responder(v) {
 
 async function pintarGanadores() {
   const { data } = await ganadoresDin(ronda);
-  $('#dinGan').innerHTML = (data || []).map((w, i) => `<li>${i + 1}. ${w.profiles.flag} ${esc(w.profiles.username)}</li>`).join('') || '<li class="text-zinc-500">Aún no hay ganadores.</li>';
+  $('#dinGan').innerHTML = (data || []).map((w, i) => `<li style="cursor:pointer" onclick="verPerfil('${esc(w.profiles.username)}')">${i + 1}. ${w.profiles.flag} ${esc(w.profiles.username)}</li>`).join('') || '<li class="text-zinc-500">Aún no hay ganadores.</li>';
 }
+
+let topN = 20;
+async function pintarTop() {
+  $('#topG').classList.toggle('alt', regional); $('#topR').classList.toggle('alt', !regional);
+  if (regional && !yo) { $('#topLista').innerHTML = '<p class="p-4 text-zinc-400">Inicia sesión para ver el ranking de tu región.</p>'; $('#topMas').classList.add('hidden'); $('#topYo').textContent = ''; return; }
+  const { data, error } = await cargarTop(regional ? yo.country : null, topN);
+  if (error) { $('#topLista').innerHTML = '<p class="p-4 text-zinc-400">No se pudo cargar el ranking.</p>'; return; }
+  const med = ['🥇', '🥈', '🥉'];
+  $('#topLista').innerHTML = (data || []).map((u, i) => `
+    <div class="flex items-center justify-between p-3 ${yo && u.username === yo.username ? 'bg-white/5' : ''}"><span>${med[i] || (i + 1) + '.'} ${avatarHtml(u, 28)} ${u.flag} ${nombreHtml(u)}</span><span class="text-sm text-zinc-400">${rangoDe(u.points)} · ${u.points} pts</span></div>`).join('') || '<p class="p-4 text-zinc-400">Todavía no hay nadie en el ranking.</p>';
+  $('#topMas').classList.toggle('hidden', (data || []).length < topN || topN >= 100);
+  if (yo) {
+    let q = db.from('profiles').select('id', { count: 'exact', head: true }).gt('points', yo.points);
+    if (regional) q = q.eq('country', yo.country);
+    const { count } = await q;
+    $('#topYo').textContent = `Tu posición: #${(count || 0) + 1} · ${yo.points} pts`;
+  } else $('#topYo').textContent = '';
+}
+$('#topG').onclick = () => { regional = false; topN = 20; pintarTop(); };
+$('#topR').onclick = () => { regional = true; topN = 20; pintarTop(); };
+$('#topMas').onclick = () => { topN = topN < 50 ? 50 : 100; pintarTop(); };
 
 const SECTORES = [['50', '#1f2937'], ['100', '#233142'], ['200', '#1f2937'], ['500', '#233142'], ['1000', '#1f2937'], ['10,000', '#00a152']];
 function dibujarRueda() {
@@ -502,13 +505,6 @@ async function jugarRuleta(pagado) {
 $('#giroGratis').onclick = () => jugarRuleta(false);
 $('#giroExtra').onclick = () => jugarRuleta(true);
 
-async function pintarTop() {
-  const { data } = await cargarTop(regional && yo ? yo.country : null);
-  $('#topLista').innerHTML = (data || []).map((u, i) => `
-    <div class="flex items-center justify-between p-3"><span>${i + 1}. ${avatarHtml(u, 26)} ${u.flag} ${nombreHtml(u)}</span><span class="text-sm text-zinc-400">${rangoDe(u.points)} · ${u.points} pts</span></div>`).join('');
-}
-$('#topG').onclick = () => { regional = false; pintarTop(); };
-$('#topR').onclick = () => { regional = true; pintarTop(); };
 
 function botonPago(id, monto, descripcion, alAprobar) {
   if (!window.paypal) return;
@@ -541,8 +537,8 @@ const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 
 const esPrem = (u) => !!u && u.role === 'Premium' && (!u.premium_until || new Date(u.premium_until) > new Date());
 const avatarHtml = (u, s) => u && u.avatar_url
-  ? `<img src="${esc(u.avatar_url)}" class="rounded-full object-cover inline-block align-middle" style="width:${s}px;height:${s}px">`
-  : `<span class="inline-flex items-center justify-center rounded-full font-bold align-middle" style="width:${s}px;height:${s}px;background:var(--line);font-size:${s / 2}px">${esc(((u && u.username) || '?')[0].toUpperCase())}</span>`;
+  ? `<img src="${esc(u.avatar_url)}" onclick="verPerfil('${esc(u.username)}')" class="rounded-full object-cover inline-block align-middle" style="cursor:pointer;width:${s}px;height:${s}px">`
+  : `<span onclick="verPerfil('${esc((u && u.username) || '')}')" class="inline-flex items-center justify-center rounded-full font-bold align-middle" style="cursor:pointer;width:${s}px;height:${s}px;background:var(--line);font-size:${s / 2}px">${esc(((u && u.username) || '?')[0].toUpperCase())}</span>`;
 function nombreHtml(u) {
   const o = u.owned || [];
   const cls = [o.includes('texto_rgb') ? 'rgb' : (esPrem(u) ? 'dorado' : ''), o.includes('marco_fuego') ? 'fuego' : '', o.includes('fondo_espacial') ? 'espacial' : ''].join(' ');
@@ -587,57 +583,7 @@ async function comprarItem(id) {
   yo = await miPerfil(); pintarBarra(); pintarTienda();
 }
 
-async function entrarFila(vip) {
-  if (!exigirSesion()) return;
-  const { error } = await unirseFila(vip);
-  toast($('#filaMsg'), error ? error.message : 'Ya estás en la fila.', !error);
-  yo = await miPerfil(); pintarBarra();
-}
-$('#filaBase').onclick = () => entrarFila(false);
-$('#filaVip').onclick = () => entrarFila(true);
 
-let peer = null, llamada = null, flujo = null, micOn = false, camOn = false, entrante = null;
-function silencio() { const C = window.AudioContext || window.webkitAudioContext; return new C().createMediaStreamDestination().stream; }
-function asegurarPeer() {
-  if (peer || !yo) return;
-  peer = new Peer('malis-' + yo.id);
-  peer.on('call', (c) => {
-    entrante = c; c.answer(flujo || silencio());
-    c.on('stream', (s) => { const a = $('#remoto'); a.srcObject = s; a.play().catch(() => {}); $('#escucha').textContent = '🔊 Escuchando a Malis'; });
-  });
-}
-$('#sonBtn').onclick = () => $('#remoto').play().catch(() => {});
-function turno(s) {
-  const mio = !!yo && s.turno_user === yo.id;
-  $('#turnoActual').textContent = s.turno_name ? `Concursante en turno: ${s.turno_name}` : 'Nadie está en turno ahora.';
-  $('#turnoCard').classList.toggle('hidden', !mio);
-  if (mio) asegurarPeer(); else cortar();
-}
-function pintarBotones() {
-  $('#micBtn').textContent = micOn ? '🎙️ Micrófono encendido' : '🎙️ Encender micrófono';
-}
-function cortar() {
-  if (entrante) { entrante.close(); entrante = null; }
-  if ($('#remoto')) $('#remoto').srcObject = null;
-  if (flujo) flujo.getTracks().forEach((t) => t.stop());
-  if (llamada) llamada.close();
-  flujo = null; llamada = null; micOn = false; camOn = false;
-  if ($('#micBtn')) pintarBotones();
-}
-async function conectar() {
-  if (flujo) flujo.getTracks().forEach((t) => t.stop());
-  if (llamada) llamada.close();
-  try {
-    flujo = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-  } catch {
-    micOn = false; camOn = false; pintarBotones();
-    return toast($('#turnoMsg'), 'Permite el acceso al micrófono en tu navegador.', false);
-  }
-  asegurarPeer();
-  const llamar = () => { llamada = peer.call('malis-admin-panel', flujo); };
-  if (peer.open) llamar(); else peer.once('open', llamar);
-}
-$('#micBtn').onclick = async () => { micOn = !micOn; pintarBotones(); if (micOn) await conectar(); else cortar(); };
 
 function confeti() {
   for (let i = 0; i < 70; i++) {
@@ -660,7 +606,6 @@ const TUTO = [
   { v: 'dinamica', t: '🎯 <b>Dinámica</b>: cuando lance un juego en el live (palabra secreta, trivia, reflejos o sorteo) aparece aquí al instante. ¡Gana puntos respondiendo primero!' },
   { v: 'ruleta', t: '🎡 <b>Ruleta</b>: tienes un giro gratis cada 24 horas. Si quieres otro, cuesta 10 M-Coins. Puedes ganar hasta 10,000 puntos.' },
   { v: 'top', t: '🏆 <b>Top</b>: el ranking de la comunidad. Sube de rango: Bronce, Platino, Heroico y Gran Maestro. Toca el nombre de alguien para ver su perfil.' },
-  { v: 'show', t: '🎙️ <b>Show</b>: entra a la fila (200 puntos, o 30 M-Coins para pasar primero). Cuando sea tu turno enciendes tu micrófono y hablamos en vivo. Ábrelo en tu navegador, no dentro de TikTok.' },
   { v: 'tienda', t: '🛍️ <b>Tienda</b>: con M-Coins compras estilos para tu nombre: marco de fuego, fondo espacial o texto arcoíris.' },
   { v: 'premium', t: '⭐ <b>Premium</b>: contenido exclusivo y tu nombre en dorado. Aquí también puedes pedir ser moderador.' },
   { v: 'perfil', t: '👤 <b>Perfil</b>: sube tu foto, tu banner y escribe algo sobre ti. Así te ven todos en el Top y en los comentarios.' },
@@ -762,7 +707,7 @@ function aplicarTema(s) {
   document.body.style.backgroundAttachment = 'fixed';
   $('#bonoTxt').textContent = s.bono_nuevos > 0 ? '🎁 Crea tu cuenta y recibe ' + s.bono_nuevos + ' puntos gratis' : '';
   if (s.acento && s.acento !== '#d4a93c') document.documentElement.style.setProperty('--mor', s.acento);
-  [['ruleta', s.f_ruleta], ['tienda', s.f_tienda], ['show', s.f_show]].forEach(([k, f]) => { document.querySelector('[data-v=' + k + ']').style.display = f === false ? 'none' : ''; });
+  [['ruleta', s.f_ruleta], ['tienda', s.f_tienda]].forEach(([k, f]) => { document.querySelector('[data-v=' + k + ']').style.display = f === false ? 'none' : ''; });
   if (LIBRE !== !!s.premium_libre) { LIBRE = !!s.premium_libre; pintarMuro(); }
 }
 async function borrarPostMod(id) {
