@@ -233,7 +233,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script src="supabase.js"></script>
+<script src="supabase.js?v=2"></script>
 <script>
 const PAGOS_ACTIVOS = false;
 const DONACION_URL = '';
@@ -301,7 +301,7 @@ const msgAuth = (e) => {
   return 'Error: ' + (m || 'desconocido');
 };
 async function tras() {
-  if (SESION_PERSISTE) return location.reload();
+  if (typeof SESION_PERSISTE === 'undefined' || SESION_PERSISTE) return location.reload();
   yo = await miPerfil();
   if (!yo) { $('#aMsg').textContent = 'No se pudo cargar tu perfil. Intenta de nuevo.'; return; }
   $('#auth').classList.add('hidden');
