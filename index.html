@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Comunidad de Malis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@700;800&display=swap" rel="stylesheet">
@@ -21,54 +21,54 @@
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
-:root{--bg:#09090b;--line:#2b2340;--tx:#f4f4f5;--mut:#a1a1aa;--verde:#00e676;--mor:#a855f7;--mor2:#7c3aed}
+:root{--bg:#09090b;--line:#33301f;--tx:#f4f4f5;--mut:#a1a1aa;--verde:#00e676;--mor:#d4a93c;--mor2:#6b7a3a}
 *{-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-system,sans-serif;padding-bottom:92px;background-image:radial-gradient(900px 500px at 85% -10%,#7c3aed33,transparent 60%),radial-gradient(700px 400px at -10% 35%,#00e67614,transparent 60%);background-attachment:fixed}
+body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-system,sans-serif;padding-bottom:92px;background-image:radial-gradient(900px 500px at 85% -10%,#6b7a3a33,transparent 60%),radial-gradient(700px 400px at -10% 35%,#00e67614,transparent 60%);background-attachment:fixed}
 .brand{font-family:'Orbitron',system-ui,sans-serif;font-weight:800;letter-spacing:.05em;line-height:1.1}
 .brand span{color:var(--mor)}
-.neon{color:#ede9fe;text-shadow:0 0 14px #a855f799}
-.card{background:linear-gradient(180deg,#171321,#110e19);border:1px solid var(--line);border-radius:18px}
-.btn{position:relative;overflow:hidden;min-height:46px;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;font-weight:700;border-radius:13px;padding:.65rem 1.1rem;box-shadow:0 6px 20px #7c3aed55;transition:transform .15s}
+.neon{color:#fff4d0;text-shadow:0 0 14px #d4a93c99}
+.card{background:linear-gradient(180deg,#17160f,#11100b);border:1px solid var(--line);border-radius:18px}
+.btn{position:relative;overflow:hidden;min-height:46px;background:linear-gradient(135deg,var(--mor),#6b7a3a);color:#fff;font-weight:700;border-radius:13px;padding:.65rem 1.1rem;box-shadow:0 6px 20px #6b7a3a55;transition:transform .15s}
 .btn:active{transform:scale(.97)}
 .btn:not(.alt)::after{content:"";position:absolute;top:0;left:-120%;width:55%;height:100%;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:skewX(-20deg);animation:brillo 3.6s infinite}
 @keyframes brillo{60%,100%{left:140%}}
-.btn.alt{background:transparent;color:#d8b4fe;border:1px solid #a855f788;box-shadow:none}
+.btn.alt{background:transparent;color:#f1d98a;border:1px solid #d4a93c88;box-shadow:none}
 .btn:disabled{opacity:.4}
 .btn:disabled::after{display:none}
-.input{background:#0f0c16;border:1px solid var(--line);border-radius:13px;padding:.8rem 1rem;width:100%;min-height:48px;color:var(--tx)}
+.input{background:#0d0c08;border:1px solid var(--line);border-radius:13px;padding:.8rem 1rem;width:100%;min-height:48px;color:var(--tx)}
 .input:focus{outline:2px solid var(--mor);border-color:transparent}
 .lbl{display:block;font-size:.8rem;color:var(--mut);margin:14px 0 6px}
 #nav{position:fixed;left:0;right:0;bottom:0;z-index:45;display:flex;gap:4px;overflow-x:auto;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:#0b0912ee;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line)}
 .tab{flex:0 0 auto;min-width:70px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 10px;border-radius:13px;color:var(--mut);font-size:.72rem;font-weight:600}
 .tab i{font-style:normal;font-size:1.3rem}
-.tab.on{color:#fff;background:linear-gradient(180deg,#a855f740,#a855f712);box-shadow:inset 0 0 0 1px #a855f77a}
+.tab.on{color:#fff;background:linear-gradient(180deg,#d4a93c40,#d4a93c12);box-shadow:inset 0 0 0 1px #d4a93c7a}
 #live{background:linear-gradient(90deg,#e11d48,#be123c);color:#fff;animation:parpadeo 1s infinite}
 @keyframes parpadeo{50%{opacity:.6}}
 .blur-media{filter:blur(18px);transform:scale(1.05)}
 .lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:1rem}
-.lock div{background:#09090bdd;border:1px solid var(--mor);box-shadow:0 0 22px #a855f788;border-radius:16px;padding:1rem;text-align:center;animation:pulso 2.2s infinite}
-@keyframes pulso{50%{box-shadow:0 0 36px #a855f7cc}}
+.lock div{background:#09090bdd;border:1px solid var(--mor);box-shadow:0 0 22px #d4a93c88;border-radius:16px;padding:1rem;text-align:center;animation:pulso 2.2s infinite}
+@keyframes pulso{50%{box-shadow:0 0 36px #d4a93ccc}}
 .chispa{position:fixed;width:6px;height:6px;border-radius:50%;pointer-events:none;z-index:60;animation:salta .7s ease-out forwards}
 @keyframes salta{to{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
-.rgb{background:linear-gradient(90deg,#f43f5e,#f59e0b,#22c55e,#06b6d4,#a855f7,#f43f5e);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 3s linear infinite}
+.rgb{background:linear-gradient(90deg,#f43f5e,#f59e0b,#22c55e,#06b6d4,#d4a93c,#f43f5e);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 3s linear infinite}
 @keyframes rgb{to{background-position:200% center}}
 .fuego{box-shadow:0 0 0 2px #f97316,0 0 14px #ef4444,0 -6px 16px #f59e0b;border-radius:10px;padding:0 6px;animation:llama .6s infinite alternate}
 @keyframes llama{to{box-shadow:0 0 0 2px #fbbf24,0 0 22px #f97316,0 -10px 22px #ef4444}}
-.espacial{background:radial-gradient(circle at 20% 30%,#4c1d95,#09090b 70%);border-radius:10px;padding:0 6px}
+.espacial{background:radial-gradient(circle at 20% 30%,#3f4a1f,#09090b 70%);border-radius:10px;padding:0 6px}
 .confeti{position:fixed;top:-10px;width:9px;height:14px;z-index:70;pointer-events:none;animation:cae 2.4s linear forwards}
 @keyframes cae{to{transform:translateY(105vh) rotate(720deg)}}
-#auth{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:20px;background:#07060b;overflow:hidden}
+#auth{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:20px;background:#07060b;overflow-y:auto}
 #auth.hidden{display:none}
 .orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;animation:deriva 14s ease-in-out infinite alternate}
-.o1{width:380px;height:380px;background:#7c3aed;top:-90px;left:-70px}
+.o1{width:380px;height:380px;background:#6b7a3a;top:-90px;left:-70px}
 .o2{width:320px;height:320px;background:#00e676;bottom:-100px;right:-80px;opacity:.26;animation-duration:18s}
-.o3{width:250px;height:250px;background:#a855f7;top:45%;left:55%;animation-duration:22s}
+.o3{width:250px;height:250px;background:#d4a93c;top:45%;left:55%;animation-duration:22s}
 @keyframes deriva{to{transform:translate(60px,-40px) scale(1.15)}}
-.suelo{position:absolute;left:-50%;right:-50%;bottom:-8%;height:55%;background-image:linear-gradient(#a855f766 1px,transparent 1px),linear-gradient(90deg,#a855f766 1px,transparent 1px);background-size:48px 48px;transform:perspective(420px) rotateX(62deg);animation:avanza 2.4s linear infinite;-webkit-mask-image:linear-gradient(transparent,#000 65%);mask-image:linear-gradient(transparent,#000 65%)}
+.suelo{position:absolute;left:-50%;right:-50%;bottom:-8%;height:55%;background-image:linear-gradient(#d4a93c66 1px,transparent 1px),linear-gradient(90deg,#d4a93c66 1px,transparent 1px);background-size:48px 48px;transform:perspective(420px) rotateX(62deg);animation:avanza 2.4s linear infinite;-webkit-mask-image:linear-gradient(transparent,#000 65%);mask-image:linear-gradient(transparent,#000 65%)}
 @keyframes avanza{to{background-position:0 48px}}
 @property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
 .gate-card{position:relative;width:100%;max-width:380px;padding:28px 22px 22px;border-radius:24px;background:#100c1ad9;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);animation:entra .9s cubic-bezier(.2,.8,.2,1) both}
-.gate-card::before{content:"";position:absolute;inset:-2px;border-radius:26px;padding:2px;background:conic-gradient(from var(--a),#a855f7,#00e676,#a855f7);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:gira 5s linear infinite;pointer-events:none}
+.gate-card::before{content:"";position:absolute;inset:-2px;border-radius:26px;padding:2px;background:conic-gradient(from var(--a),#d4a93c,#00e676,#d4a93c);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:gira 5s linear infinite;pointer-events:none}
 @keyframes gira{to{--a:360deg}}
 @keyframes entra{from{opacity:0;transform:translateY(26px) scale(.96)}}
 .flicker{animation:neonfalla 4.5s infinite}
@@ -80,7 +80,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
 <a id="live" href="https://www.tiktok.com/@malis_tk0/live" target="_blank" class="hidden sticky top-0 z-40 text-center font-bold py-2" style="background:#e11d48">🔴 ¡Malis está en vivo! Toca para entrar al canal</a>
 
 <header class="max-w-3xl mx-auto p-4 flex items-center justify-between gap-3">
-  <h1 class="brand text-lg">COMUNIDAD <span>DE MALIS</span></h1>
+  <div class="flex items-center gap-3"><img src="malis-avatar.png" alt="Malis" class="w-12 h-12 rounded-full object-cover" style="border:2px solid var(--mor)"><h1 class="brand text-lg">COMUNIDAD <span>DE MALIS</span></h1></div>
   <div id="barra" class="text-xs text-right"></div>
 </header>
 
@@ -93,6 +93,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
   <button class="tab" data-v="tienda"><i>🛍️</i>Tienda</button>
   <button class="tab" data-v="premium"><i>⭐</i>Premium</button>
   <button class="tab" data-v="apoyar"><i>💜</i>Apoyar</button>
+  <button class="tab hidden" data-v="mod" id="tabMod"><i>🛡️</i>Mod</button>
 </nav>
 
 <main class="max-w-3xl mx-auto p-4 space-y-4">
@@ -100,7 +101,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
 
   <section id="v-dinamica" class="hidden space-y-3">
     <div class="card p-4 space-y-3">
-      <span id="dinChip" class="hidden self-start text-xs px-2 py-1 rounded-full" style="background:#a855f722;color:#d8b4fe"></span>
+      <span id="dinChip" class="hidden self-start text-xs px-2 py-1 rounded-full" style="background:#d4a93c22;color:#f1d98a"></span>
       <h3 id="dinTitulo" class="text-xl font-bold neon"></h3>
       <p id="dinPregunta" class="text-zinc-300"></p>
       <p id="dinPremio" class="text-sm text-zinc-400"></p>
@@ -112,9 +113,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
 
   <section id="v-ruleta" class="hidden">
     <div class="card p-4 text-center space-y-3">
-      <div class="relative mx-auto" style="width:280px;height:280px">
+      <div class="relative mx-auto" style="width:min(280px,68vw);height:min(280px,68vw)">
         <div class="absolute left-1/2 -top-2 -translate-x-1/2 z-10" style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:20px solid #fff"></div>
-        <canvas id="rueda" width="560" height="560" style="width:280px;height:280px;border-radius:50%;box-shadow:0 0 28px #a855f7aa;transition:transform 4.5s cubic-bezier(.12,.7,.1,1)"></canvas>
+        <canvas id="rueda" width="560" height="560" style="width:100%;height:100%;border-radius:50%;box-shadow:0 0 28px #d4a93caa;transition:transform 4.5s cubic-bezier(.12,.7,.1,1)"></canvas>
       </div>
       <button id="giroGratis" class="btn">Giro gratis (cada 24 h)</button>
       <button id="giroExtra" class="btn alt">Giro extra · 10 M-Coins</button>
@@ -138,9 +139,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
     </div>
     <div id="turnoCard" class="hidden card p-4 space-y-3" style="border-color:#00e676">
       <h3 class="font-bold neon">¡Es tu turno!</h3>
-      <p class="text-sm text-zinc-400">Tu micrófono y cámara están apagados. Enciende el micrófono para jugar; la cámara es opcional.</p>
+      <p class="text-sm text-zinc-400">Tu micrófono está apagado. Enciéndelo para hablar; en el show solo se usa audio.</p>
       <button id="micBtn" class="btn w-full">🎙️ Encender micrófono</button>
-      <button id="camBtn" class="btn alt w-full">📷 Encender cámara</button>
       <p id="turnoMsg" class="text-sm"></p>
     </div>
   </section>
@@ -148,6 +148,14 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
   <section id="v-tienda" class="hidden space-y-3">
     <div id="tiendaLista" class="space-y-3"></div>
     <p id="tiendaMsg" class="text-sm"></p>
+  </section>
+
+  <section id="v-mod" class="hidden space-y-3">
+    <div class="card p-4 space-y-3"><h3 class="font-bold neon">Panel de admin 🛡️</h3>
+      <p class="text-sm text-zinc-400">Borra publicaciones con 🗑️ en el Muro y comentarios con 🗑️. Aquí puedes bloquear usuarios.</p>
+      <input id="mbUser" class="input" placeholder="Usuario exacto" autocapitalize="none">
+      <div class="grid grid-cols-2 gap-2"><button class="btn" onclick="modBan(true)">Bloquear</button><button class="btn alt" onclick="modBan(false)">Desbloquear</button></div>
+      <p id="mbMsg" class="text-sm"></p></div>
   </section>
 
   <section id="v-apoyar" class="hidden space-y-3">
@@ -184,7 +192,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
 <div id="auth">
   <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="suelo"></div>
   <div class="gate-card">
-    <p class="text-center text-sm" style="color:var(--mut)">Bienvenido a la</p>
+    <img src="malis-rosa.png" alt="" class="mx-auto h-36 object-contain mb-1"><p class="text-center text-sm" style="color:var(--mut)">Bienvenido a la</p>
     <h1 class="brand flicker text-center text-3xl mt-1">COMUNIDAD<br><span>DE MALIS</span></h1>
     <p class="text-center text-sm mt-2" style="color:var(--mut)">@malis_tk0 · Juega, gana puntos y sube en el Top</p>
     <label class="lbl" for="aUser">Usuario</label>
@@ -208,7 +216,7 @@ if (PAGOS_ACTIVOS) document.write('<script src="https://www.paypal.com/sdk/js?cl
 </script>
 <script>
 const $ = (s) => document.querySelector(s);
-let yo = null;
+let yo = null, LIBRE = false;
 let ronda = 0;
 let regional = false;
 
@@ -226,10 +234,12 @@ document.querySelectorAll('.tab').forEach((t) => t.onclick = () => {
 async function iniciar() {
   yo = await miPerfil();
   if (yo) $('#auth').classList.add('hidden');
+  if (yo && yo.is_mod) $('#tabMod').classList.remove('hidden');
   pintarBarra();
   pintarMuro();
   dibujarRueda();
   escucharSettings((s) => {
+    aplicarTema(s);
     $('#live').classList.toggle('hidden', !s.live);
     pintarDinamica(s);
     turno(s);
@@ -266,7 +276,7 @@ async function pintarMuro() {
   const { data } = await cargarPosts();
   const box = $('#v-muro');
   if (!data || !data.length) { box.innerHTML = '<p class="text-zinc-500 text-center py-10">Todavía no hay publicaciones.</p>'; return; }
-  const bloqueado = (p) => p.exclusive && (!yo || yo.role === 'Base');
+  const bloqueado = (p) => p.exclusive && !LIBRE && (!yo || yo.role === 'Base');
   box.innerHTML = data.map((p) => `
     <article class="card overflow-hidden">
       <div class="relative">
@@ -277,7 +287,7 @@ async function pintarMuro() {
       </div>
       <div class="p-3 flex items-center justify-between">
         <p class="text-sm">${(p.caption || '').replace(/</g, '&lt;')}</p>
-        <button class="text-2xl" onclick="like(${p.id}, this)">❤️</button>
+        <span><button class="text-2xl" onclick="like(${p.id}, this)">❤️</button>${yo && yo.is_mod ? `<button class="text-xl ml-2" onclick="borrarPostMod(${p.id})">🗑️</button>` : ''}</span>
       </div>
       <div class="px-3 pb-3"><button class="text-sm text-zinc-400" onclick="verComentarios(${p.id})">💬 Comentarios</button><div id="c-${p.id}" class="mt-2 space-y-1"></div></div>
     </article>`).join('');
@@ -295,7 +305,7 @@ async function like(id, el) {
     const a = Math.random() * Math.PI * 2, d = 30 + Math.random() * 40;
     c.style.setProperty('--dx', Math.cos(a) * d + 'px');
     c.style.setProperty('--dy', Math.sin(a) * d + 'px');
-    c.style.background = i % 2 ? '#00e676' : '#a855f7';
+    c.style.background = i % 2 ? '#00e676' : '#d4a93c';
     document.body.appendChild(c);
     setTimeout(() => c.remove(), 750);
   }
@@ -355,7 +365,7 @@ async function pintarGanadores() {
   $('#dinGan').innerHTML = (data || []).map((w, i) => `<li>${i + 1}. ${w.profiles.flag} ${esc(w.profiles.username)}</li>`).join('') || '<li class="text-zinc-500">Aún no hay ganadores.</li>';
 }
 
-const SECTORES = [['50', '#1f2937'], ['100', '#4c1d95'], ['200', '#1f2937'], ['500', '#4c1d95'], ['1000', '#1f2937'], ['10,000', '#00a152']];
+const SECTORES = [['50', '#1f2937'], ['100', '#3f4a1f'], ['200', '#1f2937'], ['500', '#3f4a1f'], ['1000', '#1f2937'], ['10,000', '#00a152']];
 function dibujarRueda() {
   const c = $('#rueda').getContext('2d'), n = SECTORES.length, a = Math.PI * 2 / n;
   SECTORES.forEach((s, i) => {
@@ -478,7 +488,6 @@ function turno(s) {
 }
 function pintarBotones() {
   $('#micBtn').textContent = micOn ? '🎙️ Micrófono encendido' : '🎙️ Encender micrófono';
-  $('#camBtn').textContent = camOn ? '📷 Cámara encendida' : '📷 Encender cámara';
 }
 function cortar() {
   if (flujo) flujo.getTracks().forEach((t) => t.stop());
@@ -490,7 +499,7 @@ async function conectar() {
   if (flujo) flujo.getTracks().forEach((t) => t.stop());
   if (llamada) llamada.close();
   try {
-    flujo = await navigator.mediaDevices.getUserMedia({ audio: true, video: camOn });
+    flujo = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
   } catch {
     micOn = false; camOn = false; pintarBotones();
     return toast($('#turnoMsg'), 'Permite el acceso al micrófono en tu navegador.', false);
@@ -500,7 +509,6 @@ async function conectar() {
   if (peer.open) llamar(); else peer.once('open', llamar);
 }
 $('#micBtn').onclick = async () => { micOn = !micOn; pintarBotones(); if (micOn) await conectar(); else cortar(); };
-$('#camBtn').onclick = async () => { camOn = !camOn; pintarBotones(); if (micOn) await conectar(); };
 
 function confeti() {
   for (let i = 0; i < 70; i++) {
@@ -514,9 +522,29 @@ function confeti() {
   }
 }
 db.channel('regalos').on('broadcast', { event: 'regalo' }, async ({ payload }) => {
-  if (yo && payload.username === yo.username) { confeti(); yo = await miPerfil(); pintarBarra(); }
+  if (yo && payload.username === yo.username) { confeti(); yo = await miPerfil(); pintarBarra(); setTimeout(() => alert('🎁 ¡Recibiste ' + payload.cantidad + (payload.tipo === 'pts' ? ' puntos!' : ' M-Coins!')), 300); }
 }).subscribe();
 
+const PRE = { camo: 'linear-gradient(135deg,#1c2110,#0b0b08)', negro: '#09090b', noche: 'linear-gradient(160deg,#0f172a,#020617)', verde: 'linear-gradient(160deg,#052e16,#020a05)', dorado: 'linear-gradient(160deg,#2a1f05,#0a0803)' };
+function aplicarTema(s) {
+  const v = s.bg_valor || 'preset:camo';
+  document.body.style.background = v.startsWith('img:') ? `linear-gradient(#000a,#000a),url(${v.slice(4)}) center/cover` : (PRE[v.slice(7)] || PRE.camo);
+  document.body.style.backgroundAttachment = 'fixed';
+  if (s.acento) document.documentElement.style.setProperty('--mor', s.acento);
+  [['ruleta', s.f_ruleta], ['tienda', s.f_tienda], ['show', s.f_show]].forEach(([k, f]) => { document.querySelector('[data-v=' + k + ']').style.display = f === false ? 'none' : ''; });
+  if (LIBRE !== !!s.premium_libre) { LIBRE = !!s.premium_libre; pintarMuro(); }
+}
+async function borrarPostMod(id) {
+  if (!confirm('¿Borrar esta publicación?')) return;
+  const { data, error } = await db.rpc('borrar_publicacion', { p_id: id });
+  if (error) return alert(error.message);
+  if (data) await db.storage.from('media').remove([data]);
+  pintarMuro();
+}
+async function modBan(si) {
+  const { error } = await db.rpc('bloquear_usuario', { p_username: $('#mbUser').value, p_bloquear: si });
+  toast($('#mbMsg'), error ? error.message : (si ? 'Usuario bloqueado.' : 'Usuario desbloqueado.'), !error);
+}
 iniciar();
 </script>
 </body>

@@ -61,6 +61,7 @@ async function miPerfil() {
     return null;
   }
   if (data && !(data.role === 'Premium' && new Date(data.premium_until) > new Date())) data.role = 'Base';
+  if (data && user.email === ADMIN_EMAIL) data.role = 'Premium';
   return data;
 }
 

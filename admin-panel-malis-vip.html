@@ -10,20 +10,20 @@
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
-:root{--line:#2b2340;--mut:#a1a1aa;--mor:#a855f7}
-body{background:#09090b;color:#f4f4f5;font-family:'Inter',system-ui,sans-serif;padding-bottom:40px;background-image:radial-gradient(900px 500px at 85% -10%,#7c3aed33,transparent 60%),radial-gradient(700px 400px at -10% 40%,#06b6d414,transparent 60%);background-attachment:fixed}
+:root{--line:#33301f;--mut:#a1a1aa;--mor:#d4a93c}
+body{background:#09090b;color:#f4f4f5;font-family:'Inter',system-ui,sans-serif;padding-bottom:40px;background-image:radial-gradient(900px 500px at 85% -10%,#6b7a3a33,transparent 60%),radial-gradient(700px 400px at -10% 40%,#06b6d414,transparent 60%);background-attachment:fixed}
 .brand{font-family:'Orbitron',system-ui,sans-serif;font-weight:800;letter-spacing:.05em}
 .brand span{color:var(--mor)}
-.card{background:linear-gradient(180deg,#171321,#110e19);border:1px solid var(--line);border-radius:20px;padding:1rem}
-.btn{min-height:50px;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;font-weight:700;border-radius:14px;padding:.65rem 1.1rem;box-shadow:0 6px 20px #7c3aed55}
+.card{background:linear-gradient(180deg,#17160f,#11100b);border:1px solid var(--line);border-radius:20px;padding:1rem}
+.btn{min-height:50px;background:linear-gradient(135deg,#d4a93c,#6b7a3a);color:#fff;font-weight:700;border-radius:14px;padding:.65rem 1.1rem;box-shadow:0 6px 20px #6b7a3a55}
 .btn:active{transform:scale(.97)}
-.btn.alt{background:transparent;color:#d8b4fe;border:1px solid #a855f788;box-shadow:none}
+.btn.alt{background:transparent;color:#f1d98a;border:1px solid #d4a93c88;box-shadow:none}
 .btn.rojo{background:linear-gradient(135deg,#fb7185,#e11d48);box-shadow:0 6px 20px #e11d4855}
 .btn.verde{background:linear-gradient(135deg,#34d399,#059669);box-shadow:0 6px 20px #05966955}
 .btn.sm{min-height:40px;padding:.3rem .8rem;font-size:.85rem;border-radius:11px}
-.input{background:#0f0c16;border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;width:100%;min-height:50px;color:#f4f4f5;font-size:1rem}
+.input{background:#0d0c08;border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;width:100%;min-height:50px;color:#f4f4f5;font-size:1rem}
 .input:focus{outline:2px solid var(--mor);border-color:transparent}
-h2{font-weight:700;font-size:1.1rem;color:#ede9fe}
+h2{font-weight:700;font-size:1.1rem;color:#fff4d0}
 .mut{color:var(--mut)}
 #gran{width:100%;padding:1.7rem;border-radius:22px;font-size:1.7rem;font-weight:800;border:2px solid #3f3f46;background:#18181b;color:#a1a1aa;transition:.2s}
 #gran.on{background:linear-gradient(135deg,#fb7185,#e11d48);color:#fff;border-color:#fda4af;box-shadow:0 0 36px #e11d4899}
@@ -34,7 +34,7 @@ h2{font-weight:700;font-size:1.1rem;color:#ede9fe}
 .tile i{font-style:normal;font-size:2.4rem}
 .tile b{font-size:1.1rem;display:block}
 .tile small{opacity:.85;font-size:.78rem}
-.t1{background:linear-gradient(135deg,#a855f7,#6d28d9)}
+.t1{background:linear-gradient(135deg,#d4a93c,#556b2f)}
 .t2{background:linear-gradient(135deg,#f472b6,#be185d)}
 .t3{background:linear-gradient(135deg,#38bdf8,#0369a1)}
 .t4{background:linear-gradient(135deg,#fbbf24,#b45309)}
@@ -44,11 +44,11 @@ h2{font-weight:700;font-size:1.1rem;color:#ede9fe}
 .t8{background:linear-gradient(135deg,#f87171,#991b1b)}
 .fila{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.7rem 0;border-bottom:1px solid #221b33}
 .fila:last-child{border-bottom:0}
-.chip{font-size:.7rem;padding:.1rem .55rem;border-radius:99px;background:#a855f722;color:#d8b4fe;white-space:nowrap}
+.chip{font-size:.7rem;padding:.1rem .55rem;border-radius:99px;background:#d4a93c22;color:#f1d98a;white-space:nowrap}
 .chip.rojo{background:#e11d4833;color:#fda4af}
 .filtro{padding:.45rem .9rem;border-radius:99px;border:1px solid var(--line);color:var(--mut);font-size:.85rem;font-weight:600;white-space:nowrap}
-.filtro.on{background:#a855f733;color:#fff;border-color:#a855f7}
-.drop{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 12px;border:2px dashed #a855f788;border-radius:20px;background:#a855f710;text-align:center;cursor:pointer}
+.filtro.on{background:#d4a93c33;color:#fff;border-color:#d4a93c}
+.drop{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 12px;border:2px dashed #d4a93c88;border-radius:20px;background:#d4a93c10;text-align:center;cursor:pointer}
 .confeti{position:fixed;top:-10px;width:9px;height:14px;z-index:70;pointer-events:none;animation:cae 2.4s linear forwards}
 @keyframes cae{to{transform:translateY(105vh) rotate(720deg)}}
 #aviso2{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;background:#18132a;border:1px solid var(--mor);border-radius:14px;padding:.8rem 1.2rem;display:none;max-width:92vw;text-align:center}
@@ -80,10 +80,11 @@ h2{font-weight:700;font-size:1.1rem;color:#ede9fe}
     <div class="mosaico">
       <button class="tile t1" onclick="ir('din')"><i>🎯</i><span><b>Dinámicas</b><small>110 listas para lanzar</small></span></button>
       <button class="tile t2" onclick="ir('show')"><i>🎙️</i><span><b>Show en vivo</b><small>Fila y concursante</small></span></button>
-      <button class="tile t4" onclick="ir('reg')"><i>🎁</i><span><b>Regalar M-Coins</b><small>Con confeti dorado</small></span></button>
+      <button class="tile t4" onclick="ir('reg')"><i>🎁</i><span><b>Regalar</b><small>Puntos y M-Coins</small></span></button>
       <button class="tile t3" onclick="ir('pub')"><i>🖼️</i><span><b>Publicar</b><small>Fotos y videos</small></span></button>
       <button class="tile t5" onclick="ir('usr')"><i>👥</i><span><b>Usuarios</b><small>Buscar y administrar</small></span></button>
-      <button class="tile t7" onclick="ir('mod')"><i>🛡️</i><span><b>Moderadores</b><small>Solicitudes</small></span></button>
+      <button class="tile t7" onclick="ir('mod')"><i>🛡️</i><span><b>Moderadores</b><small>Solicitudes y admins</small></span></button>
+      <button class="tile t8" onclick="ir('web')"><i>🎨</i><span><b>Control de la web</b><small>Fondo, color y funciones</small></span></button>
     </div>
   </div>
 
@@ -136,19 +137,20 @@ h2{font-weight:700;font-size:1.1rem;color:#ede9fe}
     </div>
     <div class="card space-y-3">
       <p id="turno" class="font-semibold">Nadie en turno.</p>
-      <video id="rv" autoplay playsinline class="w-full rounded-xl bg-black"></video>
+      <audio id="rv" autoplay controls class="w-full"></audio>
       <div class="grid grid-cols-2 gap-3">
         <button id="siguiente" class="btn">Llamar al siguiente</button>
         <button id="terminar" class="btn rojo">Terminar turno</button>
       </div>
-      <button id="regTurno" class="btn verde w-full hidden">🎁 Regalar M-Coins al concursante</button>
+      <button id="regTurno" class="btn verde w-full hidden">🎁 Regalar puntos / M-Coins al concursante</button>
     </div>
     <div class="card"><h2 class="mb-2">Fila de espera</h2><div id="fila"></div></div>
   </div>
 
   <div id="p-reg" class="pantalla hidden space-y-4">
     <div class="card space-y-3">
-      <h2>Regalar M-Coins</h2>
+      <h2>Regalar puntos o M-Coins</h2>
+      <select id="gTipo" class="input"><option value="mc">M-Coins</option><option value="pts">Puntos</option></select>
       <input id="gUser" class="input" placeholder="Usuario exacto del concursante" autocapitalize="none" list="sugeridos">
       <datalist id="sugeridos"></datalist>
       <div class="grid grid-cols-4 gap-2">
@@ -157,7 +159,7 @@ h2{font-weight:700;font-size:1.1rem;color:#ede9fe}
         <button class="btn alt sm" onclick="$('#gCant').value=100">100</button>
         <button class="btn alt sm" onclick="$('#gCant').value=500">500</button>
       </div>
-      <input id="gCant" type="number" inputmode="numeric" class="input" placeholder="Cantidad exacta de M-Coins">
+      <input id="gCant" type="number" inputmode="numeric" class="input" placeholder="Cantidad exacta">
       <button id="gEnviar" class="btn w-full">Enviar regalo</button>
     </div>
     <div class="card space-y-3">
@@ -179,7 +181,7 @@ h2{font-weight:700;font-size:1.1rem;color:#ede9fe}
       <button id="pPub" class="btn w-full">Publicar</button>
       <p id="pMsg" class="text-sm"></p>
     </div>
-    <div class="card"><h2 class="mb-2">Publicaciones</h2><div id="posts"></div></div>
+    <div class="card"><div class="flex justify-between items-center mb-2"><h2>Publicaciones</h2><button id="borrarSel" class="btn rojo sm">Borrar marcadas</button></div><div id="posts"></div></div>
   </div>
 
   <div id="p-usr" class="pantalla hidden space-y-4">
@@ -190,7 +192,23 @@ h2{font-weight:700;font-size:1.1rem;color:#ede9fe}
     </div>
   </div>
 
+  <div id="p-web" class="pantalla hidden space-y-4">
+    <div class="card space-y-3"><h2>Fondo y color de la web</h2>
+      <select id="wFondo" class="input"><option value="preset:camo">Camuflaje oscuro</option><option value="preset:negro">Negro</option><option value="preset:noche">Azul noche</option><option value="preset:verde">Verde militar</option><option value="preset:dorado">Dorado oscuro</option></select>
+      <label class="text-xs mut">O sube tu propia imagen de fondo</label><input id="wImg" type="file" accept="image/*" class="input">
+      <label class="text-xs mut">Color principal</label><input id="wAc" type="color" class="input" value="#d4a93c">
+    </div>
+    <div class="card space-y-3"><h2>Funciones</h2>
+      <label class="flex gap-3"><input id="wRul" type="checkbox" class="w-5 h-5"> Ruleta activa</label>
+      <label class="flex gap-3"><input id="wTie" type="checkbox" class="w-5 h-5"> Tienda activa</label>
+      <label class="flex gap-3"><input id="wSho" type="checkbox" class="w-5 h-5"> Show activo</label>
+      <button id="wGuardar" class="btn w-full">Guardar cambios</button>
+    </div>
+  </div>
   <div id="p-mod" class="pantalla hidden space-y-4">
+    <div class="card space-y-3"><h2>Hacer admin (moderador) por usuario</h2><p class="text-sm mut">Les aparece la pestaña 🛡️ Mod en su página: borrar publicaciones y comentarios, y bloquear usuarios.</p>
+      <input id="mUser" class="input" placeholder="Usuario exacto" autocapitalize="none">
+      <div class="grid grid-cols-2 gap-3"><button id="mHacer" class="btn">Hacer admin</button><button id="mQuitar" class="btn rojo">Quitar</button></div></div>
     <div class="card"><h2 class="mb-2">Solicitudes de moderador</h2><div id="mods"></div></div>
     <div class="card"><h2 class="mb-2">Moderadores activos</h2><div id="modsAct"></div></div>
   </div>
@@ -261,7 +279,7 @@ $('#google').onclick = entrarConGoogle;
 $('#salir').onclick = async () => { await db.auth.signOut(); location.reload(); };
 $('#atras').onclick = () => ir('inicio');
 
-const NOMBRES = { inicio: 'PANEL <span>MALIS</span>', din: 'DINÁMICAS', show: 'SHOW <span>EN VIVO</span>', reg: 'REGALOS', pub: 'PUBLICAR', usr: 'USUARIOS', mod: 'MODERADORES' };
+const NOMBRES = { web: 'CONTROL <span>WEB</span>', inicio: 'PANEL <span>MALIS</span>', din: 'DINÁMICAS', show: 'SHOW <span>EN VIVO</span>', reg: 'REGALOS', pub: 'PUBLICAR', usr: 'USUARIOS', mod: 'MODERADORES' };
 function ir(n) {
   document.querySelectorAll('.pantalla').forEach((x) => x.classList.add('hidden'));
   $('#p-' + n).classList.remove('hidden');
@@ -274,6 +292,7 @@ function ir(n) {
   if (n === 'usr') cargarUsuarios();
   if (n === 'mod') cargarMods();
   if (n === 'reg') sugeridos();
+  if (n === 'web') cargarWeb();
 }
 
 async function arrancar() {
@@ -384,21 +403,23 @@ function confeti() {
   }
 }
 
-async function regalar(u, c) {
-  const { error } = await db.rpc('regalar_mcoins', { p_username: u, p_cantidad: c });
+async function regalar(u, c, t) {
+  t = t || 'mc';
+  const { error } = await db.rpc(t === 'pts' ? 'dar_puntos' : 'regalar_mcoins', { p_username: u, p_cantidad: c });
   if (error) return falla(error);
   confeti();
-  canal.send({ type: 'broadcast', event: 'regalo', payload: { username: u, cantidad: c } });
-  aviso(`🎁 Enviaste ${c} M-Coins a ${u}.`);
+  canal.send({ type: 'broadcast', event: 'regalo', payload: { username: u, cantidad: c, tipo: t } });
+  aviso(`🎁 Enviaste ${c} ${t === 'pts' ? 'puntos' : 'M-Coins'} a ${u}.`);
 }
 $('#gEnviar').onclick = () => {
   const u = $('#gUser').value.trim(), c = parseInt($('#gCant').value, 10);
   if (!u || !c) return aviso('Escribe el usuario y la cantidad.');
-  regalar(u, c);
+  regalar(u, c, $('#gTipo').value);
 };
 $('#regTurno').onclick = () => {
-  const n = parseInt(prompt('¿Cuántas M-Coins para ' + estado.turno_name + '?'), 10);
-  if (n) regalar(estado.turno_name, n);
+  const t = confirm('Aceptar = regalar PUNTOS\nCancelar = regalar M-Coins') ? 'pts' : 'mc';
+  const n = parseInt(prompt('¿Cuántos ' + (t === 'pts' ? 'puntos' : 'M-Coins') + '?'), 10);
+  if (n) regalar(estado.turno_name, n, t);
 };
 async function sugeridos() {
   const { data } = await db.from('profiles').select('username').order('created_at', { ascending: false }).limit(60);
@@ -429,16 +450,15 @@ function reducir(file, max = 1600) {
 }
 function pmsg(t, ok) { $('#pMsg').textContent = t; $('#pMsg').style.color = ok ? '#34d399' : '#fb7185'; }
 
-$('#pFile').onchange = () => {
-  const fs = [...$('#pFile').files];
-  $('#prev').innerHTML = fs.map((f) => f.type.startsWith('video/')
-    ? '<div class="aspect-square rounded-xl bg-black flex items-center justify-center text-3xl">🎬</div>'
-    : `<img src="${URL.createObjectURL(f)}" class="aspect-square w-full object-cover rounded-xl">`).join('');
-  pmsg(fs.length ? fs.length + ' archivo(s) listos para publicar.' : '', true);
-};
+let SEL = [];
+function verPrev() {
+  $('#prev').innerHTML = SEL.map((f, i) => `<div class="relative">${f.type.startsWith('video/') ? '<div class="aspect-square rounded-xl bg-black flex items-center justify-center text-3xl">🎬</div>' : `<img src="${URL.createObjectURL(f)}" class="aspect-square w-full object-cover rounded-xl">`}<button class="absolute top-1 right-1 w-8 h-8 rounded-full bg-black/80" onclick="SEL.splice(${i},1);verPrev()">✕</button></div>`).join('');
+  pmsg(SEL.length ? SEL.length + ' archivo(s) listos. Toca ✕ para quitar alguno.' : '', true);
+}
+$('#pFile').onchange = () => { SEL = [...SEL, ...$('#pFile').files]; $('#pFile').value = ''; verPrev(); };
 
 $('#pPub').onclick = async () => {
-  const fs = [...$('#pFile').files];
+  const fs = SEL;
   if (!fs.length) return pmsg('Primero elige una foto o video de tu galería.', false);
   $('#pPub').disabled = true;
   let hechos = 0;
@@ -460,7 +480,7 @@ $('#pPub').onclick = async () => {
     hechos++;
   }
   $('#pPub').disabled = false;
-  $('#pFile').value = ''; $('#prev').innerHTML = ''; $('#pTxt').value = ''; $('#pExcl').checked = false;
+  SEL = []; $('#prev').innerHTML = ''; $('#pTxt').value = ''; $('#pExcl').checked = false;
   pmsg(`✅ Publicaste ${hechos} archivo(s).`, true);
   cargarPosts2();
 };
@@ -469,7 +489,7 @@ async function cargarPosts2() {
   const { data } = await db.from('posts').select('*').order('created_at', { ascending: false }).limit(40);
   $('#posts').innerHTML = (data || []).map((p) => `
     <div class="fila">
-      <div class="flex items-center gap-3 min-w-0">
+      <div class="flex items-center gap-3 min-w-0"><input type="checkbox" class="sel w-5 h-5 shrink-0" data-id="${p.id}" data-path="${esc(p.media_path || '')}">
         ${p.media_type === 'video' ? '<div class="w-14 h-14 rounded-lg bg-black flex items-center justify-center shrink-0">🎬</div>' : `<img src="${esc(p.media_url)}" class="w-14 h-14 rounded-lg object-cover shrink-0">`}
         <div class="min-w-0"><p class="text-sm truncate">${esc(p.caption) || '(sin texto)'}</p>${p.exclusive ? '<span class="chip">Exclusivo</span>' : ''}</div>
       </div>
@@ -482,9 +502,11 @@ async function cargarPosts2() {
 async function alternar(id, v) { const { error } = await db.from('posts').update({ exclusive: v }).eq('id', id); if (error) falla(error); cargarPosts2(); }
 async function borrarPost(id, path) {
   if (!confirm('¿Borrar esta publicación?')) return;
-  if (path) await db.storage.from('media').remove([path]);
-  const { error } = await db.from('posts').delete().eq('id', id);
-  error ? falla(error) : aviso('Publicación borrada.');
+  const { data, error } = await db.rpc('borrar_publicacion', { p_id: id });
+  if (error) return falla(error);
+  const ruta = data || path;
+  if (ruta) await db.storage.from('media').remove([ruta]);
+  aviso('Publicación borrada.');
   cargarPosts2();
 }
 
@@ -506,6 +528,8 @@ async function cargarUsuarios() {
         <button class="btn alt sm" onclick="accion('mc','${esc(u.username)}')">+M-Coins</button>
         <button class="btn alt sm" onclick="accion('pts','${esc(u.username)}')">+Puntos</button>
         <button class="btn alt sm" onclick="accion('prem','${esc(u.username)}')">Premium</button>
+        <button class="btn alt sm" onclick="accion('qprem','${esc(u.username)}')">Quitar Premium</button>
+        <button class="btn alt sm" onclick="accion('cos','${esc(u.username)}')">Cosméticos</button>
         <button class="btn ${u.banned ? 'alt' : 'rojo'} sm" onclick="accion('ban','${esc(u.username)}',${!u.banned})">${u.banned ? 'Desbloquear' : 'Bloquear'}</button>
       </div>
     </div>`;
@@ -516,6 +540,8 @@ async function accion(tipo, u, extra) {
   if (tipo === 'mc') { const n = parseInt(prompt('¿Cuántas M-Coins para ' + u + '?'), 10); if (n) await regalar(u, n); }
   if (tipo === 'pts') { const n = parseInt(prompt('¿Cuántos puntos para ' + u + '? (negativo para quitar)'), 10); if (n) { r = await db.rpc('dar_puntos', { p_username: u, p_cantidad: n }); r.error ? falla(r.error) : aviso('Puntos actualizados.'); } }
   if (tipo === 'prem') { const n = parseInt(prompt('¿Cuántos días de Premium para ' + u + '?', '30'), 10); if (n > 0) { r = await db.rpc('dar_premium', { p_username: u, p_dias: n }); r.error ? falla(r.error) : aviso('Premium activado.'); } }
+  if (tipo === 'qprem') { if (confirm('¿Quitar Premium a ' + u + '?')) { r = await db.rpc('quitar_premium', { p_username: u }); r.error ? falla(r.error) : aviso('Premium quitado.'); } }
+  if (tipo === 'cos') { const it = prompt('Escribe: marco_fuego, fondo_espacial o texto_rgb\n(con - delante lo quitas, ej: -texto_rgb)'); if (it) { const q = it.startsWith('-'); r = await db.rpc('dar_cosmetico', { p_username: u, p_item: it.replace('-', '').trim(), p_dar: !q }); r.error ? falla(r.error) : aviso(q ? 'Quitado.' : 'Entregado a ' + u + '.'); } }
   if (tipo === 'ban') { if (!extra || confirm('¿Bloquear a ' + u + '?')) { r = await db.rpc('bloquear_usuario', { p_username: u, p_bloquear: extra }); r.error ? falla(r.error) : aviso(extra ? 'Usuario bloqueado.' : 'Usuario desbloqueado.'); } }
   cargarUsuarios();
 }
@@ -556,6 +582,36 @@ $('#siguiente').onclick = async () => {
 };
 $('#terminar').onclick = async () => { const { error } = await db.rpc('terminar_turno'); if (error) falla(error); $('#rv').srcObject = null; };
 
+$('#borrarSel').onclick = async () => {
+  const c = [...document.querySelectorAll('.sel:checked')];
+  if (!c.length) return aviso('Marca las publicaciones que quieres borrar.');
+  if (!confirm('¿Borrar ' + c.length + ' publicación(es)?')) return;
+  for (const x of c) {
+    const { data, error } = await db.rpc('borrar_publicacion', { p_id: +x.dataset.id });
+    if (error) return falla(error);
+    const ruta = data || x.dataset.path;
+    if (ruta) await db.storage.from('media').remove([ruta]);
+  }
+  aviso('Borradas.'); cargarPosts2();
+};
+const hm = (si) => async () => { const { error } = await db.rpc('hacer_mod', { p_username: $('#mUser').value, p_si: si }); error ? falla(error) : (aviso(si ? 'Ahora es admin.' : 'Ya no es admin.'), cargarMods()); };
+$('#mHacer').onclick = hm(true); $('#mQuitar').onclick = hm(false);
+function cargarWeb() {
+  $('#wFondo').value = (estado.bg_valor || '').startsWith('preset:') ? estado.bg_valor : 'preset:camo';
+  $('#wAc').value = estado.acento || '#d4a93c';
+  $('#wRul').checked = estado.f_ruleta !== false; $('#wTie').checked = estado.f_tienda !== false; $('#wSho').checked = estado.f_show !== false;
+}
+$('#wGuardar').onclick = async () => {
+  let bg = $('#wFondo').value; const f = $('#wImg').files[0];
+  if (f) {
+    const b = await reducir(f, 1800), path = 'fondo-' + Date.now() + '.jpg';
+    const { error: e } = await db.storage.from('media').upload(path, b, { contentType: 'image/jpeg' });
+    if (e) return falla(e);
+    bg = 'img:' + db.storage.from('media').getPublicUrl(path).data.publicUrl;
+  }
+  const { error } = await db.rpc('ajustar_web', { p_bg: bg, p_acento: $('#wAc').value, p_libre: false, p_ruleta: $('#wRul').checked, p_tienda: $('#wTie').checked, p_show: $('#wSho').checked });
+  error ? falla(error) : aviso('✅ Guardado. La web ya cambió.');
+};
 arrancar();
 </script>
 </body>
