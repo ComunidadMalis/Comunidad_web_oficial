@@ -320,18 +320,13 @@ body.hw .bub .m{background:#2a1645}body.hw .bub.yo .m{background:#7a3a00}
     <h1 class="brand flicker text-center text-3xl mt-1">COMUNIDAD<br><span>DE MALIS</span></h1>
     <p id="bonoTxt" class="text-center text-sm mt-2 font-bold" style="color:var(--mor)"></p>
     <p class="text-center text-sm mt-1" style="color:var(--mut)">@malis_tk0 · Juega, gana puntos y sube en el Top</p>
-    <div class="grid grid-cols-2 gap-1 mt-4 p-1 rounded-2xl" style="background:#ffffff0d">
-      <button id="aTabIn" class="pf-tab on">Ya tengo cuenta</button>
-      <button id="aTabReg" class="pf-tab">Soy nuevo</button>
-    </div>
-    <p id="aAyuda" class="text-sm mt-3 p-3 rounded-xl" style="background:#ffffff0d"></p>
     <label class="lbl" for="aUser">Nombre de usuario</label>
     <input id="aUser" class="input" placeholder="Ejemplo: malis_fan" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
-    <p class="text-xs mt-1" style="color:var(--mut)">⚠️ No es un correo: no pongas @ ni .com</p>
+    <p class="text-xs mt-1" style="color:var(--mut)">Es un nombre de usuario, no un correo (sin @ ni .com)</p>
     <label class="lbl" for="aPass">Contraseña</label>
-    <input id="aPass" type="password" class="input" placeholder="Mínimo 6 caracteres" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false">
-    <button id="aEntrar" class="btn w-full mt-5">Entrar</button>
-    <button id="aReg" class="btn w-full mt-5 hidden">Crear mi cuenta</button>
+    <input id="aPass" type="password" class="input" placeholder="La que quieras (mínimo 6 caracteres)" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false">
+    <button id="aEntrar" class="btn w-full mt-5">Iniciar sesión</button>
+    <button id="aReg" class="btn alt w-full mt-2">Crear cuenta nueva</button>
     <p id="aMsg" class="text-sm text-rose-400 mt-3 text-center"></p>
     <p class="text-xs text-center mt-2" style="color:var(--mut)">Tu sesión se queda guardada en este dispositivo.</p>
     <button id="aCerrar" class="text-sm w-full mt-3" style="color:var(--mut)">Solo mirar por ahora</button>
@@ -397,7 +392,7 @@ const msgAuth = (e) => {
   const m = (e && e.message) || '';
   if (m === 'usuario_existe') return 'Ese nombre de usuario ya está en uso. Elige otro (puedes agregarle números).';
   if (m === 'confirmacion_email') return 'Falta desactivar la confirmación de correo en Supabase (Authentication > Providers > Email).';
-  if (/invalid login/i.test(m)) return 'Usuario o contraseña incorrectos. Recuerda: es tu nombre de usuario, no un correo. Si aún no tienes cuenta, toca "Soy nuevo".';
+  if (/invalid login/i.test(m)) return 'Usuario o contraseña incorrectos. Recuerda: es tu nombre de usuario, no un correo. Si aún no tienes cuenta, toca "Crear cuenta nueva".';
   if (/not confirmed/i.test(m)) return 'La cuenta no está confirmada. Desactiva "Confirm email" en Supabase.';
   if (/at least|weak|short/i.test(m)) return 'La contraseña debe tener al menos 6 caracteres.';
   if (/rate limit|too many|security purposes/i.test(m)) return 'Demasiados intentos. Espera un minuto y vuelve a probar.';
@@ -428,19 +423,7 @@ $('#aReg').onclick = async () => {
   catch (e) { console.error(e); $('#aMsg').textContent = msgAuth(e); }
 };
 
-function authModo(reg) {
-  $('#aTabIn').classList.toggle('on', !reg); $('#aTabReg').classList.toggle('on', reg);
-  $('#aEntrar').classList.toggle('hidden', reg); $('#aReg').classList.toggle('hidden', !reg);
-  $('#aPass').autocomplete = reg ? 'new-password' : 'current-password';
-  $('#aMsg').textContent = '';
-  $('#aAyuda').innerHTML = reg
-    ? '👋 Crear tu cuenta es gratis y no pide correo. <b>Inventa un nombre de usuario</b> (el que quieras, de 3 a 20 letras o números, sin espacios) y una <b>contraseña</b> de mínimo 6 caracteres. Anótalos para no olvidarlos.'
-    : '🔑 Escribe el <b>nombre de usuario</b> y la <b>contraseña</b> con los que creaste tu cuenta. No necesitas correo.';
-}
-$('#aTabIn').onclick = () => authModo(false);
-$('#aTabReg').onclick = () => authModo(true);
-$('#aPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') ($('#aReg').classList.contains('hidden') ? $('#aEntrar') : $('#aReg')).click(); });
-authModo(false);
+$('#aPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#aEntrar').click(); });
 
 async function pintarMuro() {
   const { data } = await cargarPosts();
