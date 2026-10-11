@@ -527,6 +527,12 @@ async function cargarUsuarios() {
       <div class="cosm">
         ${COSM.map((c) => `<label class="sw"><input type="checkbox" ${(u.owned || []).includes(c.id) ? 'checked' : ''} onchange="toggleCos('${esc(u.username)}','${c.id}',this)"><i></i><span>${c.nombre}</span></label>`).join('')}
       </div>
+      <div class="cosm" style="width:100%;border-top:1px dashed #ff7a0066;padding-top:8px;margin-top:2px;align-items:center">
+        <span class="text-xs" style="color:#ffb15c;font-weight:700">🎃 EVENTO HALLOWEEN</span>
+        ${COSM_HW.map((c) => `<label class="sw"><input type="checkbox" ${(u.owned || []).includes(c.id) ? 'checked' : ''} onchange="toggleCos('${esc(u.username)}','${c.id}',this)"><i></i><span>${c.nombre}</span></label>`).join('')}
+        <button class="btn alt sm" onclick="halloweenTodo('${esc(u.username)}',true)">Dar los 3</button>
+        <button class="btn alt sm" onclick="halloweenTodo('${esc(u.username)}',false)">Quitar los 3</button>
+      </div>
     </div>`;
   }).join('') || '<p class="text-sm mut">No hay usuarios con ese nombre.</p>';
 }
@@ -535,6 +541,19 @@ const COSM = [
   { id: 'marco_fuego', nombre: 'Fuego' },
   { id: 'fondo_espacial', nombre: 'Espacial' }
 ];
+const COSM_HW = [
+  { id: 'banner_halloween', nombre: '🖼️ Banner' },
+  { id: 'nombre_halloween', nombre: '✨ Nombre' },
+  { id: 'calabaza_halloween', nombre: '🎃 Calabaza (la más exclusiva)' }
+];
+async function halloweenTodo(u, dar) {
+  for (const c of COSM_HW) {
+    const { error } = await db.rpc('dar_cosmetico', { p_username: u, p_item: c.id, p_dar: dar });
+    if (error) return falla(error);
+  }
+  aviso(dar ? '🎃 Evento Halloween entregado a ' + u + ' (banner + nombre + calabaza).' : 'Evento Halloween quitado a ' + u + '.');
+  cargarUsuarios();
+}
 async function toggleCos(u, item, el) {
   const dar = el.checked;
   const { error } = await db.rpc('dar_cosmetico', { p_username: u, p_item: item, p_dar: dar });
@@ -548,7 +567,7 @@ async function accion(tipo, u, extra) {
   if (tipo === 'prem') { const n = parseInt(prompt('¿Cuántos días de Premium para ' + u + '?', '30'), 10); if (n > 0) { r = await db.rpc('dar_premium', { p_username: u, p_dias: n }); r.error ? falla(r.error) : aviso('Premium activado.'); } }
   if (tipo === 'qpts') { const n = Math.abs(parseInt(prompt('¿Cuántos puntos QUITARLE a ' + u + '?'), 10)); if (n) { r = await db.rpc('dar_puntos', { p_username: u, p_cantidad: -n }); r.error ? falla(r.error) : aviso('Le quitaste ' + n + ' puntos a ' + u + '.'); } }
   if (tipo === 'qprem') { if (confirm('¿Quitar Premium a ' + u + '?')) { r = await db.rpc('quitar_premium', { p_username: u }); r.error ? falla(r.error) : aviso('Premium quitado.'); } }
-  if (tipo === 'cos') { const it = prompt('Escribe: marco_fuego, fondo_espacial o texto_rgb\n(con - delante lo quitas, ej: -texto_rgb)'); if (it) { const q = it.startsWith('-'); r = await db.rpc('dar_cosmetico', { p_username: u, p_item: it.replace('-', '').trim(), p_dar: !q }); r.error ? falla(r.error) : aviso(q ? 'Quitado.' : 'Entregado a ' + u + '.'); } }
+  if (tipo === 'cos') { const it = prompt('Escribe: marco_fuego, fondo_espacial, texto_rgb, banner_halloween, nombre_halloween o calabaza_halloween\n(con - delante lo quitas, ej: -texto_rgb)'); if (it) { const q = it.startsWith('-'); r = await db.rpc('dar_cosmetico', { p_username: u, p_item: it.replace('-', '').trim(), p_dar: !q }); r.error ? falla(r.error) : aviso(q ? 'Quitado.' : 'Entregado a ' + u + '.'); } }
   if (tipo === 'adv') { const m = prompt('Mensaje de advertencia para ' + u + ':'); if (m && m.trim()) { r = await db.rpc('enviar_advertencia', { p_username: u, p_mensaje: m.trim() }); r.error ? falla(r.error) : aviso('⚠️ Advertencia enviada a ' + u + '.'); } }
   if (tipo === 'del') { if (prompt('Esto BORRA la cuenta de ' + u + ' para siempre.\nEscribe BORRAR para confirmar:') === 'BORRAR') { r = await db.rpc('eliminar_cuenta', { p_username: u }); r.error ? falla(r.error) : aviso('🗑️ Cuenta de ' + u + ' eliminada.'); } }
   if (tipo === 'ban') { if (!extra || confirm('¿Bloquear a ' + u + '?')) { r = await db.rpc('bloquear_usuario', { p_username: u, p_bloquear: extra }); r.error ? falla(r.error) : aviso(extra ? 'Usuario bloqueado.' : 'Usuario desbloqueado.'); } }

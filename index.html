@@ -137,6 +137,30 @@ body.hw .bub .m{background:#2a1645}body.hw .bub.yo .m{background:#7a3a00}
 .flicker{animation:neonfalla 4.5s infinite}
 @keyframes neonfalla{0%,91%,100%{opacity:1}92%{opacity:.35}93%{opacity:1}95%{opacity:.5}96%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.orb,.suelo,.gate-card::before,.flicker,.btn::after{animation:none}}
+
+/* ===== COSMÉTICOS HALLOWEEN + PERFIL ===== */
+.hw-nom{font-family:'Creepster',cursive;letter-spacing:.06em;color:#ffb15c;text-shadow:0 0 10px #ff7a00cc,0 0 22px #8b2fc9aa;animation:hwGlow 2.4s ease-in-out infinite}
+.hw-pill{display:inline-flex;align-items:center;gap:3px;font-size:.68rem;font-weight:700;line-height:1;padding:3px 8px;border-radius:99px;margin-left:5px;vertical-align:middle;color:#fff;background:linear-gradient(135deg,#ff7a00,#8b2fc9);box-shadow:0 0 10px #ff7a00aa,inset 0 0 0 1px #ffffff44;animation:hwPill 2.2s ease-in-out infinite alternate}
+@keyframes hwPill{to{box-shadow:0 0 18px #ff7a00,0 0 30px #8b2fc988,inset 0 0 0 1px #ffffff66}}
+.hw-row{background:linear-gradient(90deg,#2a1240,#4a1d05 70%,#ff7a0033)!important;box-shadow:inset 3px 0 0 #ff7a00}
+.hw-cover{background:linear-gradient(135deg,#1a0b2e,#3d1d6b 55%,#a34a00)!important;position:relative;overflow:hidden}
+.hw-cover::before{content:"🌕";position:absolute;right:16px;top:8px;font-size:44px;filter:drop-shadow(0 0 14px #ffb15c)}
+.hw-cover::after{content:"🦇  🎃  🕸️  🎃  🦇";position:absolute;left:12px;bottom:6px;font-size:22px;white-space:nowrap;letter-spacing:6px;filter:drop-shadow(0 0 6px #000)}
+.hw-cover.mini::before{font-size:16px;right:8px;top:3px}
+.hw-cover.mini::after{font-size:11px;bottom:3px;left:8px;letter-spacing:3px}
+.pf-cam{position:absolute;display:flex;align-items:center;justify-content:center;gap:5px;background:#000a;color:#fff;border:1px solid #ffffff44;border-radius:99px;padding:6px 11px;font-size:.78rem;font-weight:600;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);z-index:2}
+.pf-cam.round{width:32px;height:32px;padding:0;right:-2px;bottom:-2px;font-size:15px;background:var(--mor);border-color:var(--bg)}
+.pf-tabs{display:flex;gap:4px;padding:4px}
+.pf-tab{flex:1;padding:10px 6px;border-radius:12px;font-size:.82rem;font-weight:600;color:var(--mut)}
+.pf-tab.on{color:#fff;background:#ffffff14;box-shadow:inset 0 -2px 0 var(--mor)}
+.stat{background:#0b121a80;border:1px solid var(--line);border-radius:14px;padding:8px 4px}
+.cos-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border:1px solid var(--line);border-radius:14px;background:#0b121a66}
+.cos-item.on{border-color:var(--mor);box-shadow:0 0 0 1px var(--mor),0 0 16px #fe2c5533}
+.cos-item.lock{opacity:.6}
+.cos-tag{font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:99px;background:#ffffff14;color:var(--mut);margin-left:6px;vertical-align:middle}
+.cos-tag.ev{background:linear-gradient(135deg,#ff7a00,#8b2fc9);color:#fff}
+.cos-tag.ultra{background:linear-gradient(135deg,#fde68a,#f59e0b);color:#2a1700}
+.btn.sm{min-height:38px;padding:.3rem .9rem;font-size:.85rem}
 </style>
 </head>
 <body class="min-h-screen pb-20">
@@ -200,13 +224,52 @@ body.hw .bub .m{background:#2a1645}body.hw .bub.yo .m{background:#7a3a00}
     <p id="tiendaMsg" class="text-sm"></p>
   </section>
 
-  <section id="v-perfil" class="hidden space-y-3"><div class="card p-4 space-y-2"><h3 class="font-bold neon">Mi perfil</h3>
-    <label class="lbl">Foto de perfil</label><input id="pfAv" type="file" accept="image/*" class="input">
-    <label class="lbl">Banner</label><input id="pfBn" type="file" accept="image/*" class="input">
-    <label class="lbl">Sobre mí (máx. 160)</label><input id="pfBio" maxlength="160" class="input">
-    <button id="pfGuardar" class="btn w-full mt-2">Guardar perfil</button>
-    <button class="btn alt w-full" onclick="yo && verPerfil(yo.username)">Ver cómo se ve</button>
-    <button class="btn alt w-full" onclick="tutoIniciar()">📖 Ver el tutorial otra vez</button><p id="pfMsg" class="text-sm"></p></div></section>
+  <section id="v-perfil" class="hidden space-y-3">
+    <div id="pfLogin" class="card p-6 text-center space-y-3 hidden"><p class="text-4xl">👤</p><p class="text-zinc-300">Inicia sesión para ver y editar tu perfil.</p><button class="btn" onclick="exigirSesion()">Entrar</button></div>
+    <div id="pfMain" class="space-y-3">
+      <div class="card overflow-hidden">
+        <div id="pfCover" data-base="relative" class="relative" style="height:150px">
+          <button class="pf-cam" style="right:10px;bottom:10px" onclick="$('#pfBn').click()">📷 Editar portada</button>
+        </div>
+        <div class="px-4 pb-4" style="margin-top:-46px;position:relative">
+          <div class="flex items-end justify-between gap-2">
+            <div class="relative" style="width:92px;height:92px">
+              <div id="pfAvBox" style="width:92px;height:92px;border:4px solid var(--bg);border-radius:50%;overflow:hidden;background:var(--line)"></div>
+              <button class="pf-cam round" onclick="$('#pfAv').click()" aria-label="Cambiar foto">📷</button>
+            </div>
+            <button id="pfEditBtn" class="btn alt sm">✏️ Editar perfil</button>
+          </div>
+          <p id="pfNom" class="text-xl mt-2"></p>
+          <p id="pfInfo" class="text-sm text-zinc-400"></p>
+          <p id="pfBioTxt" class="text-sm mt-2"></p>
+          <div id="pfBioEdit" class="hidden mt-2 space-y-2">
+            <label class="lbl" style="margin:0 0 4px">Sobre mí (máx. 160)</label>
+            <input id="pfBio" maxlength="160" class="input">
+            <div class="flex gap-2"><button id="pfGuardar" class="btn sm flex-1">Guardar</button><button id="pfCancelar" class="btn alt sm flex-1">Cancelar</button></div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center mt-3">
+            <div class="stat"><p id="stPts" class="font-bold">0</p><p class="text-xs text-zinc-400">Puntos</p></div>
+            <div class="stat"><p id="stMc" class="font-bold">0</p><p class="text-xs text-zinc-400">M-Coins</p></div>
+            <div class="stat"><p id="stRango" class="font-bold">-</p><p class="text-xs text-zinc-400">Rango</p></div>
+          </div>
+        </div>
+        <input id="pfAv" type="file" accept="image/*" class="hidden">
+        <input id="pfBn" type="file" accept="image/*" class="hidden">
+      </div>
+      <p id="pfMsg" class="text-sm text-center"></p>
+      <div class="card pf-tabs" id="pfTabs">
+        <button class="pf-tab on" data-pt="cosm">🎨 Cosméticos</button>
+        <button class="pf-tab" data-pt="info">ℹ️ Información</button>
+        <button class="pf-tab" data-pt="ajustes">⚙️ Ajustes</button>
+      </div>
+      <div id="pt-cosm" class="space-y-3"></div>
+      <div id="pt-info" class="hidden card p-4 space-y-2 text-sm"></div>
+      <div id="pt-ajustes" class="hidden card p-4 space-y-2">
+        <button class="btn alt w-full" onclick="yo && verPerfil(yo.username)">👁️ Ver cómo se ve mi perfil</button>
+        <button class="btn alt w-full" onclick="tutoIniciar()">📖 Ver el tutorial otra vez</button>
+      </div>
+    </div>
+  </section>
 
   <section id="v-mod" class="hidden space-y-3">
     <div class="card p-4 space-y-3"><h3 class="font-bold neon">Panel de admin 🛡️</h3>
@@ -292,11 +355,11 @@ document.querySelectorAll('.tab').forEach((t) => t.onclick = () => {
   $('#v-' + t.dataset.v).classList.remove('hidden');
   if (t.dataset.v === 'top') pintarTop();
   if (t.dataset.v === 'tienda') pintarTienda();
-  if (t.dataset.v === 'perfil' && yo) $('#pfBio').value = yo.bio || '';
+  if (t.dataset.v === 'perfil') pintarPerfil();
 });
 
 async function iniciar() {
-  yo = await miPerfil();
+  yo = await miPerfilX();
   if (yo) $('#auth').classList.add('hidden');
   if (yo && yo.is_mod) $('#tabMod').classList.remove('hidden');
   pintarBarra();
@@ -340,7 +403,7 @@ const msgAuth = (e) => {
 };
 async function tras() {
   if (typeof SESION_PERSISTE === 'undefined' || SESION_PERSISTE) return location.reload();
-  yo = await miPerfil();
+  yo = await miPerfilX();
   if (!yo) { $('#aMsg').textContent = 'No se pudo cargar tu perfil. Intenta de nuevo.'; return; }
   $('#auth').classList.add('hidden');
   if (yo.is_mod) $('#tabMod').classList.remove('hidden');
@@ -409,7 +472,7 @@ async function like(id, el) {
   const { data: liked } = await db.rpc('alternar_like', { p_post: id });
   if (liked) await ganar('like', id);
   refrescarStats();
-  yo = await miPerfil();
+  yo = await miPerfilX();
   pintarBarra();
 }
 
@@ -449,7 +512,7 @@ async function pasoLuz() {
     return;
   }
   if (data === 'eliminado') { luzMuerto = true; pintarLuz('roja'); return toast($('#dinMsg'), '💀 ¡Te moviste en luz roja! Quedaste eliminado.', false); }
-  if (data === 'ganaste') { $('#luzBtn').disabled = true; yo = await miPerfil(); pintarBarra(); return toast($('#dinMsg'), '🎉 ¡Llegaste a la meta! Ganaste.', true); }
+  if (data === 'ganaste') { $('#luzBtn').disabled = true; yo = await miPerfilX(); pintarBarra(); return toast($('#dinMsg'), '🎉 ¡Llegaste a la meta! Ganaste.', true); }
   toast($('#dinMsg'), data === 'repetida' ? 'Ya ganaste en esta ronda.' : 'La dinámica ya cerró.', false);
 }
 async function revisarAdv() {
@@ -493,7 +556,7 @@ async function responder(v) {
     sin_intentos: 'Ya no tienes más intentos en esta ronda.'
   };
   toast($('#dinMsg'), error ? error.message : (m[data] || 'Listo.'), data === 'ganaste' || data === 'participas');
-  if (data === 'ganaste') { yo = await miPerfil(); pintarBarra(); }
+  if (data === 'ganaste') { yo = await miPerfilX(); pintarBarra(); }
 }
 
 async function pintarGanadores() {
@@ -508,8 +571,9 @@ async function pintarTop() {
   const { data, error } = await cargarTop(regional ? yo.country : null, topN);
   if (error) { $('#topLista').innerHTML = '<p class="p-4 text-zinc-400">No se pudo cargar el ranking.</p>'; return; }
   const med = ['🥇', '🥈', '🥉'];
+  await conEquipado(data || []);
   $('#topLista').innerHTML = (data || []).map((u, i) => `
-    <div class="flex items-center justify-between p-3 ${yo && u.username === yo.username ? 'bg-white/5' : ''}"><span>${med[i] || (i + 1) + '.'} ${avatarHtml(u, 28)} ${u.flag} ${nombreHtml(u)}</span><span class="text-sm text-zinc-400">${rangoDe(u.points)} · ${u.points} pts</span></div>`).join('') || '<p class="p-4 text-zinc-400">Todavía no hay nadie en el ranking.</p>';
+    <div class="flex items-center justify-between gap-2 p-3 ${yo && u.username === yo.username ? 'bg-white/5' : ''} ${equipEfectivo(u).banner === 'banner_halloween' ? 'hw-row' : ''}"><span class="min-w-0">${med[i] || (i + 1) + '.'} ${avatarHtml(u, 28)} ${u.flag} ${nombreHtml(u, true)}</span><span class="text-sm text-zinc-400 text-right shrink-0">${rangoDe(u.points)} · ${u.points} pts</span></div>`).join('') || '<p class="p-4 text-zinc-400">Todavía no hay nadie en el ranking.</p>';
   $('#topMas').classList.toggle('hidden', (data || []).length < topN || topN >= 100);
   if (yo) {
     let q = db.from('profiles').select('id', { count: 'exact', head: true }).gt('points', yo.points);
@@ -542,7 +606,7 @@ async function jugarRuleta(pagado) {
   $('#rueda').style.transform = `rotate(${grados}deg)`;
   setTimeout(async () => {
     toast($('#ruletaMsg'), `¡Ganaste ${data.toLocaleString()} puntos!`, true);
-    yo = await miPerfil(); pintarBarra();
+    yo = await miPerfilX(); pintarBarra();
   }, 4600);
 }
 $('#giroGratis').onclick = () => jugarRuleta(false);
@@ -557,7 +621,7 @@ function botonPago(id, monto, descripcion, alAprobar) {
       if (!yo) { $('#auth').classList.remove('hidden'); throw new Error('sin sesión'); }
       return a.order.create({ purchase_units: [{ description: descripcion, amount: { currency_code: 'MXN', value: monto }, payee: { email_address: 'malishuapo@gmail.com' } }] });
     },
-    onApprove: async (d, a) => { const o = await a.order.capture(); const r = await alAprobar(o.id); if (r && r.error) { alert('No pudimos verificar tu pago. Escríbele a Malis con tu comprobante.'); return; } yo = await miPerfil(); pintarBarra(); pintarMuro(); }
+    onApprove: async (d, a) => { const o = await a.order.capture(); const r = await alAprobar(o.id); if (r && r.error) { alert('No pudimos verificar tu pago. Escríbele a Malis con tu comprobante.'); return; } yo = await miPerfilX(); pintarBarra(); pintarMuro(); }
   }).render(id);
 }
 botonPago('#pp-premium', '100.00', 'Premium Comunidad de Malis (30 días)', (id) => confirmarPago(id, 'premium'));
@@ -582,10 +646,50 @@ const esPrem = (u) => !!u && u.role === 'Premium' && (!u.premium_until || new Da
 const avatarHtml = (u, s) => u && u.avatar_url
   ? `<img src="${esc(u.avatar_url)}" onclick="verPerfil('${esc(u.username)}')" class="rounded-full object-cover inline-block align-middle" style="cursor:pointer;width:${s}px;height:${s}px">`
   : `<span onclick="verPerfil('${esc((u && u.username) || '')}')" class="inline-flex items-center justify-center rounded-full font-bold align-middle" style="cursor:pointer;width:${s}px;height:${s}px;background:var(--line);font-size:${s / 2}px">${esc(((u && u.username) || '?')[0].toUpperCase())}</span>`;
-function nombreHtml(u) {
-  const o = u.owned || [];
-  const cls = [o.includes('texto_rgb') ? 'rgb' : (esPrem(u) ? 'dorado' : ''), o.includes('marco_fuego') ? 'fuego' : '', o.includes('fondo_espacial') ? 'espacial' : ''].join(' ');
-  return `<b class="${cls}" style="cursor:pointer" onclick="verPerfil('${esc(u.username)}')">${esPrem(u) ? '⭐ ' : ''}${esc(u.username)}</b>`;
+// ===== COSMÉTICOS: qué tiene, qué trae puesto =====
+const SLOT_ITEMS = { banner: ['banner_halloween'], texto: ['dorado', 'texto_rgb', 'nombre_halloween'], marco: ['marco_fuego'], fondo: ['fondo_espacial'], insignia: ['calabaza_halloween'] };
+const CLASE_TEXTO = { dorado: 'dorado', texto_rgb: 'rgb', nombre_halloween: 'hw-nom' };
+const tieneCos = (u, id) => id === 'dorado' ? esPrem(u) : (u.owned || []).includes(id);
+// u.equipado = { slot: 'id' | 'off' }. Si un slot no está guardado, se pone automático lo que tenga (así lo que Malis activa se ve de inmediato).
+function equipEfectivo(u) {
+  const eq = (u && u.equipado && typeof u.equipado === 'object') ? u.equipado : {};
+  const out = {};
+  Object.keys(SLOT_ITEMS).forEach((k) => {
+    const v = eq[k];
+    if (v === 'off') { out[k] = null; return; }
+    if (v && SLOT_ITEMS[k].includes(v) && tieneCos(u, v)) { out[k] = v; return; }
+    const orden = k === 'texto' ? ['nombre_halloween', 'texto_rgb', 'dorado'] : SLOT_ITEMS[k];
+    out[k] = orden.find((id) => tieneCos(u, id)) || null;
+  });
+  return out;
+}
+function nombreHtml(u, full) {
+  const e = equipEfectivo(u);
+  const cls = [CLASE_TEXTO[e.texto] || '', e.marco === 'marco_fuego' ? 'fuego' : '', e.fondo === 'fondo_espacial' ? 'espacial' : ''].join(' ');
+  const pill = e.insignia === 'calabaza_halloween' ? `<span class="hw-pill">🎃${full ? ' Halloween' : ''}</span>` : '';
+  return `<b class="${cls}" style="cursor:pointer" onclick="verPerfil('${esc(u.username)}')">${esPrem(u) ? '⭐ ' : ''}${esc(u.username)}</b>${pill}`;
+}
+function pintarCover(el, u, mini) {
+  const e = equipEfectivo(u), hw = e.banner === 'banner_halloween';
+  el.className = (el.dataset.base || '') + (hw ? ' hw-cover' + (mini ? ' mini' : '') : '');
+  el.style.background = hw ? '' : (u.banner_url ? `url(${esc(u.banner_url)}) center/cover` : 'linear-gradient(135deg,var(--mor),#0e1621)');
+}
+async function miPerfilX() {
+  const p = await miPerfil();
+  if (p) { try { const { data } = await db.from('profiles').select('equipado').eq('id', p.id).maybeSingle(); p.equipado = data ? data.equipado : null; } catch (e) {} }
+  return p;
+}
+// trae lo equipado de una lista de perfiles (si la columna aún no existe, no rompe nada)
+async function conEquipado(lista) {
+  try {
+    const n = [...new Set(lista.filter(Boolean).map((u) => u.username))];
+    if (!n.length) return lista;
+    const { data, error } = await db.from('profiles').select('username,equipado').in('username', n);
+    if (error || !data) return lista;
+    const m = {}; data.forEach((r) => { m[r.username] = r.equipado; });
+    lista.forEach((u) => { if (u) u.equipado = m[u.username]; });
+  } catch (e) {}
+  return lista;
 }
 
 async function verComentarios(id) {
@@ -593,6 +697,7 @@ async function verComentarios(id) {
   if (box.dataset.open) { box.innerHTML = ''; delete box.dataset.open; return; }
   box.dataset.open = 1;
   const { data } = await db.from('comments').select('id,body,profiles(username,role,premium_until,owned,avatar_url)').eq('post_id', id).order('created_at');
+  await conEquipado((data || []).map((c) => c.profiles));
   box.innerHTML = (data || []).map((c) => `<div class="bub ${yo && c.profiles.username === yo.username ? 'yo' : ''}">${avatarHtml(c.profiles, 28)}<div class="m"><div class="text-xs">${nombreHtml(c.profiles)}</div>${esc(c.body)}${yo && yo.is_mod ? ` <button onclick="quitar(${c.id},${id})">🗑️</button>` : ''}</div></div>`).join('')
     + `<div class="flex gap-2 pt-2"><input id="ci-${id}" class="input" placeholder="Escribe un comentario"><button class="btn" onclick="comentar(${id})">Enviar</button></div>`;
 }
@@ -623,7 +728,7 @@ async function comprarItem(id) {
   if (!exigirSesion()) return;
   const { error } = await comprarCosmetico(id);
   toast($('#tiendaMsg'), error ? error.message : 'Compra lista.', !error);
-  yo = await miPerfil(); pintarBarra(); pintarTienda();
+  yo = await miPerfilX(); pintarBarra(); pintarTienda();
 }
 
 
@@ -640,7 +745,7 @@ function confeti() {
   }
 }
 db.channel('regalos').on('broadcast', { event: 'regalo' }, async ({ payload }) => {
-  if (yo && payload.username === yo.username) { confeti(); yo = await miPerfil(); pintarBarra(); setTimeout(() => alert('🎁 ¡Recibiste ' + payload.cantidad + (payload.tipo === 'pts' ? ' puntos!' : ' M-Coins!')), 300); }
+  if (yo && payload.username === yo.username) { confeti(); yo = await miPerfilX(); pintarBarra(); setTimeout(() => alert('🎁 ¡Recibiste ' + payload.cantidad + (payload.tipo === 'pts' ? ' puntos!' : ' M-Coins!')), 300); }
 }).subscribe();
 
 const TUTO = [
@@ -651,7 +756,7 @@ const TUTO = [
   { v: 'top', t: '🏆 <b>Top</b>: el ranking de la comunidad. Sube de rango: Bronce, Platino, Heroico y Gran Maestro. Toca el nombre de alguien para ver su perfil.' },
   { v: 'tienda', t: '🛍️ <b>Tienda</b>: con M-Coins compras estilos para tu nombre: marco de fuego, fondo espacial o texto arcoíris.' },
   { v: 'premium', t: '⭐ <b>Premium</b>: contenido exclusivo y tu nombre en dorado. Aquí también puedes pedir ser moderador.' },
-  { v: 'perfil', t: '👤 <b>Perfil</b>: sube tu foto, tu banner y escribe algo sobre ti. Así te ven todos en el Top y en los comentarios.' },
+  { v: 'perfil', t: '👤 <b>Perfil</b>: cambia tu foto y portada, escribe tu bio y equipa o quita tus <b>cosméticos</b> (texto, banner, insignias). Así te ven todos en el Top.' },
   { v: 'apoyar', t: '🎵 <b>Apoyar</b>: la forma más directa de apoyarme es con regalos en mis lives de TikTok. Es opcional, no hace falta para jugar.' },
   { v: 'muro', t: '¡Listo! 🎉 Tip: también ganas <b>50 puntos por cada 10 minutos</b> con la página abierta. Si quieres volver a ver esto, está en 👤 Perfil. ¡A jugar!' }
 ];
@@ -690,7 +795,7 @@ function tutoSiToca() {
 function flash(t) { const f = $('#flash'); f.textContent = t; f.style.display = 'block'; clearTimeout(flash.t); flash.t = setTimeout(() => f.style.display = 'none', 3200); }
 async function ganar(t, ref) {
   const { data } = await db.rpc('ganar_actividad', { p_tipo: t, p_ref: String(ref) });
-  if (data > 0) { flash('+' + data + ' puntos ' + ({ like: 'por tu like', comentario: 'por comentar', tiempo: 'por estar 10 min' })[t]); yo = await miPerfil(); pintarBarra(); }
+  if (data > 0) { flash('+' + data + ' puntos ' + ({ like: 'por tu like', comentario: 'por comentar', tiempo: 'por estar 10 min' })[t]); yo = await miPerfilX(); pintarBarra(); }
 }
 let mins = 0;
 setInterval(() => { if (yo && !document.hidden && ++mins >= 10) { mins = 0; ganar('tiempo', 't'); } }, 60000);
@@ -707,23 +812,88 @@ async function subirPerfil(file, nombre, max) {
   if (error) throw error;
   return db.storage.from('perfiles').getPublicUrl(path).data.publicUrl;
 }
-$('#pfGuardar').onclick = async () => {
+async function guardarPerfil(o) {
   if (!exigirSesion()) return;
   try {
-    const fa = $('#pfAv').files[0], fb = $('#pfBn').files[0];
-    const av = fa ? await subirPerfil(fa, 'avatar', 512) : null, bn = fb ? await subirPerfil(fb, 'banner', 1400) : null;
-    const { error } = await db.rpc('guardar_perfil', { p_avatar: av, p_banner: bn, p_bio: $('#pfBio').value });
+    const av = o.avatar ? await subirPerfil(o.avatar, 'avatar', 512) : null, bn = o.banner ? await subirPerfil(o.banner, 'banner', 1400) : null;
+    const { error } = await db.rpc('guardar_perfil', { p_avatar: av, p_banner: bn, p_bio: o.bio !== undefined ? o.bio : (yo.bio || '') });
     if (error) throw error;
-    toast($('#pfMsg'), 'Perfil guardado.', true);
-    yo = await miPerfil(); pintarBarra();
-  } catch (e) { toast($('#pfMsg'), e.message || 'No se pudo guardar. ¿Corriste SQL_PERFILES.sql?', false); }
-};
+    yo = await miPerfilX(); pintarBarra(); pintarPerfil();
+    const hw = equipEfectivo(yo).banner === 'banner_halloween';
+    toast($('#pfMsg'), o.banner && hw ? 'Portada guardada. Tienes el Banner Halloween puesto: quítalo en Cosméticos para ver tu foto.' : 'Perfil actualizado.', true);
+  } catch (e) { toast($('#pfMsg'), e.message || 'No se pudo guardar. ¿Corriste SQL_PERFILES.sql?', false); pintarPerfil(); }
+}
+$('#pfAv').onchange = () => { const f = $('#pfAv').files[0]; if (!f) return; $('#pfAvBox').innerHTML = `<img src="${URL.createObjectURL(f)}" class="w-full h-full object-cover">`; guardarPerfil({ avatar: f }); };
+$('#pfBn').onchange = () => { const f = $('#pfBn').files[0]; if (!f) return; guardarPerfil({ banner: f }); };
+$('#pfEditBtn').onclick = () => { $('#pfBio').value = (yo && yo.bio) || ''; $('#pfBioEdit').classList.toggle('hidden'); };
+$('#pfCancelar').onclick = () => $('#pfBioEdit').classList.add('hidden');
+$('#pfGuardar').onclick = async () => { await guardarPerfil({ bio: $('#pfBio').value }); $('#pfBioEdit').classList.add('hidden'); };
+document.querySelectorAll('.pf-tab').forEach((b) => b.onclick = () => {
+  document.querySelectorAll('.pf-tab').forEach((x) => x.classList.toggle('on', x === b));
+  ['cosm', 'info', 'ajustes'].forEach((k) => $('#pt-' + k).classList.toggle('hidden', k !== b.dataset.pt));
+});
+
+const COSM_UI = [
+  { slot: 'banner', t: '🖼️ Banner', d: 'La portada de tu perfil y el fondo de tu fila en el Top.', items: [{ id: 'banner_halloween', n: 'Banner Halloween', tag: 'ev' }] },
+  { slot: 'texto', t: '✨ Texto del nombre', d: 'Elige cómo se ve tu nombre en el Top, comentarios y perfil.', items: [{ id: 'dorado', n: 'Texto Premium dorado', tag: 'prem' }, { id: 'texto_rgb', n: 'Texto RGB arcoíris', tienda: 1 }, { id: 'nombre_halloween', n: 'Nombre Halloween', tag: 'ev' }] },
+  { slot: 'marco', t: '🔥 Marco', d: '', items: [{ id: 'marco_fuego', n: 'Marco de fuego animado', tienda: 1 }] },
+  { slot: 'fondo', t: '🌌 Fondo del nombre', d: '', items: [{ id: 'fondo_espacial', n: 'Fondo espacial', tienda: 1 }] },
+  { slot: 'insignia', t: '🎃 Insignia', d: 'La burbuja que aparece junto a tu nombre en el Top.', items: [{ id: 'calabaza_halloween', n: 'Calabaza Halloween', tag: 'ultra' }] }
+];
+function muestraCos(slot, id) {
+  if (slot === 'banner') return '<div class="hw-cover mini" style="width:84px;height:38px;border-radius:10px"></div>';
+  if (slot === 'texto') return `<b class="${CLASE_TEXTO[id]}">Tu nombre</b>`;
+  if (slot === 'marco') return '<b class="fuego">Tu nombre</b>';
+  if (slot === 'fondo') return '<b class="espacial">Tu nombre</b>';
+  return '<span class="hw-pill" style="margin:0">🎃 Halloween</span>';
+}
+function pintarCosmeticos() {
+  const ef = equipEfectivo(yo);
+  $('#pt-cosm').innerHTML = COSM_UI.map((g) => `
+    <div class="card p-4 space-y-2">
+      <div><h3 class="font-bold neon">${g.t}</h3>${g.d ? `<p class="text-xs text-zinc-400">${g.d}</p>` : ''}</div>
+      ${g.items.map((i) => {
+        const tiene = tieneCos(yo, i.id), puesto = ef[g.slot] === i.id;
+        const tag = i.tag === 'ev' ? '<span class="cos-tag ev">EVENTO</span>' : i.tag === 'ultra' ? '<span class="cos-tag ultra">ULTRA EXCLUSIVO</span>' : i.tag === 'prem' ? '<span class="cos-tag">PREMIUM</span>' : '';
+        const accion = tiene
+          ? `<button class="btn ${puesto ? 'alt' : ''} sm" onclick="equipar('${g.slot}','${i.id}')">${puesto ? 'Quitar' : 'Equipar'}</button>`
+          : i.tag === 'prem' ? '<button class="btn alt sm" onclick="irPremium()">Hazte Premium</button>'
+          : i.tienda ? '<button class="btn alt sm" onclick="document.querySelector(\'[data-v=tienda]\').click()">Tienda</button>'
+          : '<span class="text-xs text-zinc-400">🔒 Solo por evento</span>';
+        return `<div class="cos-item ${puesto ? 'on' : ''} ${tiene ? '' : 'lock'}"><div class="min-w-0"><p class="text-sm font-semibold">${i.n}${tag}</p><div class="mt-1">${muestraCos(g.slot, i.id)}</div>${puesto ? '<p class="text-xs text-emerald-400 mt-1">✓ Equipado</p>' : ''}</div>${accion}</div>`;
+      }).join('')}
+    </div>`).join('');
+}
+async function equipar(slot, id) {
+  if (!exigirSesion()) return;
+  const ef = equipEfectivo(yo), eq = Object.assign({}, (yo.equipado && typeof yo.equipado === 'object') ? yo.equipado : {});
+  eq[slot] = ef[slot] === id ? 'off' : id;
+  const { error } = await db.rpc('guardar_equipado', { p_equipado: eq });
+  if (error) return toast($('#pfMsg'), (error.message || 'Error') + ' ¿Corriste SQL_COSMETICOS.sql?', false);
+  toast($('#pfMsg'), eq[slot] === 'off' ? 'Cosmético quitado.' : '¡Cosmético equipado!', true);
+  yo = await miPerfilX(); pintarBarra(); pintarPerfil();
+}
+function pintarPerfil() {
+  $('#pfLogin').classList.toggle('hidden', !!yo);
+  $('#pfMain').classList.toggle('hidden', !yo);
+  if (!yo) return;
+  pintarCover($('#pfCover'), yo, false);
+  $('#pfAvBox').innerHTML = avatarHtml(yo, 84);
+  $('#pfNom').innerHTML = nombreHtml(yo, true);
+  $('#pfInfo').textContent = `${yo.flag || ''} ${rangoDe(yo.points)}${esPrem(yo) ? ' · ⭐ Premium' : ''}`;
+  $('#pfBioTxt').textContent = yo.bio || 'Aún no escribes nada sobre ti. Toca "Editar perfil".';
+  $('#stPts').textContent = yo.points; $('#stMc').textContent = yo.mcoins; $('#stRango').textContent = rangoDe(yo.points);
+  const desde = yo.created_at ? new Date(yo.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' }) : '-';
+  $('#pt-info').innerHTML = `<p><span class="text-zinc-400">Usuario:</span> ${esc(yo.username)}</p><p><span class="text-zinc-400">Región:</span> ${yo.flag || ''} ${esc(yo.country || '')}</p><p><span class="text-zinc-400">Miembro desde:</span> ${desde}</p><p><span class="text-zinc-400">Plan:</span> ${esPrem(yo) ? '⭐ Premium' : 'Base'}</p>`;
+  pintarCosmeticos();
+}
 async function verPerfil(nombre) {
   const { data: u } = await db.from('profiles').select('username,flag,points,owned,role,premium_until,avatar_url,banner_url,bio').eq('username', nombre).maybeSingle();
   if (!u) return;
-  $('#pmBanner').style.background = u.banner_url ? `url(${esc(u.banner_url)}) center/cover` : 'linear-gradient(135deg,var(--mor),#0e1621)';
+  await conEquipado([u]);
+  pintarCover($('#pmBanner'), u, false);
   $('#pmAv').innerHTML = avatarHtml(u, 72);
-  $('#pmNom').innerHTML = nombreHtml(u);
+  $('#pmNom').innerHTML = nombreHtml(u, true);
   $('#pmInfo').textContent = `${u.flag} ${rangoDe(u.points)} · ${u.points} pts${esPrem(u) ? ' · ⭐ Premium' : ''}`;
   $('#pmBio').textContent = u.bio || '';
   $('#perfilModal').classList.remove('hidden');
@@ -735,7 +905,7 @@ db.channel('live-web')
   .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'posts' }, () => luego(pintarMuro))
   .on('postgres_changes', { event: '*', schema: 'public', table: 'comments' }, (p) => { const id = (p.new && p.new.post_id) || (p.old && p.old.post_id), b = id && $('#c-' + id); if (b && b.dataset.open) recargarComentarios(id); })
   .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, async (p) => {
-    if (yo && p.new.id === yo.id) { yo = await miPerfil(); pintarBarra(); pintarMuro(); }
+    if (yo && p.new.id === yo.id) { yo = await miPerfilX(); pintarBarra(); pintarMuro(); }
     if (!$('#v-top').classList.contains('hidden')) pintarTop();
   })
   .on('postgres_changes', { event: '*', schema: 'public', table: 'din_ganadores' }, () => pintarGanadores())
