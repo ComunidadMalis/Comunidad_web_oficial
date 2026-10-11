@@ -156,7 +156,7 @@ body.hw .bub .m{background:#2a1645}body.hw .bub.yo .m{background:#7a3a00}
 .stat{background:#0b121a80;border:1px solid var(--line);border-radius:14px;padding:8px 4px}
 .cos-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border:1px solid var(--line);border-radius:14px;background:#0b121a66}
 .cos-item.on{border-color:var(--mor);box-shadow:0 0 0 1px var(--mor),0 0 16px #fe2c5533}
-.cos-item.lock{opacity:.6}
+.cos-item.bloq{opacity:.6}
 .cos-tag{font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:99px;background:#ffffff14;color:var(--mut);margin-left:6px;vertical-align:middle}
 .cos-tag.ev{background:linear-gradient(135deg,#ff7a00,#8b2fc9);color:#fff}
 .cos-tag.ultra{background:linear-gradient(135deg,#fde68a,#f59e0b);color:#2a1700}
@@ -860,7 +860,7 @@ function pintarCosmeticos() {
           : i.tag === 'prem' ? '<button class="btn alt sm" onclick="irPremium()">Hazte Premium</button>'
           : i.tienda ? '<button class="btn alt sm" onclick="document.querySelector(\'[data-v=tienda]\').click()">Tienda</button>'
           : '<span class="text-xs text-zinc-400">🔒 Solo por evento</span>';
-        return `<div class="cos-item ${puesto ? 'on' : ''} ${tiene ? '' : 'lock'}"><div class="min-w-0"><p class="text-sm font-semibold">${i.n}${tag}</p><div class="mt-1">${muestraCos(g.slot, i.id)}</div>${puesto ? '<p class="text-xs text-emerald-400 mt-1">✓ Equipado</p>' : ''}</div>${accion}</div>`;
+        return `<div class="cos-item ${puesto ? 'on' : ''} ${tiene ? '' : 'bloq'}"><div class="min-w-0"><p class="text-sm font-semibold">${i.n}${tag}</p><div class="mt-1">${muestraCos(g.slot, i.id)}</div>${puesto ? '<p class="text-xs text-emerald-400 mt-1">✓ Equipado</p>' : ''}</div>${accion}</div>`;
       }).join('')}
     </div>`).join('');
 }
