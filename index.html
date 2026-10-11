@@ -300,15 +300,24 @@ const msgAuth = (e) => {
   if (/signups? (are )?(not allowed|disabled)/i.test(m)) return 'Los registros están desactivados en Supabase.';
   return 'Error: ' + (m || 'desconocido');
 };
+async function tras() {
+  if (SESION_PERSISTE) return location.reload();
+  yo = await miPerfil();
+  if (!yo) { $('#aMsg').textContent = 'No se pudo cargar tu perfil. Intenta de nuevo.'; return; }
+  $('#auth').classList.add('hidden');
+  if (yo.is_mod) $('#tabMod').classList.remove('hidden');
+  pintarBarra();
+  pintarMuro();
+}
 $('#aEntrar').onclick = async () => {
-  try { await entrar($('#aUser').value, $('#aPass').value); location.reload(); }
+  try { await entrar($('#aUser').value, $('#aPass').value); await tras(); }
   catch (e) { console.error(e); $('#aMsg').textContent = msgAuth(e); }
 };
 $('#aReg').onclick = async () => {
   const u = $('#aUser').value.trim();
   if (!/^[\w.-]{3,20}$/.test(u)) return $('#aMsg').textContent = 'Usuario de 3 a 20 letras, números, punto o guion.';
   if ($('#aPass').value.length < 6) return $('#aMsg').textContent = 'La contraseña debe tener al menos 6 caracteres.';
-  try { await registrar(u, $('#aPass').value); location.reload(); }
+  try { await registrar(u, $('#aPass').value); await tras(); }
   catch (e) { console.error(e); $('#aMsg').textContent = msgAuth(e); }
 };
 

@@ -1,8 +1,26 @@
 const SUPABASE_URL = 'https://hzxpqqtqkslirhzxdwey.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_QZFcMcXzfqbq9KGH9BGE7g_6q4kS-a2';
 
+let SESION_PERSISTE = true;
+const almacen = (() => {
+  try {
+    const k = '__prueba';
+    window.localStorage.setItem(k, k);
+    window.localStorage.removeItem(k);
+    return window.localStorage;
+  } catch {
+    SESION_PERSISTE = false;
+    const m = {};
+    return {
+      getItem: (k) => (k in m ? m[k] : null),
+      setItem: (k, v) => { m[k] = String(v); },
+      removeItem: (k) => { delete m[k]; }
+    };
+  }
+})();
+
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true, storage: window.localStorage }
+  auth: { persistSession: true, autoRefreshToken: true, storage: almacen }
 });
 
 const ADMIN_EMAIL = 'omali.rm08@gmail.com';
@@ -69,11 +87,25 @@ const salir = () => db.auth.signOut();
 const entrarConGoogle = () =>
   db.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.href } });
 
+async function crearPerfilFaltante(user) {
+  const base = (user.email || '').split('@')[0] || 'usuario';
+  const pais = await detectarPais();
+  for (const nombre of [base, base + Math.floor(100 + Math.random() * 900)]) {
+    const { error } = await db.from('profiles').insert({
+      id: user.id, username: nombre, country: pais, flag: banderaDe(pais)
+    });
+    if (!error) break;
+  }
+  const { data } = await db.from('profiles').select('*').eq('id', user.id).maybeSingle();
+  return data;
+}
+
 async function miPerfil() {
   const { data: { user } } = await db.auth.getUser();
   if (!user) return null;
   await db.rpc('revisar_vencimiento');
-  const { data } = await db.from('profiles').select('*').eq('id', user.id).single();
+  let { data } = await db.from('profiles').select('*').eq('id', user.id).maybeSingle();
+  if (!data) data = await crearPerfilFaltante(user);
   if (data && data.banned) {
     await db.auth.signOut();
     alert('Tu cuenta fue bloqueada por incumplir las reglas de la comunidad.');
