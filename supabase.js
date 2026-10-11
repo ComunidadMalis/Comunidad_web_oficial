@@ -72,7 +72,7 @@ const esAdmin = async () => {
 
 const cargarPosts = () => db.from('posts').select('*').order('created_at', { ascending: false }).limit(50);
 const cargarTop = (pais) => {
-  let q = db.from('profiles').select('username,flag,country,points,owned').order('points', { ascending: false }).limit(20);
+  let q = db.from('profiles').select('username,flag,country,points,owned,role,premium_until,avatar_url').order('points', { ascending: false }).limit(20);
   if (pais) q = q.eq('country', pais);
   return q;
 };

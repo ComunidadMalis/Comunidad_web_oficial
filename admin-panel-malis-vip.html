@@ -137,6 +137,8 @@ h2{font-weight:700;font-size:1.1rem;color:#fff4d0}
     </div>
     <div class="card space-y-3">
       <p id="turno" class="font-semibold">Nadie en turno.</p>
+      <button id="micAdmin" class="btn alt w-full">🎙️ Encender mi micrófono</button>
+      <p class="text-xs mut">Usa audífonos para que no haya eco. Cuando llames a alguien, te escuchará automáticamente.</p>
       <audio id="rv" autoplay controls class="w-full"></audio>
       <div class="grid grid-cols-2 gap-3">
         <button id="siguiente" class="btn">Llamar al siguiente</button>
@@ -202,6 +204,7 @@ h2{font-weight:700;font-size:1.1rem;color:#fff4d0}
       <label class="flex gap-3"><input id="wRul" type="checkbox" class="w-5 h-5"> Ruleta activa</label>
       <label class="flex gap-3"><input id="wTie" type="checkbox" class="w-5 h-5"> Tienda activa</label>
       <label class="flex gap-3"><input id="wSho" type="checkbox" class="w-5 h-5"> Show activo</label>
+      <label class="text-xs mut">Puntos de bienvenida para usuarios nuevos (0 = apagado)</label><input id="wBono" type="number" inputmode="numeric" class="input" value="200">
       <button id="wGuardar" class="btn w-full">Guardar cambios</button>
     </div>
   </div>
@@ -222,7 +225,7 @@ const $ = (s) => document.querySelector(s);
 const esc = (t) => String(t ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const canal = db.channel('regalos');
 canal.subscribe();
-let live = false, estado = {};
+let live = false, estado = {}, peerA = null, miMic = null, ultTurno = null;
 
 const CAT = [];
 const add = (tipo, titulo, pregunta, resp, ops) => CAT.push({ tipo, titulo, pregunta, resp, ops: ops || null });
@@ -319,6 +322,7 @@ async function cargarStats() {
 
 function pintar(s) {
   estado = s; live = s.live;
+  if (s.turno_user !== ultTurno) { ultTurno = s.turno_user; setTimeout(() => llamarConcursante(0), 1500); }
   $('#gran').textContent = 'Modo Live: ' + (live ? 'ON' : 'OFF');
   $('#gran').classList.toggle('on', live);
   $('#turno').textContent = s.turno_name ? 'En turno: ' + s.turno_name : 'Nadie en turno.';
@@ -565,9 +569,9 @@ async function pintarFila() {
   $('#stF').textContent = (data || []).length;
 }
 function iniciarShow() {
-  const peer = new Peer('malis-admin-panel');
-  peer.on('call', (llamada) => {
-    llamada.answer();
+  peerA = new Peer('malis-admin-panel');
+  peerA.on('call', (llamada) => {
+    llamada.answer(miMic || undefined);
     llamada.on('stream', (flujo) => { const v = $('#rv'); v.srcObject = flujo; v.play().catch(() => {}); });
   });
   pintarFila();
@@ -599,6 +603,7 @@ $('#mHacer').onclick = hm(true); $('#mQuitar').onclick = hm(false);
 function cargarWeb() {
   $('#wFondo').value = (estado.bg_valor || '').startsWith('preset:') ? estado.bg_valor : 'preset:camo';
   $('#wAc').value = estado.acento || '#d4a93c';
+  $('#wBono').value = estado.bono_nuevos ?? 200;
   $('#wRul').checked = estado.f_ruleta !== false; $('#wTie').checked = estado.f_tienda !== false; $('#wSho').checked = estado.f_show !== false;
 }
 $('#wGuardar').onclick = async () => {
@@ -610,8 +615,27 @@ $('#wGuardar').onclick = async () => {
     bg = 'img:' + db.storage.from('media').getPublicUrl(path).data.publicUrl;
   }
   const { error } = await db.rpc('ajustar_web', { p_bg: bg, p_acento: $('#wAc').value, p_libre: false, p_ruleta: $('#wRul').checked, p_tienda: $('#wTie').checked, p_show: $('#wSho').checked });
-  error ? falla(error) : aviso('✅ Guardado. La web ya cambió.');
+  const r2 = await db.rpc('ajustar_bono', { p_bono: Math.max(0, parseInt($('#wBono').value, 10) || 0) });
+  (error || r2.error) ? falla(error || r2.error) : aviso('✅ Guardado. La web ya cambió.');
 };
+function llamarConcursante(n) {
+  if (!miMic || !estado.turno_user || !peerA || n > 5) return;
+  const c = peerA.call('malis-' + estado.turno_user, miMic); let ok = false;
+  c.on('stream', () => { ok = true; });
+  setTimeout(() => { if (!ok) llamarConcursante(n + 1); }, 2500);
+}
+$('#micAdmin').onclick = async () => {
+  if (miMic) { miMic.getTracks().forEach((t) => t.stop()); miMic = null; $('#micAdmin').textContent = '🎙️ Encender mi micrófono'; return; }
+  try { miMic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
+  catch { return aviso('Permite el micrófono en el navegador.'); }
+  $('#micAdmin').textContent = '🎙️ Mi micrófono: ENCENDIDO';
+  llamarConcursante(0);
+};
+db.channel('panel-live')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => { cargarStats(); if (!$('#p-usr').classList.contains('hidden')) cargarUsuarios(); })
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, () => { cargarStats(); if (!$('#p-pub').classList.contains('hidden')) cargarPosts2(); })
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'mod_requests' }, () => { if (!$('#p-mod').classList.contains('hidden')) cargarMods(); })
+  .subscribe();
 arrancar();
 </script>
 </body>

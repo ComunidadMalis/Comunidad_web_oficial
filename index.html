@@ -52,6 +52,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
 @keyframes salta{to{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
 .rgb{background:linear-gradient(90deg,#f43f5e,#f59e0b,#22c55e,#06b6d4,#d4a93c,#f43f5e);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 3s linear infinite}
 @keyframes rgb{to{background-position:200% center}}
+.dorado{background:linear-gradient(90deg,#fde68a,#f59e0b,#fde68a);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 3s linear infinite}
 .fuego{box-shadow:0 0 0 2px #f97316,0 0 14px #ef4444,0 -6px 16px #f59e0b;border-radius:10px;padding:0 6px;animation:llama .6s infinite alternate}
 @keyframes llama{to{box-shadow:0 0 0 2px #fbbf24,0 0 22px #f97316,0 -10px 22px #ef4444}}
 .espacial{background:radial-gradient(circle at 20% 30%,#3f4a1f,#09090b 70%);border-radius:10px;padding:0 6px}
@@ -92,6 +93,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
   <button class="tab" data-v="show"><i>🎙️</i>Show</button>
   <button class="tab" data-v="tienda"><i>🛍️</i>Tienda</button>
   <button class="tab" data-v="premium"><i>⭐</i>Premium</button>
+  <button class="tab" data-v="perfil"><i>👤</i>Perfil</button>
   <button class="tab" data-v="apoyar"><i>💜</i>Apoyar</button>
   <button class="tab hidden" data-v="mod" id="tabMod"><i>🛡️</i>Mod</button>
 </nav>
@@ -140,6 +142,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
     <div id="turnoCard" class="hidden card p-4 space-y-3" style="border-color:#00e676">
       <h3 class="font-bold neon">¡Es tu turno!</h3>
       <p class="text-sm text-zinc-400">Tu micrófono está apagado. Enciéndelo para hablar; en el show solo se usa audio.</p>
+      <audio id="remoto" autoplay playsinline></audio><p id="escucha" class="text-sm text-emerald-400">🔊 Cuando Malis hable, lo escucharás aquí.</p><button id="sonBtn" class="btn alt w-full">🔊 Activar sonido</button>
       <button id="micBtn" class="btn w-full">🎙️ Encender micrófono</button>
       <p id="turnoMsg" class="text-sm"></p>
     </div>
@@ -149,6 +152,13 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
     <div id="tiendaLista" class="space-y-3"></div>
     <p id="tiendaMsg" class="text-sm"></p>
   </section>
+
+  <section id="v-perfil" class="hidden space-y-3"><div class="card p-4 space-y-2"><h3 class="font-bold neon">Mi perfil</h3>
+    <label class="lbl">Foto de perfil</label><input id="pfAv" type="file" accept="image/*" class="input">
+    <label class="lbl">Banner</label><input id="pfBn" type="file" accept="image/*" class="input">
+    <label class="lbl">Sobre mí (máx. 160)</label><input id="pfBio" maxlength="160" class="input">
+    <button id="pfGuardar" class="btn w-full mt-2">Guardar perfil</button>
+    <button class="btn alt w-full" onclick="yo && verPerfil(yo.username)">Ver cómo se ve</button><p id="pfMsg" class="text-sm"></p></div></section>
 
   <section id="v-mod" class="hidden space-y-3">
     <div class="card p-4 space-y-3"><h3 class="font-bold neon">Panel de admin 🛡️</h3>
@@ -189,12 +199,15 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
   </section>
 </main>
 
+<div id="flash" class="card px-4 py-2 text-sm" style="position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:90;display:none"></div>
+<div id="perfilModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="background:#000c;z-index:85" onclick="if(event.target===this)this.classList.add('hidden')"><div class="card w-full max-w-sm overflow-hidden"><div id="pmBanner" style="height:110px"></div><div class="p-4" style="margin-top:-40px"><div id="pmAv" style="width:72px;height:72px;border:3px solid var(--bg);border-radius:50%;overflow:hidden"></div><p id="pmNom" class="text-lg mt-2"></p><p id="pmInfo" class="text-sm text-zinc-400"></p><p id="pmBio" class="text-sm mt-2"></p><button class="btn alt w-full mt-3" onclick="document.querySelector('#perfilModal').classList.add('hidden')">Cerrar</button></div></div></div>
 <div id="auth">
   <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="suelo"></div>
   <div class="gate-card">
     <img src="malis-rosa.png" alt="" class="mx-auto h-36 object-contain mb-1"><p class="text-center text-sm" style="color:var(--mut)">Bienvenido a la</p>
     <h1 class="brand flicker text-center text-3xl mt-1">COMUNIDAD<br><span>DE MALIS</span></h1>
-    <p class="text-center text-sm mt-2" style="color:var(--mut)">@malis_tk0 · Juega, gana puntos y sube en el Top</p>
+    <p id="bonoTxt" class="text-center text-sm mt-2 font-bold" style="color:var(--mor)"></p>
+    <p class="text-center text-sm mt-1" style="color:var(--mut)">@malis_tk0 · Juega, gana puntos y sube en el Top</p>
     <label class="lbl" for="aUser">Usuario</label>
     <input id="aUser" class="input" placeholder="Tu usuario" autocomplete="username" autocapitalize="none">
     <label class="lbl" for="aPass">Contraseña</label>
@@ -229,6 +242,7 @@ document.querySelectorAll('.tab').forEach((t) => t.onclick = () => {
   $('#v-' + t.dataset.v).classList.remove('hidden');
   if (t.dataset.v === 'top') pintarTop();
   if (t.dataset.v === 'tienda') pintarTienda();
+  if (t.dataset.v === 'perfil' && yo) $('#pfBio').value = yo.bio || '';
 });
 
 async function iniciar() {
@@ -248,7 +262,7 @@ async function iniciar() {
 
 function pintarBarra() {
   $('#barra').innerHTML = yo
-    ? `<p>${yo.flag} ${nombreHtml(yo)} · ${rangoDe(yo.points)}</p><p class="text-zinc-400">${yo.points} pts · ${yo.mcoins} M-Coins · ${yo.role} <button id="out" class="underline ml-1">salir</button></p>`
+    ? `<p>${avatarHtml(yo, 22)} ${yo.flag} ${nombreHtml(yo)} · ${rangoDe(yo.points)}</p><p class="text-zinc-400">${yo.points} pts · ${yo.mcoins} M-Coins · ${esPrem(yo) ? '⭐ Premium' : 'Base'} <button id="out" class="underline ml-1">salir</button></p>`
     : '<button id="in" class="btn">Entrar</button>';
   if (yo) $('#out').onclick = async () => { await salir(); location.reload(); };
   else $('#in').onclick = () => $('#auth').classList.remove('hidden');
@@ -310,6 +324,7 @@ async function like(id, el) {
     setTimeout(() => c.remove(), 750);
   }
   await darLike(id);
+  await ganar('like', id);
   yo = await miPerfil();
   pintarBarra();
 }
@@ -394,7 +409,7 @@ $('#giroExtra').onclick = () => jugarRuleta(true);
 async function pintarTop() {
   const { data } = await cargarTop(regional && yo ? yo.country : null);
   $('#topLista').innerHTML = (data || []).map((u, i) => `
-    <div class="flex items-center justify-between p-3"><span>${i + 1}. ${u.flag} ${nombreHtml(u)}</span><span class="text-sm text-zinc-400">${rangoDe(u.points)} · ${u.points} pts</span></div>`).join('');
+    <div class="flex items-center justify-between p-3"><span>${i + 1}. ${avatarHtml(u, 26)} ${u.flag} ${nombreHtml(u)}</span><span class="text-sm text-zinc-400">${rangoDe(u.points)} · ${u.points} pts</span></div>`).join('');
 }
 $('#topG').onclick = () => { regional = false; pintarTop(); };
 $('#topR').onclick = () => { regional = true; pintarTop(); };
@@ -428,18 +443,22 @@ if (DONACION_URL) { $('#donarLink').href = DONACION_URL; $('#donarLink').classLi
 
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+const esPrem = (u) => !!u && u.role === 'Premium' && (!u.premium_until || new Date(u.premium_until) > new Date());
+const avatarHtml = (u, s) => u && u.avatar_url
+  ? `<img src="${esc(u.avatar_url)}" class="rounded-full object-cover inline-block align-middle" style="width:${s}px;height:${s}px">`
+  : `<span class="inline-flex items-center justify-center rounded-full font-bold align-middle" style="width:${s}px;height:${s}px;background:var(--line);font-size:${s / 2}px">${esc(((u && u.username) || '?')[0].toUpperCase())}</span>`;
 function nombreHtml(u) {
   const o = u.owned || [];
-  const cls = [o.includes('texto_rgb') ? 'rgb' : '', o.includes('marco_fuego') ? 'fuego' : '', o.includes('fondo_espacial') ? 'espacial' : ''].join(' ');
-  return `<b class="${cls}">${esc(u.username)}</b>`;
+  const cls = [o.includes('texto_rgb') ? 'rgb' : (esPrem(u) ? 'dorado' : ''), o.includes('marco_fuego') ? 'fuego' : '', o.includes('fondo_espacial') ? 'espacial' : ''].join(' ');
+  return `<b class="${cls}" style="cursor:pointer" onclick="verPerfil('${esc(u.username)}')">${esPrem(u) ? '⭐ ' : ''}${esc(u.username)}</b>`;
 }
 
 async function verComentarios(id) {
   const box = $('#c-' + id);
   if (box.dataset.open) { box.innerHTML = ''; delete box.dataset.open; return; }
   box.dataset.open = 1;
-  const { data } = await db.from('comments').select('id,body,profiles(username)').eq('post_id', id).order('created_at');
-  box.innerHTML = (data || []).map((c) => `<p class="text-sm flex justify-between gap-2"><span><b>${esc(c.profiles.username)}</b> ${esc(c.body)}</span>${yo && yo.is_mod ? `<button onclick="quitar(${c.id},${id})">🗑️</button>` : ''}</p>`).join('')
+  const { data } = await db.from('comments').select('id,body,profiles(username,role,premium_until,owned,avatar_url)').eq('post_id', id).order('created_at');
+  box.innerHTML = (data || []).map((c) => `<p class="text-sm flex justify-between gap-2"><span>${nombreHtml(c.profiles)} ${esc(c.body)}</span>${yo && yo.is_mod ? `<button onclick="quitar(${c.id},${id})">🗑️</button>` : ''}</p>`).join('')
     + `<div class="flex gap-2 pt-2"><input id="ci-${id}" class="input" placeholder="Escribe un comentario"><button class="btn" onclick="comentar(${id})">Enviar</button></div>`;
 }
 async function recargarComentarios(id) { const b = $('#c-' + id); b.innerHTML = ''; delete b.dataset.open; await verComentarios(id); }
@@ -447,7 +466,8 @@ async function comentar(id) {
   if (!exigirSesion()) return;
   const v = $('#ci-' + id).value.trim();
   if (!v) return;
-  await db.from('comments').insert({ post_id: id, user_id: yo.id, body: v });
+  const { data: nc } = await db.from('comments').insert({ post_id: id, user_id: yo.id, body: v }).select('id').single();
+  if (nc) await ganar('comentario', nc.id);
   recargarComentarios(id);
 }
 async function quitar(cid, id) { await borrarComentario(cid); recargarComentarios(id); }
@@ -479,17 +499,29 @@ async function entrarFila(vip) {
 $('#filaBase').onclick = () => entrarFila(false);
 $('#filaVip').onclick = () => entrarFila(true);
 
-let peer = null, llamada = null, flujo = null, micOn = false, camOn = false;
+let peer = null, llamada = null, flujo = null, micOn = false, camOn = false, entrante = null;
+function silencio() { const C = window.AudioContext || window.webkitAudioContext; return new C().createMediaStreamDestination().stream; }
+function asegurarPeer() {
+  if (peer || !yo) return;
+  peer = new Peer('malis-' + yo.id);
+  peer.on('call', (c) => {
+    entrante = c; c.answer(flujo || silencio());
+    c.on('stream', (s) => { const a = $('#remoto'); a.srcObject = s; a.play().catch(() => {}); $('#escucha').textContent = '🔊 Escuchando a Malis'; });
+  });
+}
+$('#sonBtn').onclick = () => $('#remoto').play().catch(() => {});
 function turno(s) {
   const mio = !!yo && s.turno_user === yo.id;
   $('#turnoActual').textContent = s.turno_name ? `Concursante en turno: ${s.turno_name}` : 'Nadie está en turno ahora.';
   $('#turnoCard').classList.toggle('hidden', !mio);
-  if (!mio) cortar();
+  if (mio) asegurarPeer(); else cortar();
 }
 function pintarBotones() {
   $('#micBtn').textContent = micOn ? '🎙️ Micrófono encendido' : '🎙️ Encender micrófono';
 }
 function cortar() {
+  if (entrante) { entrante.close(); entrante = null; }
+  if ($('#remoto')) $('#remoto').srcObject = null;
   if (flujo) flujo.getTracks().forEach((t) => t.stop());
   if (llamada) llamada.close();
   flujo = null; llamada = null; micOn = false; camOn = false;
@@ -504,7 +536,7 @@ async function conectar() {
     micOn = false; camOn = false; pintarBotones();
     return toast($('#turnoMsg'), 'Permite el acceso al micrófono en tu navegador.', false);
   }
-  if (!peer) peer = new Peer('malis-' + yo.id);
+  asegurarPeer();
   const llamar = () => { llamada = peer.call('malis-admin-panel', flujo); };
   if (peer.open) llamar(); else peer.once('open', llamar);
 }
@@ -525,11 +557,65 @@ db.channel('regalos').on('broadcast', { event: 'regalo' }, async ({ payload }) =
   if (yo && payload.username === yo.username) { confeti(); yo = await miPerfil(); pintarBarra(); setTimeout(() => alert('🎁 ¡Recibiste ' + payload.cantidad + (payload.tipo === 'pts' ? ' puntos!' : ' M-Coins!')), 300); }
 }).subscribe();
 
+function flash(t) { const f = $('#flash'); f.textContent = t; f.style.display = 'block'; clearTimeout(flash.t); flash.t = setTimeout(() => f.style.display = 'none', 3200); }
+async function ganar(t, ref) {
+  const { data } = await db.rpc('ganar_actividad', { p_tipo: t, p_ref: String(ref) });
+  if (data > 0) { flash('+' + data + ' puntos ' + ({ like: 'por tu like', comentario: 'por comentar', tiempo: 'por estar 10 min' })[t]); yo = await miPerfil(); pintarBarra(); }
+}
+let mins = 0;
+setInterval(() => { if (yo && !document.hidden && ++mins >= 10) { mins = 0; ganar('tiempo', 't'); } }, 60000);
+function reducir(file, max) {
+  return new Promise((res) => {
+    const img = new Image();
+    img.onload = () => { const k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); c.toBlob((b) => res(b || file), 'image/jpeg', .85); };
+    img.onerror = () => res(file); img.src = URL.createObjectURL(file);
+  });
+}
+async function subirPerfil(file, nombre, max) {
+  const path = `${yo.id}/${nombre}-${Date.now()}.jpg`;
+  const { error } = await db.storage.from('perfiles').upload(path, await reducir(file, max), { contentType: 'image/jpeg' });
+  if (error) throw error;
+  return db.storage.from('perfiles').getPublicUrl(path).data.publicUrl;
+}
+$('#pfGuardar').onclick = async () => {
+  if (!exigirSesion()) return;
+  try {
+    const fa = $('#pfAv').files[0], fb = $('#pfBn').files[0];
+    const av = fa ? await subirPerfil(fa, 'avatar', 512) : null, bn = fb ? await subirPerfil(fb, 'banner', 1400) : null;
+    const { error } = await db.rpc('guardar_perfil', { p_avatar: av, p_banner: bn, p_bio: $('#pfBio').value });
+    if (error) throw error;
+    toast($('#pfMsg'), 'Perfil guardado.', true);
+    yo = await miPerfil(); pintarBarra();
+  } catch (e) { toast($('#pfMsg'), e.message || 'No se pudo guardar. ¿Corriste SQL_PERFILES.sql?', false); }
+};
+async function verPerfil(nombre) {
+  const { data: u } = await db.from('profiles').select('username,flag,points,owned,role,premium_until,avatar_url,banner_url,bio').eq('username', nombre).maybeSingle();
+  if (!u) return;
+  $('#pmBanner').style.background = u.banner_url ? `url(${esc(u.banner_url)}) center/cover` : 'linear-gradient(135deg,var(--mor),#1c2110)';
+  $('#pmAv').innerHTML = avatarHtml(u, 72);
+  $('#pmNom').innerHTML = nombreHtml(u);
+  $('#pmInfo').textContent = `${u.flag} ${rangoDe(u.points)} · ${u.points} pts${esPrem(u) ? ' · ⭐ Premium' : ''}`;
+  $('#pmBio').textContent = u.bio || '';
+  $('#perfilModal').classList.remove('hidden');
+}
+let tRef;
+const luego = (f) => { clearTimeout(tRef); tRef = setTimeout(f, 400); };
+db.channel('live-web')
+  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'posts' }, () => luego(pintarMuro))
+  .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'posts' }, () => luego(pintarMuro))
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'comments' }, (p) => { const id = (p.new && p.new.post_id) || (p.old && p.old.post_id), b = id && $('#c-' + id); if (b && b.dataset.open) recargarComentarios(id); })
+  .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, async (p) => {
+    if (yo && p.new.id === yo.id) { yo = await miPerfil(); pintarBarra(); pintarMuro(); }
+    if (!$('#v-top').classList.contains('hidden')) pintarTop();
+  })
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'din_ganadores' }, () => pintarGanadores())
+  .subscribe();
 const PRE = { camo: 'linear-gradient(135deg,#1c2110,#0b0b08)', negro: '#09090b', noche: 'linear-gradient(160deg,#0f172a,#020617)', verde: 'linear-gradient(160deg,#052e16,#020a05)', dorado: 'linear-gradient(160deg,#2a1f05,#0a0803)' };
 function aplicarTema(s) {
   const v = s.bg_valor || 'preset:camo';
   document.body.style.background = v.startsWith('img:') ? `linear-gradient(#000a,#000a),url(${v.slice(4)}) center/cover` : (PRE[v.slice(7)] || PRE.camo);
   document.body.style.backgroundAttachment = 'fixed';
+  $('#bonoTxt').textContent = s.bono_nuevos > 0 ? '🎁 Crea tu cuenta y recibe ' + s.bono_nuevos + ' puntos gratis' : '';
   if (s.acento) document.documentElement.style.setProperty('--mor', s.acento);
   [['ruleta', s.f_ruleta], ['tienda', s.f_tienda], ['show', s.f_show]].forEach(([k, f]) => { document.querySelector('[data-v=' + k + ']').style.display = f === false ? 'none' : ''; });
   if (LIBRE !== !!s.premium_libre) { LIBRE = !!s.premium_libre; pintarMuro(); }
