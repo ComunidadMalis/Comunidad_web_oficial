@@ -32,13 +32,32 @@ async function detectarPais() {
 }
 
 async function registrar(usuario, clave) {
-  const { data, error } = await db.auth.signUp({ email: emailDe(usuario), password: clave });
-  if (error) throw error;
+  const email = emailDe(usuario);
+  let { data, error } = await db.auth.signUp({ email, password: clave });
+  if (error && /already/i.test(error.message)) {
+    const r = await db.auth.signInWithPassword({ email, password: clave });
+    if (r.error) throw new Error('usuario_existe');
+    data = r.data;
+    const { data: previo } = await db.from('profiles').select('id').eq('id', data.user.id).maybeSingle();
+    if (previo) throw new Error('usuario_existe');
+  } else if (error) {
+    throw error;
+  }
+  if (!data.session) throw new Error('confirmacion_email');
   const pais = await detectarPais();
   const { error: e2 } = await db.from('profiles').insert({
     id: data.user.id, username: usuario.trim(), country: pais, flag: banderaDe(pais)
   });
-  if (e2) throw e2;
+  if (e2) {
+    if (e2.code === '23505') {
+      const { data: propio } = await db.from('profiles').select('id').eq('id', data.user.id).maybeSingle();
+      if (propio) return;
+      await db.auth.signOut();
+      throw new Error('usuario_existe');
+    }
+    await db.auth.signOut();
+    throw e2;
+  }
 }
 
 async function entrar(usuario, clave) {

@@ -280,15 +280,28 @@ function exigirSesion() {
 }
 
 $('#aCerrar').onclick = () => $('#auth').classList.add('hidden');
+const msgAuth = (e) => {
+  const m = (e && e.message) || '';
+  if (m === 'usuario_existe') return 'Ese usuario ya existe.';
+  if (m === 'confirmacion_email') return 'Falta desactivar la confirmación de correo en Supabase (Authentication > Providers > Email).';
+  if (/invalid login/i.test(m)) return 'Usuario o contraseña incorrectos.';
+  if (/not confirmed/i.test(m)) return 'La cuenta no está confirmada. Desactiva "Confirm email" en Supabase.';
+  if (/at least|weak|short/i.test(m)) return 'La contraseña debe tener al menos 6 caracteres.';
+  if (/rate limit|too many|security purposes/i.test(m)) return 'Demasiados intentos. Espera un minuto y vuelve a probar.';
+  if (/row-level|policy|permission/i.test(m)) return 'Error de permisos al crear el perfil (revisa las políticas de la tabla profiles).';
+  if (/signups? (are )?(not allowed|disabled)/i.test(m)) return 'Los registros están desactivados en Supabase.';
+  return 'Error: ' + (m || 'desconocido');
+};
 $('#aEntrar').onclick = async () => {
   try { await entrar($('#aUser').value, $('#aPass').value); location.reload(); }
-  catch { $('#aMsg').textContent = 'Usuario o contraseña incorrectos.'; }
+  catch (e) { console.error(e); $('#aMsg').textContent = msgAuth(e); }
 };
 $('#aReg').onclick = async () => {
   const u = $('#aUser').value.trim();
   if (!/^[\w.-]{3,20}$/.test(u)) return $('#aMsg').textContent = 'Usuario de 3 a 20 letras, números, punto o guion.';
+  if ($('#aPass').value.length < 6) return $('#aMsg').textContent = 'La contraseña debe tener al menos 6 caracteres.';
   try { await registrar(u, $('#aPass').value); location.reload(); }
-  catch (e) { $('#aMsg').textContent = /already|duplicate/i.test(e.message) ? 'Ese usuario ya existe.' : 'No se pudo crear la cuenta. Revisa la contraseña.'; }
+  catch (e) { console.error(e); $('#aMsg').textContent = msgAuth(e); }
 };
 
 async function pintarMuro() {
