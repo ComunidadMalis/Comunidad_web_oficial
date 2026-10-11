@@ -185,6 +185,8 @@ h2{font-weight:700;font-size:1.1rem;color:#ffe3e8}
   </div>
 
   <div id="p-web" class="pantalla hidden space-y-4">
+    <div class="card space-y-3"><h2>🎃 Halloween</h2><p class="text-sm mut">Convierte toda la web en modo Halloween: luna, murciélagos, fantasmas, niebla, araña y relámpagos. Se prende y apaga al instante para todos.</p>
+      <label class="sw"><input id="wHw" type="checkbox"><i></i><span>Modo Halloween</span></label></div>
     <div class="card space-y-3"><h2>Fondo y color de la web</h2>
       <select id="wFondo" class="input"><option value="preset:camo">Camuflaje oscuro</option><option value="preset:negro">Negro</option><option value="preset:noche">Azul noche</option><option value="preset:verde">Verde militar</option><option value="preset:dorado">Dorado oscuro</option></select>
       <label class="text-xs mut">O sube tu propia imagen de fondo</label><input id="wImg" type="file" accept="image/*" class="input">
@@ -583,6 +585,7 @@ const hm = (si) => async () => { const { error } = await db.rpc('hacer_mod', { p
 $('#mHacer').onclick = hm(true); $('#mQuitar').onclick = hm(false);
 function cargarWeb() {
   $('#wFondo').value = (estado.bg_valor || '').startsWith('preset:') ? estado.bg_valor : 'preset:camo';
+  $('#wHw').checked = !!estado.halloween;
   $('#wAc').value = estado.acento || '#fe2c55';
   $('#wBono').value = estado.bono_nuevos ?? 200;
   $('#wRul').checked = estado.f_ruleta !== false; $('#wTie').checked = estado.f_tienda !== false;
@@ -609,6 +612,7 @@ $('#luzA').onclick = () => {
   const ciclo = async () => { c = c === 'verde' ? 'roja' : 'verde'; await db.rpc('cambiar_luz', { p_color: c }); luzT = setTimeout(ciclo, c === 'verde' ? 3000 + Math.random() * 4000 : 1500 + Math.random() * 2500); };
   ciclo();
 };
+$('#wHw').onchange = async () => { const on = $('#wHw').checked; const { error } = await db.rpc('ajustar_halloween', { p_on: on }); error ? (falla(error), $('#wHw').checked = !on) : aviso(on ? '🎃 Halloween ACTIVADO para todos' : 'Halloween apagado'); };
 db.channel('panel-live')
   .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => { cargarStats(); if (!$('#p-usr').classList.contains('hidden')) cargarUsuarios(); })
   .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, () => { cargarStats(); if (!$('#p-pub').classList.contains('hidden')) cargarPosts2(); })

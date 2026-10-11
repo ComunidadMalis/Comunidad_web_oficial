@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Comunidad de Malis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@700;800&family=Creepster&display=swap" rel="stylesheet">
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var ua = navigator.userAgent || '';
@@ -72,6 +72,48 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
 .bub .m{background:#233142;border-radius:16px 16px 16px 4px;padding:7px 11px;max-width:86%;font-size:.88rem;word-break:break-word}
 .bub.yo{flex-direction:row-reverse}.bub.yo .m{background:#2b5278;border-radius:16px 16px 4px 16px}
 article.card{border-radius:14px}
+/* ===== HALLOWEEN ===== */
+body.hw{--bg:#0d0716;--line:#3a2152;--mor:#ff7a00;--mor2:#8b2fc9;--tx:#fdf2e9;background:radial-gradient(900px 520px at 85% -5%,#8b2fc944,transparent 60%),radial-gradient(700px 420px at 0% 100%,#ff7a0022,transparent 60%),linear-gradient(180deg,#0d0716,#07030d)!important;background-attachment:fixed!important}
+body.hw .card{background:linear-gradient(180deg,#1d1030,#140a22);border-color:#4a2a6b;box-shadow:0 0 22px #8b2fc91f}
+body.hw .brand{font-family:'Creepster',cursive;font-weight:400;letter-spacing:.09em}
+body.hw .neon{color:#ffb15c;text-shadow:0 0 14px #ff7a00cc,0 0 30px #ff7a0066}
+body.hw .btn:not(.alt){background:linear-gradient(135deg,#ff7a00,#8b2fc9);box-shadow:0 6px 22px #ff7a0044}
+body.hw .btn.alt{color:#ffb15c;border-color:#ff7a0088}
+body.hw .input{background:#0f0820;border-color:#4a2a6b}
+body.hw #nav{background:#0a0514ee;border-top:1px solid #ff7a0055;box-shadow:0 -8px 28px #8b2fc933}
+body.hw .tab.on::after{background:linear-gradient(90deg,#ff7a00,#c77dff)}
+body.hw .bub .m{background:#2a1645}body.hw .bub.yo .m{background:#7a3a00}
+.hw-title{font-family:'Creepster',cursive;color:#ffb15c;letter-spacing:.08em;text-shadow:0 0 14px #ff7a00cc;animation:hwGlow 2.4s ease-in-out infinite}
+#hwBanner{border-color:#ff7a0066!important;background:linear-gradient(135deg,#2a1240,#3a1a05)!important}
+#hwFx{pointer-events:none}
+#hwFx>*{pointer-events:none}
+.hw-star{position:fixed;width:2px;height:2px;border-radius:50%;background:#fff;z-index:0;animation:hwTw 3s ease-in-out infinite}
+.hw-moon{position:fixed;top:64px;right:14px;width:78px;height:78px;border-radius:50%;z-index:0;background:radial-gradient(circle at 35% 35%,#fff7e0,#ffd58a 55%,#e8a951);box-shadow:0 0 40px #ffb15c99,0 0 90px #ff7a0055,inset -10px -8px 0 #00000014;animation:hwMoon 5s ease-in-out infinite alternate}
+.hw-moon::before{content:"";position:absolute;left:18px;top:20px;width:14px;height:14px;border-radius:50%;background:#00000012;box-shadow:26px 18px 0 -2px #0000000f,6px 36px 0 3px #0000000d}
+.hw-fog{position:fixed;left:-20%;bottom:70px;width:140%;height:190px;z-index:1;background:radial-gradient(ellipse at 28% 60%,#8b2fc944,transparent 60%),radial-gradient(ellipse at 72% 50%,#ff7a0028,transparent 60%);filter:blur(22px);animation:hwFog 20s ease-in-out infinite alternate}
+.hw-flash{position:fixed;inset:0;z-index:29;background:#d9b8ff;opacity:0;animation:hwFlash 17s infinite}
+.hw-bat{position:fixed;left:-60px;z-index:30;animation:hwFly linear infinite}
+.hw-bat svg{width:100%;display:block;fill:#2a1245;stroke:#ff7a00;stroke-width:1;filter:drop-shadow(0 0 6px #ff7a00aa);animation:hwFlap .28s ease-in-out infinite alternate}
+.hw-float{position:fixed;bottom:-60px;z-index:30;animation:hwUp linear infinite;filter:drop-shadow(0 0 8px #c77dffaa);opacity:0}
+.hw-spider{position:fixed;top:0;right:24%;z-index:31;transform-origin:top center;animation:hwSwing 4s ease-in-out infinite alternate}
+.hw-spider i{display:block;width:1px;height:96px;background:#ffffff77;margin:0 auto}
+.hw-spider b{display:block;font-size:26px;font-weight:400;filter:drop-shadow(0 0 6px #000)}
+.hw-web{position:fixed;top:0;width:130px;height:130px;z-index:30;opacity:.35}
+.hw-web.l{left:0}.hw-web.r{right:0;transform:scaleX(-1)}
+.hw-jack{position:fixed;left:10px;bottom:86px;z-index:30;font-size:40px;animation:hwJack 1.6s ease-in-out infinite alternate}
+.hw-pop{position:fixed;z-index:60;pointer-events:none;font-size:24px;font-style:normal;animation:hwPop .9s ease-out forwards}
+@keyframes hwGlow{50%{text-shadow:0 0 28px #ff7a00,0 0 50px #ff7a0088}}
+@keyframes hwTw{50%{opacity:.15;transform:scale(.6)}}
+@keyframes hwMoon{to{box-shadow:0 0 56px #ffb15ccc,0 0 120px #ff7a0077,inset -10px -8px 0 #00000014}}
+@keyframes hwFog{to{transform:translateX(12%)}}
+@keyframes hwFlash{0%,92%,100%{opacity:0}93%{opacity:.32}94%{opacity:0}95%{opacity:.18}96%{opacity:0}}
+@keyframes hwFly{0%{transform:translate(0,0)}25%{transform:translate(30vw,-34px)}50%{transform:translate(60vw,20px)}75%{transform:translate(90vw,-26px)}100%{transform:translate(125vw,10px)}}
+@keyframes hwFlap{to{transform:scaleY(.5)}}
+@keyframes hwUp{0%{transform:translateY(0) translateX(0) rotate(-6deg);opacity:0}10%{opacity:.85}50%{transform:translateY(-55vh) translateX(26px) rotate(6deg)}90%{opacity:.7}100%{transform:translateY(-118vh) translateX(-18px) rotate(-6deg);opacity:0}}
+@keyframes hwSwing{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+@keyframes hwJack{from{filter:drop-shadow(0 0 6px #ff7a00) brightness(.9)}to{filter:drop-shadow(0 0 22px #ff9a3c) brightness(1.25)}}
+@keyframes hwPop{from{transform:translate(-50%,-50%) scale(.4);opacity:1}to{transform:translate(-50%,-190%) scale(1.5) rotate(18deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){#hwFx *{animation:none!important}}
 .tab.resalta{box-shadow:0 0 0 2px var(--mor),0 0 18px var(--mor);color:#fff}
 .fuego{box-shadow:0 0 0 2px #f97316,0 0 14px #ef4444,0 -6px 16px #f59e0b;border-radius:10px;padding:0 6px;animation:llama .6s infinite alternate}
 @keyframes llama{to{box-shadow:0 0 0 2px #fbbf24,0 0 22px #f97316,0 -10px 22px #ef4444}}
@@ -118,6 +160,7 @@ article.card{border-radius:14px}
 </nav>
 
 <main class="max-w-3xl mx-auto p-4 space-y-4">
+  <div id="hwBanner" class="hidden card text-center p-3"><p class="hw-title text-2xl">🎃 Noche de Halloween 🎃</p><p class="text-xs text-zinc-300">¡Feliz Halloween, comunidad! Cuidado con los murciélagos 🦇</p></div>
   <section id="v-muro" class="space-y-4"></section>
 
   <section id="v-dinamica" class="hidden space-y-3">
@@ -701,7 +744,36 @@ db.channel('live-web')
   .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'advertencias' }, () => revisarAdv())
   .subscribe();
 const PRE = { camo: 'linear-gradient(160deg,#0e1621,#0a0f16)', negro: '#0e1621', noche: 'linear-gradient(160deg,#0f172a,#020617)', verde: 'linear-gradient(160deg,#052e16,#020a05)', dorado: 'linear-gradient(160deg,#2a1f05,#0a0803)' };
+let hwOn = false, hwTap = null;
+function hwToggle(on) {
+  if (on === hwOn) return;
+  hwOn = on;
+  document.body.classList.toggle('hw', on);
+  $('#hwBanner').classList.toggle('hidden', !on);
+  const viejo = $('#hwFx'); if (viejo) viejo.remove();
+  if (hwTap) { document.removeEventListener('pointerdown', hwTap); hwTap = null; }
+  if (!on) return;
+  const r = (a, b) => a + Math.random() * (b - a);
+  const bat = '<svg viewBox="0 0 64 32"><path d="M32 6C30 6 29 9 28 11 24 7 14 4 2 8 8 11 9 16 8 22 13 19 17 19 20 24 22 20 26 19 29 22L32 28 35 22C38 19 42 20 44 24 47 19 51 19 56 22 55 16 56 11 62 8 50 4 40 7 36 11 35 9 34 6 32 6Z"/></svg>';
+  const web = '<svg viewBox="0 0 100 100" fill="none" stroke="#fff" stroke-width="1"><path d="M0 0L100 0M0 0L100 30M0 0L100 62M0 0L70 100M0 0L34 100M0 0L0 100"/><path d="M22 0Q18 18 0 22M46 0Q38 36 0 46M72 0Q60 56 0 72M98 0Q82 82 0 98"/></svg>';
+  let h = '<div class="hw-moon"></div><div class="hw-flash"></div><div class="hw-fog"></div>'
+    + '<div class="hw-web l">' + web + '</div><div class="hw-web r">' + web + '</div>'
+    + '<div class="hw-spider"><i></i><b>🕷️</b></div><div class="hw-jack">🎃</div>';
+  for (let i = 0; i < 26; i++) h += `<span class="hw-star" style="left:${r(0, 100)}vw;top:${r(0, 60)}vh;animation-delay:-${r(0, 3)}s"></span>`;
+  for (let i = 0; i < 7; i++) h += `<div class="hw-bat" style="top:${r(4, 55)}vh;width:${r(28, 54)}px;animation-duration:${r(9, 19)}s;animation-delay:-${r(0, 19)}s">${bat}</div>`;
+  const fl = ['👻', '🎃', '💀', '🕯️', '👻', '🦇'];
+  for (let i = 0; i < 9; i++) h += `<span class="hw-float" style="left:${r(3, 92)}vw;font-size:${r(20, 36)}px;animation-duration:${r(16, 30)}s;animation-delay:-${r(0, 24)}s">${fl[i % fl.length]}</span>`;
+  const fx = document.createElement('div'); fx.id = 'hwFx'; fx.innerHTML = h; document.body.appendChild(fx);
+  hwTap = (e) => {
+    const p = document.createElement('i'); p.className = 'hw-pop';
+    p.textContent = ['🎃', '🦇', '👻', '🕸️', '🍬'][Math.floor(Math.random() * 5)];
+    p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
+    document.body.appendChild(p); setTimeout(() => p.remove(), 900);
+  };
+  document.addEventListener('pointerdown', hwTap);
+}
 function aplicarTema(s) {
+  hwToggle(!!s.halloween);
   const v = s.bg_valor || 'preset:camo';
   document.body.style.background = v.startsWith('img:') ? `linear-gradient(#000a,#000a),url(${v.slice(4)}) center/cover` : (PRE[v.slice(7)] || PRE.camo);
   document.body.style.backgroundAttachment = 'fixed';
