@@ -2,102 +2,279 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>Comunidad de Malis · Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
-:root { --verde:#00e676; --morado:#a855f7; }
-body { background:#09090b; color:#e4e4e7; font-family:system-ui,-apple-system,sans-serif; }
-.neon { color:var(--verde); text-shadow:0 0 8px var(--verde),0 0 24px #00e67688; }
-.card { background:#111114; border:1px solid #27272a; border-radius:14px; padding:1rem; }
-.btn { background:var(--verde); color:#04120a; font-weight:700; border-radius:12px; padding:.8rem 1.2rem; font-size:1.05rem; }
-.btn.alt { background:transparent; color:var(--morado); border:1px solid var(--morado); }
-.btn.rojo { background:#e11d48; color:#fff; }
-.input { background:#18181b; border:1px solid #3f3f46; border-radius:12px; padding:.8rem; width:100%; font-size:1.1rem; }
-#gran { width:100%; padding:1.6rem; border-radius:18px; font-size:1.6rem; font-weight:800; border:2px solid #3f3f46; background:#18181b; color:#a1a1aa; }
-#gran.on { background:#e11d48; color:#fff; border-color:#fb7185; box-shadow:0 0 30px #e11d4899; }
-.confeti { position:fixed; top:-10px; width:9px; height:14px; background:#fbbf24; z-index:70; pointer-events:none; animation:cae 2.4s linear forwards; }
-@keyframes cae { to { transform:translateY(105vh) rotate(720deg); opacity:.8; } }
+:root{--line:#2b2340;--mut:#a1a1aa;--mor:#a855f7}
+body{background:#09090b;color:#f4f4f5;font-family:'Inter',system-ui,sans-serif;padding-bottom:40px;background-image:radial-gradient(900px 500px at 85% -10%,#7c3aed33,transparent 60%),radial-gradient(700px 400px at -10% 40%,#06b6d414,transparent 60%);background-attachment:fixed}
+.brand{font-family:'Orbitron',system-ui,sans-serif;font-weight:800;letter-spacing:.05em}
+.brand span{color:var(--mor)}
+.card{background:linear-gradient(180deg,#171321,#110e19);border:1px solid var(--line);border-radius:20px;padding:1rem}
+.btn{min-height:50px;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;font-weight:700;border-radius:14px;padding:.65rem 1.1rem;box-shadow:0 6px 20px #7c3aed55}
+.btn:active{transform:scale(.97)}
+.btn.alt{background:transparent;color:#d8b4fe;border:1px solid #a855f788;box-shadow:none}
+.btn.rojo{background:linear-gradient(135deg,#fb7185,#e11d48);box-shadow:0 6px 20px #e11d4855}
+.btn.verde{background:linear-gradient(135deg,#34d399,#059669);box-shadow:0 6px 20px #05966955}
+.btn.sm{min-height:40px;padding:.3rem .8rem;font-size:.85rem;border-radius:11px}
+.input{background:#0f0c16;border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;width:100%;min-height:50px;color:#f4f4f5;font-size:1rem}
+.input:focus{outline:2px solid var(--mor);border-color:transparent}
+h2{font-weight:700;font-size:1.1rem;color:#ede9fe}
+.mut{color:var(--mut)}
+#gran{width:100%;padding:1.7rem;border-radius:22px;font-size:1.7rem;font-weight:800;border:2px solid #3f3f46;background:#18181b;color:#a1a1aa;transition:.2s}
+#gran.on{background:linear-gradient(135deg,#fb7185,#e11d48);color:#fff;border-color:#fda4af;box-shadow:0 0 36px #e11d4899}
+.mosaico{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:700px){.mosaico{grid-template-columns:repeat(3,1fr)}}
+.tile{position:relative;overflow:hidden;text-align:left;border-radius:22px;padding:18px 16px;min-height:132px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;transition:transform .15s}
+.tile:active{transform:scale(.97)}
+.tile i{font-style:normal;font-size:2.4rem}
+.tile b{font-size:1.1rem;display:block}
+.tile small{opacity:.85;font-size:.78rem}
+.t1{background:linear-gradient(135deg,#a855f7,#6d28d9)}
+.t2{background:linear-gradient(135deg,#f472b6,#be185d)}
+.t3{background:linear-gradient(135deg,#38bdf8,#0369a1)}
+.t4{background:linear-gradient(135deg,#fbbf24,#b45309)}
+.t5{background:linear-gradient(135deg,#34d399,#047857)}
+.t6{background:linear-gradient(135deg,#fb923c,#c2410c)}
+.t7{background:linear-gradient(135deg,#818cf8,#4338ca)}
+.t8{background:linear-gradient(135deg,#f87171,#991b1b)}
+.fila{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.7rem 0;border-bottom:1px solid #221b33}
+.fila:last-child{border-bottom:0}
+.chip{font-size:.7rem;padding:.1rem .55rem;border-radius:99px;background:#a855f722;color:#d8b4fe;white-space:nowrap}
+.chip.rojo{background:#e11d4833;color:#fda4af}
+.filtro{padding:.45rem .9rem;border-radius:99px;border:1px solid var(--line);color:var(--mut);font-size:.85rem;font-weight:600;white-space:nowrap}
+.filtro.on{background:#a855f733;color:#fff;border-color:#a855f7}
+.drop{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 12px;border:2px dashed #a855f788;border-radius:20px;background:#a855f710;text-align:center;cursor:pointer}
+.confeti{position:fixed;top:-10px;width:9px;height:14px;z-index:70;pointer-events:none;animation:cae 2.4s linear forwards}
+@keyframes cae{to{transform:translateY(105vh) rotate(720deg)}}
+#aviso2{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;background:#18132a;border:1px solid var(--mor);border-radius:14px;padding:.8rem 1.2rem;display:none;max-width:92vw;text-align:center}
 </style>
 </head>
-<body class="min-h-screen p-4 pb-16">
+<body class="min-h-screen">
 <div id="acceso" class="max-w-sm mx-auto mt-24 card text-center space-y-3">
-  <h1 class="text-2xl font-extrabold neon">Panel de Malis</h1>
-  <p id="aviso" class="text-zinc-400 text-sm">Acceso solo para el administrador.</p>
+  <h1 class="brand text-xl">PANEL <span>MALIS</span></h1>
+  <p id="aviso" class="text-sm mut">Acceso solo para el administrador.</p>
   <button id="google" class="btn w-full">Entrar con Google</button>
 </div>
 
-<div id="panel" class="hidden max-w-3xl mx-auto space-y-4">
-  <h1 class="text-2xl font-extrabold neon">Comunidad de Malis · Panel</h1>
-
-  <button id="gran">Modo Live: OFF</button>
-
-  <div class="card space-y-3">
-    <h2 class="font-bold text-lg">Palabra clave</h2>
-    <input id="kw" class="input" placeholder="Palabra (ej. Tacos)">
-    <div class="grid grid-cols-2 gap-3">
-      <input id="kwMax" type="number" inputmode="numeric" class="input" placeholder="Ganadores">
-      <input id="kwPrem" type="number" inputmode="numeric" class="input" placeholder="Puntos de premio">
+<div id="panel" class="hidden max-w-3xl mx-auto p-4 space-y-4">
+  <div class="flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <button id="atras" class="btn alt sm hidden">← Inicio</button>
+      <h1 id="titulo" class="brand text-lg">PANEL <span>MALIS</span></h1>
     </div>
-    <button id="kwAbrir" class="btn w-full">Abrir dinámica</button>
-    <p id="kwInfo" class="text-sm text-zinc-400"></p>
-    <ol id="kwLista" class="text-sm space-y-1"></ol>
+    <button id="salir" class="btn alt sm">Salir</button>
   </div>
 
-  <div class="card space-y-3">
-    <h2 class="font-bold text-lg">Regalar M-Coins</h2>
-    <input id="gUser" class="input" placeholder="Usuario del concursante">
-    <input id="gCant" type="number" inputmode="numeric" class="input" placeholder="Cantidad exacta de M-Coins">
-    <button id="gEnviar" class="btn w-full">Enviar regalo</button>
-    <p id="gMsg" class="text-sm"></p>
-  </div>
-
-  <div class="card space-y-3">
-    <h2 class="font-bold text-lg">Nueva publicación</h2>
-    <input id="pUrl" class="input" placeholder="URL de la foto o video">
-    <input id="pTxt" class="input" placeholder="Texto">
-    <div class="flex items-center gap-4">
-      <label class="flex items-center gap-2"><input id="pVideo" type="checkbox"> Es video</label>
-      <label class="flex items-center gap-2"><input id="pExcl" type="checkbox"> Exclusivo Premium</label>
+  <div id="p-inicio" class="pantalla space-y-4">
+    <button id="gran">Modo Live: OFF</button>
+    <div class="grid grid-cols-3 gap-3 text-center">
+      <div class="card"><p id="stU" class="text-2xl font-bold">–</p><p class="text-xs mut">Usuarios</p></div>
+      <div class="card"><p id="stP" class="text-2xl font-bold">–</p><p class="text-xs mut">Publicaciones</p></div>
+      <div class="card"><p id="stF" class="text-2xl font-bold">–</p><p class="text-xs mut">En fila</p></div>
     </div>
-    <button id="pPub" class="btn w-full">Publicar</button>
-  </div>
-
-  <div class="card space-y-3">
-    <h2 class="font-bold text-lg">Show en vivo</h2>
-    <p id="turno" class="text-zinc-400">Nadie en turno.</p>
-    <video id="rv" autoplay playsinline class="w-full rounded-xl bg-black"></video>
-    <div class="grid grid-cols-2 gap-3">
-      <button id="siguiente" class="btn">Llamar al siguiente</button>
-      <button id="terminar" class="btn rojo">Terminar turno</button>
+    <div class="mosaico">
+      <button class="tile t1" onclick="ir('din')"><i>🎯</i><span><b>Dinámicas</b><small>110 listas para lanzar</small></span></button>
+      <button class="tile t2" onclick="ir('show')"><i>🎙️</i><span><b>Show en vivo</b><small>Fila y concursante</small></span></button>
+      <button class="tile t4" onclick="ir('reg')"><i>🎁</i><span><b>Regalar M-Coins</b><small>Con confeti dorado</small></span></button>
+      <button class="tile t3" onclick="ir('pub')"><i>🖼️</i><span><b>Publicar</b><small>Fotos y videos</small></span></button>
+      <button class="tile t5" onclick="ir('usr')"><i>👥</i><span><b>Usuarios</b><small>Buscar y administrar</small></span></button>
+      <button class="tile t7" onclick="ir('mod')"><i>🛡️</i><span><b>Moderadores</b><small>Solicitudes</small></span></button>
     </div>
-    <p class="text-sm text-zinc-400">En la fila:</p>
-    <ol id="fila" class="text-sm space-y-1"></ol>
   </div>
 
-  <div class="card space-y-3">
-    <h2 class="font-bold text-lg">Tómbola de puntos</h2>
-    <button id="tomb" class="btn w-full">Girar tómbola</button>
-    <p id="tombRes" class="text-2xl font-extrabold neon text-center"></p>
+  <div id="p-din" class="pantalla hidden space-y-4">
+    <div class="card space-y-3">
+      <h2>Ahora mismo</h2>
+      <p id="dinEstado" class="mut">Sin dinámica.</p>
+      <div class="grid grid-cols-2 gap-3">
+        <button id="dinCerrar" class="btn rojo">Cerrar ahora</button>
+        <button id="dinSortear" class="btn verde hidden">Sortear ahora</button>
+      </div>
+      <p id="dinSorteo" class="text-xl font-bold text-center"></p>
+      <ol id="dinGan" class="text-sm"></ol>
+    </div>
+    <div class="card space-y-3">
+      <h2>Reglas de la siguiente</h2>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs mut">Cuántos ganan</label><input id="nMax" type="number" inputmode="numeric" class="input" value="1"></div>
+        <div><label class="text-xs mut">Premio en puntos</label><input id="nPrem" type="number" inputmode="numeric" class="input" value="100"></div>
+      </div>
+    </div>
+    <div class="card space-y-3">
+      <h2>Catálogo <span id="catN" class="chip"></span></h2>
+      <input id="catBusca" class="input" placeholder="Buscar en el catálogo">
+      <div id="filtros" class="flex gap-2 overflow-x-auto pb-1"></div>
+      <div id="catLista"></div>
+    </div>
+    <div class="card space-y-3">
+      <h2>Crear la mía</h2>
+      <select id="cTipo" class="input">
+        <option value="palabra">Palabra clave</option>
+        <option value="trivia">Trivia (pregunta y respuesta)</option>
+        <option value="opciones">Opción múltiple</option>
+        <option value="numero">Adivina el número</option>
+        <option value="rapido">Reflejos (el primero en tocar)</option>
+        <option value="sorteo">Sorteo entre participantes</option>
+      </select>
+      <input id="cPreg" class="input" placeholder="Lo que verán los usuarios (pregunta o instrucción)">
+      <input id="cResp" class="input" placeholder="Respuesta correcta (varias válidas: tacos|taco)">
+      <input id="cOps" class="input hidden" placeholder="4 opciones separadas por | (ej. Rojo|Azul|Verde|Negro)">
+      <input id="cOk" type="number" inputmode="numeric" class="input hidden" placeholder="Número de la opción correcta (1 a 4)">
+      <button id="cLanzar" class="btn w-full">Lanzar dinámica</button>
+    </div>
   </div>
 
-  <div class="card space-y-3">
-    <h2 class="font-bold text-lg">Solicitudes de moderador</h2>
-    <div id="mods" class="space-y-2"></div>
+  <div id="p-show" class="pantalla hidden space-y-4">
+    <div class="card space-y-2">
+      <h2>Cómo funciona</h2>
+      <p class="text-sm mut">1. Los seguidores se forman en la fila desde la pestaña Show de la web. 2. Toca <b>Llamar al siguiente</b>: a esa persona le sale “Es tu turno”. 3. Ella enciende su micrófono y tú la escuchas aquí. 4. Cuando acabe, toca <b>Terminar turno</b>. Deja esta pantalla abierta durante el show.</p>
+    </div>
+    <div class="card space-y-3">
+      <p id="turno" class="font-semibold">Nadie en turno.</p>
+      <video id="rv" autoplay playsinline class="w-full rounded-xl bg-black"></video>
+      <div class="grid grid-cols-2 gap-3">
+        <button id="siguiente" class="btn">Llamar al siguiente</button>
+        <button id="terminar" class="btn rojo">Terminar turno</button>
+      </div>
+      <button id="regTurno" class="btn verde w-full hidden">🎁 Regalar M-Coins al concursante</button>
+    </div>
+    <div class="card"><h2 class="mb-2">Fila de espera</h2><div id="fila"></div></div>
+  </div>
+
+  <div id="p-reg" class="pantalla hidden space-y-4">
+    <div class="card space-y-3">
+      <h2>Regalar M-Coins</h2>
+      <input id="gUser" class="input" placeholder="Usuario exacto del concursante" autocapitalize="none" list="sugeridos">
+      <datalist id="sugeridos"></datalist>
+      <div class="grid grid-cols-4 gap-2">
+        <button class="btn alt sm" onclick="$('#gCant').value=10">10</button>
+        <button class="btn alt sm" onclick="$('#gCant').value=50">50</button>
+        <button class="btn alt sm" onclick="$('#gCant').value=100">100</button>
+        <button class="btn alt sm" onclick="$('#gCant').value=500">500</button>
+      </div>
+      <input id="gCant" type="number" inputmode="numeric" class="input" placeholder="Cantidad exacta de M-Coins">
+      <button id="gEnviar" class="btn w-full">Enviar regalo</button>
+    </div>
+    <div class="card space-y-3">
+      <h2>Tómbola de puntos</h2>
+      <p class="text-sm mut">Elige un ganador entre todos los usuarios. Quien tiene más puntos tiene más probabilidad. Sirve para gorras u otros premios.</p>
+      <button id="tomb" class="btn w-full">Girar tómbola</button>
+      <p id="tombRes" class="text-2xl font-extrabold text-center"></p>
+    </div>
+  </div>
+
+  <div id="p-pub" class="pantalla hidden space-y-4">
+    <div class="card space-y-3">
+      <h2>Nueva publicación</h2>
+      <label class="drop" for="pFile"><span class="text-4xl">📷</span><b>Elegir fotos o videos de mi galería</b><small class="mut">Puedes elegir varios a la vez</small></label>
+      <input id="pFile" type="file" accept="image/*,video/*" multiple class="hidden">
+      <div id="prev" class="grid grid-cols-3 gap-2"></div>
+      <input id="pTxt" class="input" placeholder="Texto (opcional)">
+      <label class="flex items-center gap-3 text-base"><input id="pExcl" type="checkbox" class="w-5 h-5"> Exclusivo Premium 🔒</label>
+      <button id="pPub" class="btn w-full">Publicar</button>
+      <p id="pMsg" class="text-sm"></p>
+    </div>
+    <div class="card"><h2 class="mb-2">Publicaciones</h2><div id="posts"></div></div>
+  </div>
+
+  <div id="p-usr" class="pantalla hidden space-y-4">
+    <div class="card space-y-3">
+      <h2>Usuarios</h2>
+      <input id="busca" class="input" placeholder="Buscar por usuario" autocapitalize="none">
+      <div id="usuarios"></div>
+    </div>
+  </div>
+
+  <div id="p-mod" class="pantalla hidden space-y-4">
+    <div class="card"><h2 class="mb-2">Solicitudes de moderador</h2><div id="mods"></div></div>
+    <div class="card"><h2 class="mb-2">Moderadores activos</h2><div id="modsAct"></div></div>
   </div>
 </div>
+<div id="aviso2"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="supabase.js"></script>
 <script>
 const $ = (s) => document.querySelector(s);
-let live = false;
+const esc = (t) => String(t ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const canal = db.channel('regalos');
 canal.subscribe();
+let live = false, estado = {};
+
+const CAT = [];
+const add = (tipo, titulo, pregunta, resp, ops) => CAT.push({ tipo, titulo, pregunta, resp, ops: ops || null });
+['Tacos','Carlos','Pizza','Nopal','Tamal','Mezcal','Piñata','Mariachi','Sombrero','Guacamole','Churro','Pozole','Elote','Lucha','Aguacate','Chilaquiles','Quesadilla','Torta','Birria','Cumbia']
+  .forEach((w) => add('palabra', '🔑 Palabra clave', 'Escribe la palabra secreta que Malis dijo en el live', w));
+[
+  ['¿Cuál es la capital de México?', 'cdmx|ciudad de mexico|mexico'], ['¿Cuántos jugadores tiene un equipo de fútbol en la cancha?', '11'],
+  ['¿Qué color resulta de mezclar azul y amarillo?', 'verde'], ['¿Cuántos días tiene una semana?', '7'], ['¿Cómo se llama el planeta rojo?', 'marte'],
+  ['¿Cuántos meses tiene el año?', '12'], ['¿Cuál es el animal más grande del mundo?', 'ballena azul|ballena'], ['¿Qué idioma se habla en Brasil?', 'portugues'],
+  ['¿Cuántos colores tiene el arcoíris?', '7'], ['¿Cómo se llama el satélite natural de la Tierra?', 'luna'], ['¿Quién pintó la Mona Lisa?', 'leonardo da vinci|da vinci|leonardo'],
+  ['¿Cuántos lados tiene un triángulo?', '3'], ['¿Con qué fruta se hace el guacamole?', 'aguacate'], ['¿Cuánto es 7 x 8?', '56'], ['¿Cuánto es 12 + 15?', '27'],
+  ['¿Cuánto es 100 entre 4?', '25'], ['¿Cuánto es 9 x 9?', '81'], ['¿Cuánto es 15 x 3?', '45'], ['¿Qué mob de Minecraft explota?', 'creeper'],
+  ['¿Cómo se llama el hermano de Mario?', 'luigi'], ['¿Cómo se llama el erizo azul de Sega?', 'sonic'], ['¿Qué juego se trata de construir con bloques?', 'minecraft'],
+  ['¿Cuántos jugadores hay por escuadra en Free Fire?', '4'], ['¿De qué país es el tequila?', 'mexico'], ['¿Cuál es la moneda de México?', 'peso|pesos'],
+  ['¿Cuántas entidades federativas tiene México?', '32'], ['¿Qué flor se usa en el Día de Muertos?', 'cempasuchil|cempazuchitl'], ['¿Cómo se llama la masa rellena envuelta en hoja de maíz?', 'tamal|tamales'],
+  ['¿Qué planeta tiene anillos famosos?', 'saturno'], ['¿Qué gas respiramos para vivir?', 'oxigeno'], ['¿Cuántos segundos tiene un minuto?', '60'],
+  ['¿Cuántas horas tiene un día?', '24'], ['¿Qué animal ladra?', 'perro'], ['¿Cuál es la capital de Colombia?', 'bogota'], ['¿Cuál es la capital de Argentina?', 'buenos aires']
+].forEach(([q, a]) => add('trivia', '🧠 Trivia', q, a));
+[
+  ['Tengo agujas pero no pincho, ¿qué soy?', 'reloj'], ['Blanca por dentro, verde por fuera, si quieres que te lo diga, espera.', 'pera'],
+  ['Oro parece, plata no es, ¿qué es?', 'platano'], ['¿Qué es lo que mientras más grande, menos se ve?', 'oscuridad'], ['Vuelo sin alas, lloro sin ojos, ¿qué soy?', 'nube'],
+  ['Tiene dientes y no come, ¿qué es?', 'peine'], ['Cuanto más se seca, más moja, ¿qué es?', 'toalla'], ['Redondo, redondo, sin tapa ni tapón, ¿qué es?', 'anillo'],
+  ['Tiene ojos y no ve, tiene agua y no bebe, ¿qué es?', 'coco'], ['Todos pasan por mí, yo no paso por nadie, ¿qué soy?', 'calle']
+].forEach(([q, a]) => add('trivia', '🧩 Acertijo', q, a));
+[
+  ['¿Qué animal es el rey de la selva?', 'León|Tigre|Oso|Lobo', 1], ['¿Cuál es el planeta más grande?', 'Tierra|Júpiter|Marte|Venus', 2],
+  ['¿Cuál es la capital de España?', 'Madrid|Lima|Roma|París', 1], ['¿Cuántos jugadores juegan por equipo en básquet?', '5|6|7|11', 1],
+  ['¿Qué pesa más?', '1 kg de plumas|1 kg de piedras|Pesan igual|Ninguno', 3], ['¿Cuál es el océano más grande?', 'Atlántico|Índico|Pacífico|Ártico', 3],
+  ['¿Qué número sigue? 2, 4, 8, 16…', '18|24|32|20', 3], ['¿Qué personaje amarillo vive en una piña?', 'Bob Esponja|Patricio|Calamardo|Don Cangrejo', 1],
+  ['¿Cuál es el hueso más largo del cuerpo?', 'Fémur|Húmero|Costilla|Tibia', 1], ['¿Cuántos lados tiene un hexágono?', '5|6|7|8', 2],
+  ['¿En qué continente está Egipto?', 'Asia|Europa|África|América', 3], ['¿Qué gas necesitan las plantas?', 'Oxígeno|Nitrógeno|Dióxido de carbono|Helio', 3],
+  ['¿Qué metal es líquido a temperatura ambiente?', 'Hierro|Mercurio|Oro|Cobre', 2], ['¿Quién llegó a América en 1492?', 'Colón|Cortés|Magallanes|Pizarro', 1],
+  ['¿Cuántos minutos tiene una hora?', '30|45|60|90', 3]
+].forEach(([q, o, k]) => add('opciones', '❓ Opción múltiple', q, String(k - 1), o.split('|')));
+[5, 10, 10, 20, 20, 30, 50, 50, 100, 100].forEach((r) => add('numero', '🔢 Adivina el número', `Adivina el número secreto del 1 al ${r}`, `RND${r}`));
+['¡Toca primero el botón!', 'Los más rápidos ganan: ¡toca ya!', 'Reflejos: el primero en tocar se lleva el premio', 'Velocidad pura: toca ahora', '¿Quién es el más veloz? ¡Toca!',
+ 'Carrera de dedos: ¡toca!', 'Modo flash: toca el botón', 'Reacción rápida: ¡ya!', 'Ultra rápido: primero en tocar', 'Turbo: ¡toca!']
+  .forEach((q) => add('rapido', '⚡ Reflejos', q, ''));
+['Sorteo de puntos: toca Participar', 'Sorteo express del live', 'Gran sorteo de la comunidad', 'Sorteo sorpresa', 'Sorteo para los que están viendo',
+ 'Sorteo relámpago', 'Sorteo de la suerte', 'Sorteo del día', 'Sorteo de los fieles', 'Sorteo final del show']
+  .forEach((q) => add('sorteo', '🎟️ Sorteo', q, ''));
+
+const TIPOS = { todas: 'Todas', palabra: '🔑 Palabra', trivia: '🧠 Trivia', opciones: '❓ Opciones', numero: '🔢 Número', rapido: '⚡ Reflejos', sorteo: '🎟️ Sorteo' };
+let filtro = 'todas';
+
+function aviso(txt) {
+  const a = $('#aviso2');
+  a.textContent = txt; a.style.display = 'block';
+  clearTimeout(aviso.t); aviso.t = setTimeout(() => a.style.display = 'none', 3600);
+}
+const falla = (e) => aviso('Error: ' + (e && e.message ? e.message : 'no se pudo'));
 
 $('#google').onclick = entrarConGoogle;
+$('#salir').onclick = async () => { await db.auth.signOut(); location.reload(); };
+$('#atras').onclick = () => ir('inicio');
+
+const NOMBRES = { inicio: 'PANEL <span>MALIS</span>', din: 'DINÁMICAS', show: 'SHOW <span>EN VIVO</span>', reg: 'REGALOS', pub: 'PUBLICAR', usr: 'USUARIOS', mod: 'MODERADORES' };
+function ir(n) {
+  document.querySelectorAll('.pantalla').forEach((x) => x.classList.add('hidden'));
+  $('#p-' + n).classList.remove('hidden');
+  $('#atras').classList.toggle('hidden', n === 'inicio');
+  $('#titulo').innerHTML = NOMBRES[n];
+  scrollTo(0, 0);
+  if (n === 'inicio') cargarStats();
+  if (n === 'din') pintarCat();
+  if (n === 'pub') cargarPosts2();
+  if (n === 'usr') cargarUsuarios();
+  if (n === 'mod') cargarMods();
+  if (n === 'reg') sugeridos();
+}
 
 async function arrancar() {
   const { data: { user } } = await db.auth.getUser();
@@ -110,43 +287,92 @@ async function arrancar() {
   $('#acceso').classList.add('hidden');
   $('#panel').classList.remove('hidden');
   escucharSettings(pintar);
-  cargarMods();
+  cargarStats();
   iniciarShow();
 }
 
+async function cargarStats() {
+  const cuenta = async (t) => (await db.from(t).select('*', { count: 'exact', head: true })).count ?? 0;
+  $('#stU').textContent = await cuenta('profiles');
+  $('#stP').textContent = await cuenta('posts');
+  $('#stF').textContent = await cuenta('cola');
+}
+
 function pintar(s) {
-  live = s.live;
+  estado = s; live = s.live;
   $('#gran').textContent = 'Modo Live: ' + (live ? 'ON' : 'OFF');
   $('#gran').classList.toggle('on', live);
   $('#turno').textContent = s.turno_name ? 'En turno: ' + s.turno_name : 'Nadie en turno.';
-  $('#kwInfo').textContent = s.kw_word
-    ? `Ronda ${s.kw_round} · "${s.kw_word}" · ${s.kw_open ? 'abierta' : 'cerrada'}`
-    : 'Sin dinámicas todavía.';
-  ganadoresRonda(s.kw_round).then(({ data }) => {
-    $('#kwLista').innerHTML = (data || []).map((w, i) => `<li>${i + 1}. ${w.profiles.flag} ${w.profiles.username}</li>`).join('');
+  $('#regTurno').classList.toggle('hidden', !s.turno_name);
+  const nombre = s.din_titulo ? `${s.din_titulo} · ${s.din_pregunta}` : '';
+  $('#dinEstado').textContent = s.din_ronda
+    ? `Ronda ${s.din_ronda} · ${s.din_abierta ? 'ABIERTA' : 'cerrada'} · ${s.din_max} ganadores · ${s.din_premio} pts\n${nombre}`
+    : 'Todavía no has lanzado ninguna dinámica.';
+  $('#dinEstado').style.whiteSpace = 'pre-line';
+  $('#dinSortear').classList.toggle('hidden', !(s.din_abierta && s.din_tipo === 'sorteo'));
+  ganadoresDin(s.din_ronda).then(({ data }) => {
+    $('#dinGan').innerHTML = (data || []).map((w, i) => `<li class="fila"><span>${i + 1}. ${w.profiles.flag} ${esc(w.profiles.username)}</span></li>`).join('') || '<li class="mut">Aún no hay ganadores.</li>';
   });
 }
 
-$('#gran').onclick = async () => {
-  await db.from('settings').update({ live: !live }).eq('id', 1);
+$('#gran').onclick = async () => { const { error } = await db.from('settings').update({ live: !live }).eq('id', 1); if (error) falla(error); };
+
+function pintarCat() {
+  $('#filtros').innerHTML = Object.entries(TIPOS).map(([k, v]) => `<button class="filtro ${k === filtro ? 'on' : ''}" onclick="setFiltro('${k}')">${v}</button>`).join('');
+  const t = $('#catBusca').value.trim().toLowerCase();
+  const lista = CAT.map((c, i) => ({ c, i })).filter(({ c }) => (filtro === 'todas' || c.tipo === filtro) && (!t || (c.pregunta + c.resp).toLowerCase().includes(t)));
+  $('#catN').textContent = lista.length + ' de ' + CAT.length;
+  $('#catLista').innerHTML = lista.map(({ c, i }) => {
+    const resp = c.tipo === 'opciones' ? c.ops[+c.resp] : (c.resp.startsWith('RND') ? 'número al azar' : c.resp);
+    return `<div class="fila"><div class="min-w-0"><p class="text-sm">${esc(c.titulo)} · ${esc(c.pregunta)}</p>${resp ? `<p class="text-xs mut">Respuesta: ${esc(resp)}</p>` : ''}</div><button class="btn sm" onclick="lanzar(${i})">Lanzar</button></div>`;
+  }).join('') || '<p class="mut text-sm">No hay resultados.</p>';
+}
+function setFiltro(k) { filtro = k; pintarCat(); }
+$('#catBusca').oninput = pintarCat;
+
+async function abrir(tipo, titulo, pregunta, resp, ops) {
+  const max = parseInt($('#nMax').value, 10) || 1, prem = parseInt($('#nPrem').value, 10) || 0;
+  const { error } = await db.rpc('abrir_dinamica', { p_tipo: tipo, p_titulo: titulo, p_pregunta: pregunta, p_respuesta: resp, p_opciones: ops, p_max: max, p_premio: prem });
+  if (error) return falla(error);
+  aviso('✅ Dinámica lanzada. Ya les aparece a todos.');
+  $('#dinSorteo').textContent = '';
+}
+function lanzar(i) {
+  const c = CAT[i];
+  let resp = c.resp;
+  if (resp.startsWith('RND')) resp = String(1 + Math.floor(Math.random() * +resp.slice(3)));
+  abrir(c.tipo, c.titulo, c.pregunta, resp, c.ops);
+}
+
+$('#cTipo').onchange = () => {
+  const t = $('#cTipo').value;
+  $('#cOps').classList.toggle('hidden', t !== 'opciones');
+  $('#cOk').classList.toggle('hidden', t !== 'opciones');
+  $('#cResp').classList.toggle('hidden', ['opciones', 'rapido', 'sorteo'].includes(t));
+};
+$('#cLanzar').onclick = () => {
+  const t = $('#cTipo').value, q = $('#cPreg').value.trim();
+  if (!q) return aviso('Escribe lo que verán los usuarios.');
+  const titulos = { palabra: '🔑 Palabra clave', trivia: '🧠 Trivia', opciones: '❓ Opción múltiple', numero: '🔢 Adivina el número', rapido: '⚡ Reflejos', sorteo: '🎟️ Sorteo' };
+  if (t === 'opciones') {
+    const ops = $('#cOps').value.split('|').map((x) => x.trim()).filter(Boolean), k = parseInt($('#cOk').value, 10);
+    if (ops.length !== 4 || !(k >= 1 && k <= 4)) return aviso('Pon 4 opciones separadas por | y cuál es la correcta (1 a 4).');
+    return abrir(t, titulos[t], q, String(k - 1), ops);
+  }
+  const resp = ['rapido', 'sorteo'].includes(t) ? '' : $('#cResp').value.trim();
+  if (!resp && !['rapido', 'sorteo'].includes(t)) return aviso('Escribe la respuesta correcta.');
+  abrir(t, titulos[t], q, resp, null);
 };
 
-$('#kwAbrir').onclick = async () => {
-  const w = $('#kw').value.trim(), m = +$('#kwMax').value, p = +$('#kwPrem').value;
-  if (!w || m < 1 || p < 1) return;
-  await db.rpc('abrir_palabra', { p_word: w, p_max: m, p_prize: p });
+$('#dinCerrar').onclick = async () => { const { error } = await db.rpc('cerrar_dinamica'); error ? falla(error) : aviso('Dinámica cerrada.'); };
+$('#dinSortear').onclick = async () => {
+  const { data, error } = await db.rpc('sortear_dinamica');
+  if (error) return falla(error);
+  $('#dinSorteo').textContent = '🎉 ' + data;
+  confeti();
 };
 
-$('#gEnviar').onclick = async () => {
-  const u = $('#gUser').value.trim(), c = parseInt($('#gCant').value, 10);
-  if (!u || !c) return;
-  const { error } = await db.rpc('regalar_mcoins', { p_username: u, p_cantidad: c });
-  $('#gMsg').textContent = error ? 'No se pudo enviar.' : `Enviaste ${c} M-Coins a ${u}.`;
-  $('#gMsg').className = 'text-sm ' + (error ? 'text-rose-400' : 'text-emerald-400');
-  if (!error) { lluviaDeConfeti(); canal.send({ type: 'broadcast', event: 'regalo', payload: { username: u, cantidad: c } }); }
-};
-
-function lluviaDeConfeti() {
+function confeti() {
   for (let i = 0; i < 60; i++) {
     const c = document.createElement('i');
     c.className = 'confeti';
@@ -158,30 +384,160 @@ function lluviaDeConfeti() {
   }
 }
 
-$('#pPub').onclick = async () => {
-  if (!$('#pUrl').value.trim()) return;
-  await db.from('posts').insert({
-    media_url: $('#pUrl').value.trim(), caption: $('#pTxt').value,
-    media_type: $('#pVideo').checked ? 'video' : 'image', exclusive: $('#pExcl').checked
-  });
-  $('#pUrl').value = ''; $('#pTxt').value = '';
+async function regalar(u, c) {
+  const { error } = await db.rpc('regalar_mcoins', { p_username: u, p_cantidad: c });
+  if (error) return falla(error);
+  confeti();
+  canal.send({ type: 'broadcast', event: 'regalo', payload: { username: u, cantidad: c } });
+  aviso(`🎁 Enviaste ${c} M-Coins a ${u}.`);
+}
+$('#gEnviar').onclick = () => {
+  const u = $('#gUser').value.trim(), c = parseInt($('#gCant').value, 10);
+  if (!u || !c) return aviso('Escribe el usuario y la cantidad.');
+  regalar(u, c);
 };
+$('#regTurno').onclick = () => {
+  const n = parseInt(prompt('¿Cuántas M-Coins para ' + estado.turno_name + '?'), 10);
+  if (n) regalar(estado.turno_name, n);
+};
+async function sugeridos() {
+  const { data } = await db.from('profiles').select('username').order('created_at', { ascending: false }).limit(60);
+  $('#sugeridos').innerHTML = (data || []).map((u) => `<option value="${esc(u.username)}">`).join('');
+}
+$('#tomb').onclick = async () => {
+  const { data, error } = await db.rpc('sorteo_tombola');
+  if (error) return falla(error);
+  $('#tombRes').textContent = data ? '🎉 ' + data : 'Nadie tiene puntos aún.';
+  if (data) confeti();
+};
+
+function reducir(file, max = 1600) {
+  return new Promise((res) => {
+    if (!file.type.startsWith('image/') || file.type === 'image/gif') return res(file);
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      c.toBlob((b) => res(b || file), 'image/jpeg', .85);
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror = () => res(file);
+    img.src = URL.createObjectURL(file);
+  });
+}
+function pmsg(t, ok) { $('#pMsg').textContent = t; $('#pMsg').style.color = ok ? '#34d399' : '#fb7185'; }
+
+$('#pFile').onchange = () => {
+  const fs = [...$('#pFile').files];
+  $('#prev').innerHTML = fs.map((f) => f.type.startsWith('video/')
+    ? '<div class="aspect-square rounded-xl bg-black flex items-center justify-center text-3xl">🎬</div>'
+    : `<img src="${URL.createObjectURL(f)}" class="aspect-square w-full object-cover rounded-xl">`).join('');
+  pmsg(fs.length ? fs.length + ' archivo(s) listos para publicar.' : '', true);
+};
+
+$('#pPub').onclick = async () => {
+  const fs = [...$('#pFile').files];
+  if (!fs.length) return pmsg('Primero elige una foto o video de tu galería.', false);
+  $('#pPub').disabled = true;
+  let hechos = 0;
+  for (const f of fs) {
+    pmsg(`Subiendo ${hechos + 1} de ${fs.length}…`, true);
+    if (f.size > 50 * 1024 * 1024) { pmsg('"' + f.name + '" pesa más de 50 MB y se saltó.', false); continue; }
+    const esVideo = f.type.startsWith('video/');
+    const blob = esVideo ? f : await reducir(f);
+    const ext = esVideo ? (f.name.split('.').pop() || 'mp4').toLowerCase() : 'jpg';
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { error } = await db.storage.from('media').upload(path, blob, { contentType: esVideo ? (f.type || 'video/mp4') : (blob.type || 'image/jpeg') });
+    if (error) {
+      $('#pPub').disabled = false;
+      return pmsg(/row-level|policy|bucket|not found/i.test(error.message) ? 'Falta correr SQL_ARREGLO.sql en Supabase.' : 'No se pudo subir: ' + error.message, false);
+    }
+    const url = db.storage.from('media').getPublicUrl(path).data.publicUrl;
+    const { error: e2 } = await db.from('posts').insert({ media_url: url, media_path: path, media_type: esVideo ? 'video' : 'image', caption: $('#pTxt').value, exclusive: $('#pExcl').checked });
+    if (e2) { $('#pPub').disabled = false; return pmsg('No se pudo publicar: ' + e2.message, false); }
+    hechos++;
+  }
+  $('#pPub').disabled = false;
+  $('#pFile').value = ''; $('#prev').innerHTML = ''; $('#pTxt').value = ''; $('#pExcl').checked = false;
+  pmsg(`✅ Publicaste ${hechos} archivo(s).`, true);
+  cargarPosts2();
+};
+
+async function cargarPosts2() {
+  const { data } = await db.from('posts').select('*').order('created_at', { ascending: false }).limit(40);
+  $('#posts').innerHTML = (data || []).map((p) => `
+    <div class="fila">
+      <div class="flex items-center gap-3 min-w-0">
+        ${p.media_type === 'video' ? '<div class="w-14 h-14 rounded-lg bg-black flex items-center justify-center shrink-0">🎬</div>' : `<img src="${esc(p.media_url)}" class="w-14 h-14 rounded-lg object-cover shrink-0">`}
+        <div class="min-w-0"><p class="text-sm truncate">${esc(p.caption) || '(sin texto)'}</p>${p.exclusive ? '<span class="chip">Exclusivo</span>' : ''}</div>
+      </div>
+      <div class="flex gap-2 shrink-0">
+        <button class="btn alt sm" onclick="alternar(${p.id}, ${!p.exclusive})">${p.exclusive ? 'Hacer libre' : 'Hacer Premium'}</button>
+        <button class="btn rojo sm" onclick="borrarPost(${p.id}, '${esc(p.media_path || '')}')">Borrar</button>
+      </div>
+    </div>`).join('') || '<p class="text-sm mut">Todavía no hay publicaciones.</p>';
+}
+async function alternar(id, v) { const { error } = await db.from('posts').update({ exclusive: v }).eq('id', id); if (error) falla(error); cargarPosts2(); }
+async function borrarPost(id, path) {
+  if (!confirm('¿Borrar esta publicación?')) return;
+  if (path) await db.storage.from('media').remove([path]);
+  const { error } = await db.from('posts').delete().eq('id', id);
+  error ? falla(error) : aviso('Publicación borrada.');
+  cargarPosts2();
+}
+
+let tBusca;
+$('#busca').oninput = () => { clearTimeout(tBusca); tBusca = setTimeout(cargarUsuarios, 300); };
+async function cargarUsuarios() {
+  let q = db.from('profiles').select('username,flag,points,mcoins,role,premium_until,is_mod,banned').order('points', { ascending: false }).limit(40);
+  const t = $('#busca').value.trim();
+  if (t) q = q.ilike('username', `%${t.replace(/[%_]/g, '')}%`);
+  const { data, error } = await q;
+  if (error) return falla(error);
+  $('#usuarios').innerHTML = (data || []).map((u) => {
+    const prem = u.role === 'Premium' && new Date(u.premium_until) > new Date();
+    return `
+    <div class="fila" style="flex-wrap:wrap">
+      <div><p class="font-semibold">${u.flag} ${esc(u.username)} ${prem ? '<span class="chip">Premium</span>' : ''}${u.is_mod ? ' <span class="chip">Mod</span>' : ''}${u.banned ? ' <span class="chip rojo">Bloqueado</span>' : ''}</p>
+      <p class="text-xs mut">${u.points} pts · ${u.mcoins} M-Coins</p></div>
+      <div class="flex gap-2 flex-wrap">
+        <button class="btn alt sm" onclick="accion('mc','${esc(u.username)}')">+M-Coins</button>
+        <button class="btn alt sm" onclick="accion('pts','${esc(u.username)}')">+Puntos</button>
+        <button class="btn alt sm" onclick="accion('prem','${esc(u.username)}')">Premium</button>
+        <button class="btn ${u.banned ? 'alt' : 'rojo'} sm" onclick="accion('ban','${esc(u.username)}',${!u.banned})">${u.banned ? 'Desbloquear' : 'Bloquear'}</button>
+      </div>
+    </div>`;
+  }).join('') || '<p class="text-sm mut">No hay usuarios con ese nombre.</p>';
+}
+async function accion(tipo, u, extra) {
+  let r;
+  if (tipo === 'mc') { const n = parseInt(prompt('¿Cuántas M-Coins para ' + u + '?'), 10); if (n) await regalar(u, n); }
+  if (tipo === 'pts') { const n = parseInt(prompt('¿Cuántos puntos para ' + u + '? (negativo para quitar)'), 10); if (n) { r = await db.rpc('dar_puntos', { p_username: u, p_cantidad: n }); r.error ? falla(r.error) : aviso('Puntos actualizados.'); } }
+  if (tipo === 'prem') { const n = parseInt(prompt('¿Cuántos días de Premium para ' + u + '?', '30'), 10); if (n > 0) { r = await db.rpc('dar_premium', { p_username: u, p_dias: n }); r.error ? falla(r.error) : aviso('Premium activado.'); } }
+  if (tipo === 'ban') { if (!extra || confirm('¿Bloquear a ' + u + '?')) { r = await db.rpc('bloquear_usuario', { p_username: u, p_bloquear: extra }); r.error ? falla(r.error) : aviso(extra ? 'Usuario bloqueado.' : 'Usuario desbloqueado.'); } }
+  cargarUsuarios();
+}
 
 async function cargarMods() {
   const { data } = await db.from('mod_requests').select('user_id, profiles(username,flag)');
   $('#mods').innerHTML = (data || []).map((r) => `
-    <div class="flex items-center justify-between">
-      <span>${r.profiles.flag} ${r.profiles.username}</span>
-      <button class="btn" onclick="aprobar('${r.user_id}')">Aprobar</button>
-    </div>`).join('') || '<p class="text-zinc-500 text-sm">No hay solicitudes pendientes.</p>';
+    <div class="fila"><span>${r.profiles.flag} ${esc(r.profiles.username)}</span>
+    <button class="btn sm" onclick="aprobar('${r.user_id}')">Aprobar</button></div>`).join('') || '<p class="text-sm mut">No hay solicitudes pendientes.</p>';
+  const { data: act } = await db.from('profiles').select('id,username,flag').eq('is_mod', true);
+  $('#modsAct').innerHTML = (act || []).map((m) => `
+    <div class="fila"><span>${m.flag} ${esc(m.username)}</span>
+    <button class="btn rojo sm" onclick="quitarMod('${m.id}')">Quitar</button></div>`).join('') || '<p class="text-sm mut">Todavía no hay moderadores.</p>';
 }
-async function aprobar(id) { await db.rpc('aprobar_mod', { p_user: id }); cargarMods(); }
+async function aprobar(id) { const { error } = await db.rpc('aprobar_mod', { p_user: id }); if (error) falla(error); cargarMods(); }
+async function quitarMod(id) { if (confirm('¿Quitar moderador?')) { const { error } = await db.rpc('quitar_mod', { p_user: id }); if (error) falla(error); cargarMods(); } }
 
 async function pintarFila() {
   const { data } = await db.from('cola').select('vip, created_at, profiles(username,flag)').order('vip', { ascending: false }).order('created_at');
-  $('#fila').innerHTML = (data || []).map((c, i) => `<li>${i + 1}. ${c.profiles.flag} ${c.profiles.username}${c.vip ? ' ⭐ VIP' : ''}</li>`).join('') || '<li class="text-zinc-500">Fila vacía.</li>';
+  $('#fila').innerHTML = (data || []).map((c, i) => `<div class="fila"><span>${i + 1}. ${c.profiles.flag} ${esc(c.profiles.username)}</span>${c.vip ? '<span class="chip">VIP</span>' : ''}</div>`).join('') || '<p class="text-sm mut">Fila vacía.</p>';
+  $('#stF').textContent = (data || []).length;
 }
-
 function iniciarShow() {
   const peer = new Peer('malis-admin-panel');
   peer.on('call', (llamada) => {
@@ -192,13 +548,13 @@ function iniciarShow() {
   db.channel('cola-live').on('postgres_changes', { event: '*', schema: 'public', table: 'cola' }, pintarFila).subscribe();
   setInterval(pintarFila, 8000);
 }
-
-$('#siguiente').onclick = async () => { await db.rpc('llamar_siguiente'); pintarFila(); };
-$('#terminar').onclick = async () => { await db.rpc('terminar_turno'); $('#rv').srcObject = null; };
-$('#tomb').onclick = async () => {
-  const { data } = await db.rpc('sorteo_tombola');
-  $('#tombRes').textContent = data ? '🎉 ' + data : 'Nadie tiene puntos aún.';
+$('#siguiente').onclick = async () => {
+  const { data, error } = await db.rpc('llamar_siguiente');
+  if (error) return falla(error);
+  aviso(data ? 'Llamaste a ' + data : 'La fila está vacía.');
+  pintarFila();
 };
+$('#terminar').onclick = async () => { const { error } = await db.rpc('terminar_turno'); if (error) falla(error); $('#rv').srcObject = null; };
 
 arrancar();
 </script>

@@ -55,6 +55,11 @@ async function miPerfil() {
   if (!user) return null;
   await db.rpc('revisar_vencimiento');
   const { data } = await db.from('profiles').select('*').eq('id', user.id).single();
+  if (data && data.banned) {
+    await db.auth.signOut();
+    alert('Tu cuenta fue bloqueada por incumplir las reglas de la comunidad.');
+    return null;
+  }
   if (data && !(data.role === 'Premium' && new Date(data.premium_until) > new Date())) data.role = 'Base';
   return data;
 }
@@ -73,7 +78,7 @@ const cargarTop = (pais) => {
 
 const darLike = (id) => db.rpc('dar_like', { p_post: id });
 const girar = (pagado) => db.rpc('girar_ruleta', { p_pagado: pagado });
-const reclamarPalabra = (w) => db.rpc('reclamar_palabra', { p_word: w });
+const responderDin = (v) => db.rpc('responder_dinamica', { p_resp: v });
 const confirmarPago = (orderId, producto) => db.functions.invoke('paypal-confirm', { body: { orderId, producto } });
 const unirseFila = (vip) => db.rpc('unirse_fila', { p_vip: vip });
 const comprarCosmetico = (item) => db.rpc('comprar_cosmetico', { p_item: item });
@@ -87,5 +92,5 @@ function escucharSettings(cb) {
     .subscribe();
 }
 
-const ganadoresRonda = (ronda) =>
-  db.from('kw_winners').select('created_at, profiles(username,flag)').eq('round', ronda).order('created_at');
+const ganadoresDin = (ronda) =>
+  db.from('din_ganadores').select('created_at, profiles(username,flag)').eq('ronda', ronda).order('created_at');

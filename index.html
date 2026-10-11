@@ -100,12 +100,14 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
 
   <section id="v-dinamica" class="hidden space-y-3">
     <div class="card p-4 space-y-3">
-      <p id="kwEstado" class="text-zinc-400"></p>
-      <input id="kwInput" class="input" placeholder="Escribe la palabra clave">
-      <button id="kwBtn" class="btn">Enviar palabra</button>
-      <p id="kwMsg" class="text-sm"></p>
+      <span id="dinChip" class="hidden self-start text-xs px-2 py-1 rounded-full" style="background:#a855f722;color:#d8b4fe"></span>
+      <h3 id="dinTitulo" class="text-xl font-bold neon"></h3>
+      <p id="dinPregunta" class="text-zinc-300"></p>
+      <p id="dinPremio" class="text-sm text-zinc-400"></p>
+      <div id="dinZona"></div>
+      <p id="dinMsg" class="text-sm"></p>
     </div>
-    <div class="card p-4"><h3 class="font-bold mb-2 neon">Ganadores</h3><ol id="kwLista" class="space-y-1"></ol></div>
+    <div class="card p-4"><h3 class="font-bold mb-2 neon">Ganadores</h3><ol id="dinGan" class="space-y-1"></ol></div>
   </section>
 
   <section id="v-ruleta" class="hidden">
@@ -226,15 +228,11 @@ async function iniciar() {
   if (yo) $('#auth').classList.add('hidden');
   pintarBarra();
   pintarMuro();
-  pintarWinners();
   dibujarRueda();
   escucharSettings((s) => {
     $('#live').classList.toggle('hidden', !s.live);
-    ronda = s.kw_round;
+    pintarDinamica(s);
     turno(s);
-    $('#kwEstado').textContent = s.kw_open ? `Dinámica abierta · ${s.kw_max} ganadores · ${s.kw_prize} puntos` : 'No hay dinámica abierta ahora.';
-    $('#kwBtn').disabled = !s.kw_open;
-    pintarWinners();
   });
 }
 
@@ -306,18 +304,55 @@ async function like(id, el) {
   pintarBarra();
 }
 
-$('#kwBtn').onclick = async () => {
-  if (!exigirSesion()) return;
-  const { data, error } = await reclamarPalabra($('#kwInput').value);
-  const m = { ganaste: '¡Ganaste! Puntos acreditados.', incorrecta: 'Palabra incorrecta.', cerrada: 'La dinámica ya cerró.', repetida: 'Ya participaste en esta ronda.' };
-  toast($('#kwMsg'), error ? 'Error al enviar.' : m[data], data === 'ganaste');
-  if (data === 'ganaste') { yo = await miPerfil(); pintarBarra(); }
-  pintarWinners();
-};
+const ETIQUETAS = { palabra: 'Palabra clave', trivia: 'Trivia', opciones: 'Opción múltiple', numero: 'Adivina el número', rapido: 'Reflejos', sorteo: 'Sorteo' };
+let dinClave = '';
 
-async function pintarWinners() {
-  const { data } = await ganadoresRonda(ronda);
-  $('#kwLista').innerHTML = (data || []).map((w, i) => `<li>${i + 1}. ${w.profiles.flag} ${w.profiles.username}</li>`).join('') || '<li class="text-zinc-500">Aún no hay ganadores.</li>';
+function pintarDinamica(s) {
+  ronda = s.din_ronda;
+  const abierta = !!s.din_abierta;
+  $('#dinTitulo').textContent = abierta ? s.din_titulo : 'Sin dinámica por ahora';
+  $('#dinPregunta').textContent = abierta ? s.din_pregunta : 'Cuando Malis lance una dinámica en el live, aparece aquí al instante.';
+  $('#dinChip').textContent = abierta ? (ETIQUETAS[s.din_tipo] || '') : '';
+  $('#dinChip').classList.toggle('hidden', !abierta);
+  $('#dinPremio').textContent = abierta ? `🏆 ${s.din_premio} puntos · ${s.din_max} ${s.din_tipo === 'sorteo' ? 'ganadores por sorteo' : 'ganadores'}` : '';
+  const clave = s.din_ronda + ':' + abierta;
+  if (clave !== dinClave) { dinClave = clave; pintarZona(s); $('#dinMsg').textContent = ''; }
+  pintarGanadores();
+}
+
+function pintarZona(s) {
+  const z = $('#dinZona');
+  if (!s.din_abierta) { z.innerHTML = ''; return; }
+  if (s.din_tipo === 'opciones') {
+    z.innerHTML = (s.din_opciones || []).map((o, i) => `<button class="btn alt w-full mb-2" onclick="responder('${i}')">${esc(o)}</button>`).join('');
+  } else if (s.din_tipo === 'rapido') {
+    z.innerHTML = '<button class="btn w-full" style="min-height:88px;font-size:1.5rem" onclick="responder(\'1\')">¡TOCA YA!</button>';
+  } else if (s.din_tipo === 'sorteo') {
+    z.innerHTML = '<button class="btn w-full" style="min-height:68px;font-size:1.2rem" onclick="responder(\'1\')">🎟️ Participar</button>';
+  } else {
+    const num = s.din_tipo === 'numero';
+    z.innerHTML = `<input id="dinInput" class="input" placeholder="${num ? 'Tu número' : 'Tu respuesta'}" ${num ? 'inputmode="numeric"' : ''}><button class="btn w-full mt-2" onclick="responder(document.querySelector('#dinInput').value)">Enviar</button>`;
+  }
+}
+
+async function responder(v) {
+  if (!exigirSesion()) return;
+  const { data, error } = await responderDin(String(v).trim());
+  const m = {
+    ganaste: '🎉 ¡Ganaste! Puntos acreditados.',
+    incorrecta: 'Respuesta incorrecta, intenta otra vez.',
+    cerrada: 'La dinámica ya cerró.',
+    repetida: 'Ya ganaste en esta ronda.',
+    participas: '🎟️ ¡Estás participando! Espera el sorteo.',
+    sin_intentos: 'Ya no tienes más intentos en esta ronda.'
+  };
+  toast($('#dinMsg'), error ? error.message : (m[data] || 'Listo.'), data === 'ganaste' || data === 'participas');
+  if (data === 'ganaste') { yo = await miPerfil(); pintarBarra(); }
+}
+
+async function pintarGanadores() {
+  const { data } = await ganadoresDin(ronda);
+  $('#dinGan').innerHTML = (data || []).map((w, i) => `<li>${i + 1}. ${w.profiles.flag} ${esc(w.profiles.username)}</li>`).join('') || '<li class="text-zinc-500">Aún no hay ganadores.</li>';
 }
 
 const SECTORES = [['50', '#1f2937'], ['100', '#4c1d95'], ['200', '#1f2937'], ['500', '#4c1d95'], ['1000', '#1f2937'], ['10,000', '#00a152']];
