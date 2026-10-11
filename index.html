@@ -53,6 +53,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
 .rgb{background:linear-gradient(90deg,#f43f5e,#f59e0b,#22c55e,#06b6d4,#d4a93c,#f43f5e);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 3s linear infinite}
 @keyframes rgb{to{background-position:200% center}}
 .dorado{background:linear-gradient(90deg,#fde68a,#f59e0b,#fde68a);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 3s linear infinite}
+.tab.resalta{box-shadow:0 0 0 2px var(--mor),0 0 18px var(--mor);color:#fff}
 .fuego{box-shadow:0 0 0 2px #f97316,0 0 14px #ef4444,0 -6px 16px #f59e0b;border-radius:10px;padding:0 6px;animation:llama .6s infinite alternate}
 @keyframes llama{to{box-shadow:0 0 0 2px #fbbf24,0 0 22px #f97316,0 -10px 22px #ef4444}}
 .espacial{background:radial-gradient(circle at 20% 30%,#3f4a1f,#09090b 70%);border-radius:10px;padding:0 6px}
@@ -94,7 +95,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
   <button class="tab" data-v="tienda"><i>🛍️</i>Tienda</button>
   <button class="tab" data-v="premium"><i>⭐</i>Premium</button>
   <button class="tab" data-v="perfil"><i>👤</i>Perfil</button>
-  <button class="tab" data-v="apoyar"><i>💜</i>Apoyar</button>
+  <button class="tab" data-v="apoyar"><i><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" style="display:inline-block;vertical-align:middle"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></i>Apoyar</button>
   <button class="tab hidden" data-v="mod" id="tabMod"><i>🛡️</i>Mod</button>
 </nav>
 
@@ -158,7 +159,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
     <label class="lbl">Banner</label><input id="pfBn" type="file" accept="image/*" class="input">
     <label class="lbl">Sobre mí (máx. 160)</label><input id="pfBio" maxlength="160" class="input">
     <button id="pfGuardar" class="btn w-full mt-2">Guardar perfil</button>
-    <button class="btn alt w-full" onclick="yo && verPerfil(yo.username)">Ver cómo se ve</button><p id="pfMsg" class="text-sm"></p></div></section>
+    <button class="btn alt w-full" onclick="yo && verPerfil(yo.username)">Ver cómo se ve</button>
+    <button class="btn alt w-full" onclick="tutoIniciar()">📖 Ver el tutorial otra vez</button><p id="pfMsg" class="text-sm"></p></div></section>
 
   <section id="v-mod" class="hidden space-y-3">
     <div class="card p-4 space-y-3"><h3 class="font-bold neon">Panel de admin 🛡️</h3>
@@ -201,6 +203,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
 
 <div id="flash" class="card px-4 py-2 text-sm" style="position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:90;display:none"></div>
 <div id="perfilModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="background:#000c;z-index:85" onclick="if(event.target===this)this.classList.add('hidden')"><div class="card w-full max-w-sm overflow-hidden"><div id="pmBanner" style="height:110px"></div><div class="p-4" style="margin-top:-40px"><div id="pmAv" style="width:72px;height:72px;border:3px solid var(--bg);border-radius:50%;overflow:hidden"></div><p id="pmNom" class="text-lg mt-2"></p><p id="pmInfo" class="text-sm text-zinc-400"></p><p id="pmBio" class="text-sm mt-2"></p><button class="btn alt w-full mt-3" onclick="document.querySelector('#perfilModal').classList.add('hidden')">Cerrar</button></div></div></div>
+<div id="tuto" class="hidden" style="position:fixed;inset:0;z-index:44;background:#000a"></div>
+<div id="tutoCard" class="hidden fixed flex" style="left:12px;right:12px;bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:46;max-width:30rem;margin:0 auto;gap:10px;align-items:flex-end"><img src="malis-avatar.png" alt="" style="width:76px;height:76px;border-radius:50%;object-fit:cover;border:2px solid var(--mor);flex:none"><div class="card p-3 flex-1"><p id="tutoTxt" class="text-sm"></p><div class="flex items-center justify-between mt-3 gap-2"><span id="tutoPaso" class="text-xs text-zinc-400"></span><div class="flex gap-2"><button id="tutoSkip" class="btn alt" style="min-height:38px;padding:.3rem .8rem">Saltar</button><button id="tutoSig" class="btn" style="min-height:38px;padding:.3rem .8rem">Siguiente</button></div></div></div></div>
 <div id="auth">
   <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="suelo"></div>
   <div class="gate-card">
@@ -252,6 +256,7 @@ async function iniciar() {
   pintarBarra();
   pintarMuro();
   dibujarRueda();
+  setTimeout(tutoSiToca, 1200);
   escucharSettings((s) => {
     aplicarTema(s);
     $('#live').classList.toggle('hidden', !s.live);
@@ -557,6 +562,51 @@ db.channel('regalos').on('broadcast', { event: 'regalo' }, async ({ payload }) =
   if (yo && payload.username === yo.username) { confeti(); yo = await miPerfil(); pintarBarra(); setTimeout(() => alert('🎁 ¡Recibiste ' + payload.cantidad + (payload.tipo === 'pts' ? ' puntos!' : ' M-Coins!')), 300); }
 }).subscribe();
 
+const TUTO = [
+  { v: null, t: '¡Qué onda! 👋 Soy <b>Malis</b> y te voy a enseñar cada parte de la comunidad. Mira el menú de abajo: <b>desliza hacia los lados ↔</b> para ver más opciones, hay varias escondidas.' },
+  { v: 'muro', t: '🏠 <b>Muro</b>: aquí subo fotos y videos. Dale ❤️ y comenta 💬: cada uno te da <b>50 puntos</b>. Lo que dice 🔒 es exclusivo para Premium.' },
+  { v: 'dinamica', t: '🎯 <b>Dinámica</b>: cuando lance un juego en el live (palabra secreta, trivia, reflejos o sorteo) aparece aquí al instante. ¡Gana puntos respondiendo primero!' },
+  { v: 'ruleta', t: '🎡 <b>Ruleta</b>: tienes un giro gratis cada 24 horas. Si quieres otro, cuesta 10 M-Coins. Puedes ganar hasta 10,000 puntos.' },
+  { v: 'top', t: '🏆 <b>Top</b>: el ranking de la comunidad. Sube de rango: Bronce, Platino, Heroico y Gran Maestro. Toca el nombre de alguien para ver su perfil.' },
+  { v: 'show', t: '🎙️ <b>Show</b>: entra a la fila (200 puntos, o 30 M-Coins para pasar primero). Cuando sea tu turno enciendes tu micrófono y hablamos en vivo. Ábrelo en tu navegador, no dentro de TikTok.' },
+  { v: 'tienda', t: '🛍️ <b>Tienda</b>: con M-Coins compras estilos para tu nombre: marco de fuego, fondo espacial o texto arcoíris.' },
+  { v: 'premium', t: '⭐ <b>Premium</b>: contenido exclusivo y tu nombre en dorado. Aquí también puedes pedir ser moderador.' },
+  { v: 'perfil', t: '👤 <b>Perfil</b>: sube tu foto, tu banner y escribe algo sobre ti. Así te ven todos en el Top y en los comentarios.' },
+  { v: 'apoyar', t: '🎵 <b>Apoyar</b>: la forma más directa de apoyarme es con regalos en mis lives de TikTok. Es opcional, no hace falta para jugar.' },
+  { v: 'muro', t: '¡Listo! 🎉 Tip: también ganas <b>50 puntos por cada 10 minutos</b> con la página abierta. Si quieres volver a ver esto, está en 👤 Perfil. ¡A jugar!' }
+];
+let tp = 0;
+function tutoPaso() {
+  const s = TUTO[tp], nav = $('#nav');
+  $('#tutoTxt').innerHTML = s.t;
+  $('#tutoPaso').textContent = (tp + 1) + ' / ' + TUTO.length;
+  $('#tutoSig').textContent = tp === TUTO.length - 1 ? '¡Listo!' : 'Siguiente';
+  document.querySelectorAll('.tab').forEach((b) => b.classList.remove('resalta'));
+  if (s.v) {
+    const b = document.querySelector('[data-v=' + s.v + ']');
+    b.click(); b.classList.add('resalta');
+    nav.scrollTo({ left: Math.max(0, b.offsetLeft - 90), behavior: 'smooth' });
+  } else {
+    nav.scrollTo({ left: 260, behavior: 'smooth' });
+    setTimeout(() => nav.scrollTo({ left: 0, behavior: 'smooth' }), 1300);
+  }
+}
+function tutoIniciar() { tp = 0; $('#tuto').classList.remove('hidden'); $('#tutoCard').classList.remove('hidden'); tutoPaso(); }
+function tutoCerrar() {
+  $('#tuto').classList.add('hidden'); $('#tutoCard').classList.add('hidden');
+  document.querySelectorAll('.tab').forEach((b) => b.classList.remove('resalta'));
+  try { if (yo) localStorage.setItem('tuto_' + yo.id, '1'); } catch (e) {}
+  document.querySelector('[data-v=muro]').click();
+  $('#nav').scrollTo({ left: 0, behavior: 'smooth' });
+}
+$('#tutoSig').onclick = () => { if (tp >= TUTO.length - 1) tutoCerrar(); else { tp++; tutoPaso(); } };
+$('#tutoSkip').onclick = tutoCerrar;
+function tutoSiToca() {
+  if (!yo) return;
+  let visto = false; try { visto = !!localStorage.getItem('tuto_' + yo.id); } catch (e) {}
+  const nuevo = !yo.created_at || (Date.now() - new Date(yo.created_at) < 7 * 864e5);
+  if (!visto && nuevo) tutoIniciar();
+}
 function flash(t) { const f = $('#flash'); f.textContent = t; f.style.display = 'block'; clearTimeout(flash.t); flash.t = setTimeout(() => f.style.display = 'none', 3200); }
 async function ganar(t, ref) {
   const { data } = await db.rpc('ganar_actividad', { p_tipo: t, p_ref: String(ref) });

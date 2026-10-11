@@ -152,7 +152,7 @@ h2{font-weight:700;font-size:1.1rem;color:#fff4d0}
   <div id="p-reg" class="pantalla hidden space-y-4">
     <div class="card space-y-3">
       <h2>Regalar puntos o M-Coins</h2>
-      <select id="gTipo" class="input"><option value="mc">M-Coins</option><option value="pts">Puntos</option></select>
+      <select id="gTipo" class="input"><option value="mc">M-Coins</option><option value="pts">Puntos</option><option value="qpts">➖ Quitar puntos</option><option value="qmc">➖ Quitar M-Coins</option></select>
       <input id="gUser" class="input" placeholder="Usuario exacto del concursante" autocapitalize="none" list="sugeridos">
       <datalist id="sugeridos"></datalist>
       <div class="grid grid-cols-4 gap-2">
@@ -411,14 +411,14 @@ async function regalar(u, c, t) {
   t = t || 'mc';
   const { error } = await db.rpc(t === 'pts' ? 'dar_puntos' : 'regalar_mcoins', { p_username: u, p_cantidad: c });
   if (error) return falla(error);
-  confeti();
-  canal.send({ type: 'broadcast', event: 'regalo', payload: { username: u, cantidad: c, tipo: t } });
-  aviso(`🎁 Enviaste ${c} ${t === 'pts' ? 'puntos' : 'M-Coins'} a ${u}.`);
+  const nom = t === 'pts' ? 'puntos' : 'M-Coins';
+  if (c > 0) { confeti(); canal.send({ type: 'broadcast', event: 'regalo', payload: { username: u, cantidad: c, tipo: t } }); aviso(`🎁 Enviaste ${c} ${nom} a ${u}.`); }
+  else aviso(`➖ Le quitaste ${-c} ${nom} a ${u}.`);
 }
 $('#gEnviar').onclick = () => {
   const u = $('#gUser').value.trim(), c = parseInt($('#gCant').value, 10);
   if (!u || !c) return aviso('Escribe el usuario y la cantidad.');
-  regalar(u, c, $('#gTipo').value);
+  let t = $('#gTipo').value; if (t[0] === 'q') { t = t.slice(1); regalar(u, -Math.abs(c), t); } else regalar(u, c, t);
 };
 $('#regTurno').onclick = () => {
   const t = confirm('Aceptar = regalar PUNTOS\nCancelar = regalar M-Coins') ? 'pts' : 'mc';
@@ -531,6 +531,7 @@ async function cargarUsuarios() {
       <div class="flex gap-2 flex-wrap">
         <button class="btn alt sm" onclick="accion('mc','${esc(u.username)}')">+M-Coins</button>
         <button class="btn alt sm" onclick="accion('pts','${esc(u.username)}')">+Puntos</button>
+        <button class="btn rojo sm" onclick="accion('qpts','${esc(u.username)}')">−Puntos</button>
         <button class="btn alt sm" onclick="accion('prem','${esc(u.username)}')">Premium</button>
         <button class="btn alt sm" onclick="accion('qprem','${esc(u.username)}')">Quitar Premium</button>
         <button class="btn alt sm" onclick="accion('cos','${esc(u.username)}')">Cosméticos</button>
@@ -544,6 +545,7 @@ async function accion(tipo, u, extra) {
   if (tipo === 'mc') { const n = parseInt(prompt('¿Cuántas M-Coins para ' + u + '?'), 10); if (n) await regalar(u, n); }
   if (tipo === 'pts') { const n = parseInt(prompt('¿Cuántos puntos para ' + u + '? (negativo para quitar)'), 10); if (n) { r = await db.rpc('dar_puntos', { p_username: u, p_cantidad: n }); r.error ? falla(r.error) : aviso('Puntos actualizados.'); } }
   if (tipo === 'prem') { const n = parseInt(prompt('¿Cuántos días de Premium para ' + u + '?', '30'), 10); if (n > 0) { r = await db.rpc('dar_premium', { p_username: u, p_dias: n }); r.error ? falla(r.error) : aviso('Premium activado.'); } }
+  if (tipo === 'qpts') { const n = Math.abs(parseInt(prompt('¿Cuántos puntos QUITARLE a ' + u + '?'), 10)); if (n) { r = await db.rpc('dar_puntos', { p_username: u, p_cantidad: -n }); r.error ? falla(r.error) : aviso('Le quitaste ' + n + ' puntos a ' + u + '.'); } }
   if (tipo === 'qprem') { if (confirm('¿Quitar Premium a ' + u + '?')) { r = await db.rpc('quitar_premium', { p_username: u }); r.error ? falla(r.error) : aviso('Premium quitado.'); } }
   if (tipo === 'cos') { const it = prompt('Escribe: marco_fuego, fondo_espacial o texto_rgb\n(con - delante lo quitas, ej: -texto_rgb)'); if (it) { const q = it.startsWith('-'); r = await db.rpc('dar_cosmetico', { p_username: u, p_item: it.replace('-', '').trim(), p_dar: !q }); r.error ? falla(r.error) : aviso(q ? 'Quitado.' : 'Entregado a ' + u + '.'); } }
   if (tipo === 'ban') { if (!extra || confirm('¿Bloquear a ' + u + '?')) { r = await db.rpc('bloquear_usuario', { p_username: u, p_bloquear: extra }); r.error ? falla(r.error) : aviso(extra ? 'Usuario bloqueado.' : 'Usuario desbloqueado.'); } }
@@ -634,6 +636,7 @@ $('#micAdmin').onclick = async () => {
 db.channel('panel-live')
   .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => { cargarStats(); if (!$('#p-usr').classList.contains('hidden')) cargarUsuarios(); })
   .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, () => { cargarStats(); if (!$('#p-pub').classList.contains('hidden')) cargarPosts2(); })
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'din_ganadores' }, () => pintar(estado))
   .on('postgres_changes', { event: '*', schema: 'public', table: 'mod_requests' }, () => { if (!$('#p-mod').classList.contains('hidden')) cargarMods(); })
   .subscribe();
 arrancar();
