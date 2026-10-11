@@ -7,16 +7,24 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@700;800&display=swap" rel="stylesheet">
 <script>
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
   var ua = navigator.userAgent || '';
   if (!/musical_ly|BytedanceWebview|TikTok|Bytedance/i.test(ua)) return;
-  var url = location.href;
-  if (/Android/i.test(ua)) {
-    location.href = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
-  } else if (/iPhone|iPad/i.test(ua)) {
-    location.href = 'x-safari-' + url;
-  }
-})();
+  var bar = document.createElement('div');
+  bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;gap:8px;padding:8px 10px;background:#17160f;border-bottom:1px solid #33301f;color:#f4f4f5;font:600 12px Inter,system-ui,sans-serif';
+  bar.innerHTML = '<span style="flex:1">Para mejor experiencia abre esta página en tu navegador (menú ··· > Abrir en navegador)</span><button id="tkCopiar" style="background:#d4a93c;color:#000;border:0;border-radius:8px;padding:6px 10px;font-weight:700">Copiar link</button><button id="tkX" style="background:none;border:0;color:#a1a1aa;font-size:18px;padding:0 4px">×</button>';
+  document.body.appendChild(bar);
+  document.getElementById('tkX').onclick = function () { bar.remove(); };
+  document.getElementById('tkCopiar').onclick = function () {
+    var b = this;
+    var ok = function () { b.textContent = 'Copiado'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(location.href).then(ok, function () { prompt('Copia este link:', location.href); });
+    } else {
+      prompt('Copia este link:', location.href);
+    }
+  };
+});
 </script>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
