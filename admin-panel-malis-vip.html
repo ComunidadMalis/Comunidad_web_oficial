@@ -42,6 +42,13 @@ h2{font-weight:700;font-size:1.1rem;color:#fff4d0}
 .t6{background:linear-gradient(135deg,#fb923c,#c2410c)}
 .t7{background:linear-gradient(135deg,#818cf8,#4338ca)}
 .t8{background:linear-gradient(135deg,#f87171,#991b1b)}
+.cosm{display:flex;gap:14px;flex-wrap:wrap;width:100%;padding-top:6px}
+.sw{display:flex;align-items:center;gap:7px;font-size:.8rem;color:#c9c2d8}
+.sw input{position:absolute;opacity:0;pointer-events:none}
+.sw i{position:relative;width:38px;height:22px;border-radius:99px;background:#3a3350;transition:background .2s}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw input:checked+i{background:#d4a93c}
+.sw input:checked+i::after{transform:translateX(16px)}
 .fila{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.7rem 0;border-bottom:1px solid #221b33}
 .fila:last-child{border-bottom:0}
 .chip{font-size:.7rem;padding:.1rem .55rem;border-radius:99px;background:#d4a93c22;color:#f1d98a;white-space:nowrap}
@@ -517,7 +524,7 @@ async function borrarPost(id, path) {
 let tBusca;
 $('#busca').oninput = () => { clearTimeout(tBusca); tBusca = setTimeout(cargarUsuarios, 300); };
 async function cargarUsuarios() {
-  let q = db.from('profiles').select('username,flag,points,mcoins,role,premium_until,is_mod,banned').order('points', { ascending: false }).limit(40);
+  let q = db.from('profiles').select('username,flag,points,mcoins,role,premium_until,is_mod,banned,owned').order('points', { ascending: false }).limit(40);
   const t = $('#busca').value.trim();
   if (t) q = q.ilike('username', `%${t.replace(/[%_]/g, '')}%`);
   const { data, error } = await q;
@@ -534,11 +541,24 @@ async function cargarUsuarios() {
         <button class="btn rojo sm" onclick="accion('qpts','${esc(u.username)}')">−Puntos</button>
         <button class="btn alt sm" onclick="accion('prem','${esc(u.username)}')">Premium</button>
         <button class="btn alt sm" onclick="accion('qprem','${esc(u.username)}')">Quitar Premium</button>
-        <button class="btn alt sm" onclick="accion('cos','${esc(u.username)}')">Cosméticos</button>
         <button class="btn ${u.banned ? 'alt' : 'rojo'} sm" onclick="accion('ban','${esc(u.username)}',${!u.banned})">${u.banned ? 'Desbloquear' : 'Bloquear'}</button>
+      </div>
+      <div class="cosm">
+        ${COSM.map((c) => `<label class="sw"><input type="checkbox" ${(u.owned || []).includes(c.id) ? 'checked' : ''} onchange="toggleCos('${esc(u.username)}','${c.id}',this)"><i></i><span>${c.nombre}</span></label>`).join('')}
       </div>
     </div>`;
   }).join('') || '<p class="text-sm mut">No hay usuarios con ese nombre.</p>';
+}
+const COSM = [
+  { id: 'texto_rgb', nombre: 'RGB' },
+  { id: 'marco_fuego', nombre: 'Fuego' },
+  { id: 'fondo_espacial', nombre: 'Espacial' }
+];
+async function toggleCos(u, item, el) {
+  const dar = el.checked;
+  const { error } = await db.rpc('dar_cosmetico', { p_username: u, p_item: item, p_dar: dar });
+  if (error) { el.checked = !dar; return falla(error); }
+  aviso((dar ? 'Activado' : 'Quitado') + ' ' + item + ' a ' + u + '.');
 }
 async function accion(tipo, u, extra) {
   let r;

@@ -32,7 +32,7 @@ const RANGOS = [
 ];
 
 const rangoDe = (pts) => RANGOS.find((r) => pts >= r.min).nombre;
-const emailDe = (usuario) => `${usuario.trim().toLowerCase()}@comunidad-malis.app`;
+const emailDe = (usuario) => `${usuario.replace(/\s+/g, '').toLowerCase()}@comunidad-malis.app`;
 
 function banderaDe(codigo) {
   if (!codigo || codigo.length !== 2) return '🌎';
@@ -51,6 +51,7 @@ async function detectarPais() {
 
 async function registrar(usuario, clave) {
   const email = emailDe(usuario);
+  clave = clave.trim();
   let { data, error } = await db.auth.signUp({ email, password: clave });
   if (error && /already/i.test(error.message)) {
     const r = await db.auth.signInWithPassword({ email, password: clave });
@@ -79,7 +80,11 @@ async function registrar(usuario, clave) {
 }
 
 async function entrar(usuario, clave) {
-  const { error } = await db.auth.signInWithPassword({ email: emailDe(usuario), password: clave });
+  const email = emailDe(usuario);
+  let { error } = await db.auth.signInWithPassword({ email, password: clave });
+  if (error && /invalid login/i.test(error.message) && clave !== clave.trim()) {
+    ({ error } = await db.auth.signInWithPassword({ email, password: clave.trim() }));
+  }
   if (error) throw error;
 }
 

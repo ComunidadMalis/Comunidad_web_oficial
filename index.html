@@ -221,9 +221,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-s
     <p id="bonoTxt" class="text-center text-sm mt-2 font-bold" style="color:var(--mor)"></p>
     <p class="text-center text-sm mt-1" style="color:var(--mut)">@malis_tk0 · Juega, gana puntos y sube en el Top</p>
     <label class="lbl" for="aUser">Usuario</label>
-    <input id="aUser" class="input" placeholder="Tu usuario" autocomplete="username" autocapitalize="none">
+    <input id="aUser" class="input" placeholder="Tu usuario" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
     <label class="lbl" for="aPass">Contraseña</label>
-    <input id="aPass" type="password" class="input" placeholder="Mínimo 6 caracteres" autocomplete="current-password">
+    <input id="aPass" type="password" class="input" placeholder="Mínimo 6 caracteres" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false">
     <button id="aEntrar" class="btn w-full mt-5">Iniciar sesión</button>
     <button id="aReg" class="btn alt w-full mt-2">Crear cuenta nueva</button>
     <p id="aMsg" class="text-sm text-rose-400 mt-3 text-center"></p>
@@ -316,7 +316,7 @@ $('#aEntrar').onclick = async () => {
 $('#aReg').onclick = async () => {
   const u = $('#aUser').value.trim();
   if (!/^[\w.-]{3,20}$/.test(u)) return $('#aMsg').textContent = 'Usuario de 3 a 20 letras, números, punto o guion.';
-  if ($('#aPass').value.length < 6) return $('#aMsg').textContent = 'La contraseña debe tener al menos 6 caracteres.';
+  if ($('#aPass').value.trim().length < 6) return $('#aMsg').textContent = 'La contraseña debe tener al menos 6 caracteres.';
   try { await registrar(u, $('#aPass').value); await tras(); }
   catch (e) { console.error(e); $('#aMsg').textContent = msgAuth(e); }
 };
